@@ -538,6 +538,11 @@
    bot de Telegram puede editar data.json directamente sin tocar este HTML. */
 var visited, visitedEmpty, upcoming, categories, MATERIALS, SIZES, DIGITAL_PRICE, MICROSTATES;
 
+// Backend de checkout (Stripe + Prodigi) — repo cantbelievetheview-api.
+// Actualizar esta URL si algún día se deploya bajo un subdominio propio
+// (ej. api.cantbelievetheview.com) en vez del *.vercel.app por defecto.
+var API_BASE = 'https://cantbelievetheview-api.vercel.app';
+
 fetch('data.json')
   .then(function(r){
     if(!r.ok) throw new Error('data.json respondió ' + r.status);
@@ -606,9 +611,11 @@ var T = {
     emptyMsg:function(name){ return 'Todavía no subí fotografías de '+name+'.<br>Vuelvo pronto con la galería completa.'; },
     emptyHint:'MIENTRAS TANTO, EXPLORÁ LOS PAÍSES CON GALERÍA →', emptyDescGeneric:'Visitado — la galería está en camino.',
     studio:function(n,i){return n+' · Estudio '+i;}, fromPrice:'desde ',
-    modalTitle:'Finalizar compra', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' pieza(s). <br>Esta es una demo — <b>no se realizará ningún cobro real.</b>'; },
-    fName:'Nombre completo', fEmail:'Email', fAddr:'Dirección de envío (si hay impresiones)', fCard:'Tarjeta', payBtn:'Pagar ',
-    successTitle:'Gracias por tu compra', successNote:'(Demo) Recibirás un email de confirmación. Las impresiones se numeran y firman a mano antes del envío.', backToSite:'Volver al sitio',
+    modalTitle:'Finalizar compra', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' pieza(s). <br>Vas a pagar en la página segura de Stripe (tarjeta o PayPal). Si hay impresiones, ahí mismo te pide la dirección de envío.'; },
+    fEmail:'Email (para la confirmación)', payBtn:'Pagar ', payBtnLoading:'Redirigiendo a pago seguro…', payError:'Hubo un problema iniciando el pago. Probá de nuevo.',
+    successTitle:'Gracias por tu compra', successNote:'Las impresiones se numeran y firman a mano antes del envío. Vas a recibir la confirmación por email.', backToSite:'Volver al sitio',
+    checkingOrder:'Confirmando tu pedido…', orderCancelled:'Pago cancelado — tu carrito sigue como estaba.',
+    digitalReadyTitle:'Tus fotos digitales', digitalDownload:'Descargar',
     toastAdded:function(t){return 'Añadido al carrito · '+t;}, toastUpcoming:function(n,d){return n+' — próximo destino · '+d;},
     toastGeneric:function(n){return n+' — todavía no forma parte del archivo.';},
     realScale:' · a escala real', scale:'A ESCALA REAL', dropTitle:'Próximos destinos'
@@ -646,9 +653,11 @@ var T = {
     emptyMsg:function(name){ return "I haven't uploaded photos of "+name+' yet.<br>Coming back soon with the full gallery.'; },
     emptyHint:'IN THE MEANTIME, EXPLORE THE COUNTRIES WITH A GALLERY →', emptyDescGeneric:'Visited — the gallery is on its way.',
     studio:function(n,i){return n+' · Study '+i;}, fromPrice:'from ',
-    modalTitle:'Checkout', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' item(s). <br>This is a demo — <b>no real charge will be made.</b>'; },
-    fName:'Full name', fEmail:'Email', fAddr:'Shipping address (for prints)', fCard:'Card', payBtn:'Pay ',
-    successTitle:'Thanks for your order', successNote:"(Demo) You'll receive a confirmation email. Prints are numbered and hand-signed before shipping.", backToSite:'Back to site',
+    modalTitle:'Checkout', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' item(s). <br>You\'ll pay on Stripe\'s secure page (card or PayPal). If your order includes prints, it\'ll ask for a shipping address there.'; },
+    fEmail:'Email (for the confirmation)', payBtn:'Pay ', payBtnLoading:'Redirecting to secure payment…', payError:'There was a problem starting the payment. Please try again.',
+    successTitle:'Thanks for your order', successNote:"Prints are numbered and hand-signed before shipping. You'll get a confirmation by email.", backToSite:'Back to site',
+    checkingOrder:'Confirming your order…', orderCancelled:'Payment cancelled — your cart is untouched.',
+    digitalReadyTitle:'Your digital photos', digitalDownload:'Download',
     toastAdded:function(t){return 'Added to cart · '+t;}, toastUpcoming:function(n,d){return n+' — upcoming trip · '+d;},
     toastGeneric:function(n){return n+" — not part of the archive yet.";},
     realScale:' · true to scale', scale:'TRUE TO SCALE', dropTitle:'Upcoming trips'
@@ -776,23 +785,101 @@ function openCheckout(){
   document.getElementById('modal-box').innerHTML =
     '<h3>'+t('modalTitle')+'</h3>' +
     '<div class="modal-note">'+t('modalNote')(fmt(cartTotal()), cart.length)+'</div>' +
-    '<div class="field"><label>'+t('fName')+'</label><input type="text" placeholder="'+t('fName')+'"></div>' +
-    '<div class="field"><label>'+t('fEmail')+'</label><input type="email" placeholder="you@email.com"></div>' +
-    '<div class="field"><label>'+t('fAddr')+'</label><input type="text" placeholder="'+t('fAddr')+'"></div>' +
-    '<div class="field"><label>'+t('fCard')+'</label><input type="text" placeholder="•••• •••• •••• ••••"></div>' +
-    '<button id="pay-btn">'+t('payBtn')+fmt(cartTotal())+'</button>';
+    '<div class="field"><label>'+t('fEmail')+'</label><input type="email" id="checkout-email" placeholder="you@email.com"></div>' +
+    '<button id="pay-btn">'+t('payBtn')+fmt(cartTotal())+'</button>' +
+    '<p class="modal-error" id="checkout-error" style="display:none; color:#e07a5f; font-size:12px; margin-top:10px;"></p>';
   document.getElementById('pay-btn').addEventListener('click', function(e){
     e.preventDefault();
-    document.getElementById('modal-box').innerHTML =
-      '<div class="success-view"><div class="check">&#10003;</div><h3>'+t('successTitle')+'</h3>' +
-      '<p class="modal-note" style="margin-top:10px;">'+t('successNote')+'</p>' +
-      '<button id="pay-btn" style="margin-top:18px;" onclick="location.reload()">'+t('backToSite')+'</button></div>';
-    cart = []; renderCart();
+    startStripeCheckout();
   });
   modal.classList.add('open'); scrim.classList.add('show');
 }
+function startStripeCheckout(){
+  var payBtn = document.getElementById('pay-btn');
+  var errEl = document.getElementById('checkout-error');
+  errEl.style.display = 'none';
+  payBtn.disabled = true;
+  payBtn.textContent = t('payBtnLoading');
+
+  var email = (document.getElementById('checkout-email').value || '').trim();
+  var items = cart.map(function(it){
+    return {type:it.type, title:it.title, group:it.group, photoUrl:it.img, materialId:it.materialId||null, sizeId:it.sizeId||null};
+  });
+
+  fetch(API_BASE + '/api/checkout', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({items:items, email:email || undefined})
+  })
+    .then(function(r){ return r.json().then(function(data){ return {ok:r.ok, data:data}; }); })
+    .then(function(res){
+      if(!res.ok || !res.data.url){
+        var apiErr = new Error(res.data && res.data.error ? res.data.error : t('payError'));
+        apiErr.isApiError = true;
+        throw apiErr;
+      }
+      // Guardamos el carrito por si el pago se cancela y hay que restaurarlo al volver.
+      try{ sessionStorage.setItem('cbtv_pending_cart', JSON.stringify(cart)); }catch(e){}
+      window.location.href = res.data.url;
+    })
+    .catch(function(err){
+      // Un error "de API" (el backend respondió con un motivo puntual, ej. carrito
+      // vacío) se muestra tal cual. Cualquier otra falla (sin red, CORS, DNS, etc.)
+      // muestra el mensaje genérico en vez del texto técnico crudo del navegador.
+      errEl.textContent = err.isApiError ? err.message : t('payError');
+      errEl.style.display = 'block';
+      payBtn.disabled = false;
+      payBtn.textContent = t('payBtn') + fmt(cartTotal());
+    });
+}
 function closeCheckout(){ modal.classList.remove('open'); }
 document.getElementById('checkout-btn').addEventListener('click', openCheckout);
+
+/* ============ Vuelta desde Stripe (éxito o cancelación) ============ */
+function renderOrderSuccess(order){
+  var digitalItems = (order.items || []).filter(function(it){ return it.type === 'digital' && it.downloadUrl; });
+  var digitalHtml = '';
+  if(digitalItems.length){
+    digitalHtml = '<div class="digital-links" style="margin-top:18px; text-align:left;"><h4 style="font-size:13px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">'+t('digitalReadyTitle')+'</h4>' +
+      digitalItems.map(function(it){
+        return '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line);"><span>'+it.title+'</span><a href="'+it.downloadUrl+'" download target="_blank" rel="noopener" style="color:var(--amber-bright);">'+t('digitalDownload')+' ↓</a></div>';
+      }).join('') + '</div>';
+  }
+  document.getElementById('modal-box').innerHTML =
+    '<div class="success-view"><div class="check">&#10003;</div><h3>'+t('successTitle')+'</h3>' +
+    '<p class="modal-note" style="margin-top:10px;">'+t('successNote')+'</p>' +
+    digitalHtml +
+    '<button id="pay-btn" style="margin-top:18px;" onclick="location.href=location.pathname">'+t('backToSite')+'</button></div>';
+  cart = []; try{ sessionStorage.removeItem('cbtv_pending_cart'); }catch(e){}
+  renderCart();
+  modal.classList.add('open'); scrim.classList.add('show');
+}
+(function checkReturnFromStripe(){
+  var params = new URLSearchParams(window.location.search);
+  var status = params.get('checkout');
+  if(status === 'success'){
+    var sessionId = params.get('session_id');
+    document.getElementById('modal-box').innerHTML = '<div class="success-view"><p class="modal-note">'+t('checkingOrder')+'</p></div>';
+    modal.classList.add('open'); scrim.classList.add('show');
+    fetch(API_BASE + '/api/order-status?session_id=' + encodeURIComponent(sessionId))
+      .then(function(r){ return r.json(); })
+      .then(function(order){
+        if(order.paid) renderOrderSuccess(order);
+        else document.getElementById('modal-box').innerHTML = '<div class="success-view"><p class="modal-note">'+t('payError')+'</p></div>';
+      })
+      .catch(function(){
+        document.getElementById('modal-box').innerHTML = '<div class="success-view"><p class="modal-note">'+t('payError')+'</p></div>';
+      });
+  } else if(status === 'cancelled'){
+    try{
+      var saved = sessionStorage.getItem('cbtv_pending_cart');
+      if(saved) cart = JSON.parse(saved);
+    }catch(e){}
+    renderCart();
+    showToast(t('orderCancelled'));
+  }
+  if(status) window.history.replaceState({}, '', window.location.pathname);
+})();
 document.getElementById('modal-close').addEventListener('click', closeCheckout);
 
 /* ============ PRINT PREVIEW — proportioned room mockup ============ */
@@ -823,7 +910,7 @@ function buildBuyRow(title, group, imgUrl){
   digitalBtn.className = 'buy-btn digital';
   digitalBtn.textContent = t('digital') + ' · ' + fmt(DIGITAL_PRICE);
   digitalBtn.addEventListener('click', function(){
-    addToCart({title:title, group:group, variant:t('digital'), price:DIGITAL_PRICE, img:imgUrl});
+    addToCart({title:title, group:group, variant:t('digital'), price:DIGITAL_PRICE, img:imgUrl, type:'digital'});
   });
 
   var printWrap = document.createElement('div');
@@ -867,7 +954,7 @@ function buildBuyRow(title, group, imgUrl){
       sBtn.addEventListener('mouseenter', function(){ showPreview(imgUrl, size, currentMaterial); });
       sBtn.addEventListener('mouseleave', hidePreview);
       sBtn.addEventListener('click', function(){
-        addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl});
+        addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, type:'print', materialId:currentMaterial.id, sizeId:size.id});
         pop.classList.remove('show');
         hidePreview();
       });
