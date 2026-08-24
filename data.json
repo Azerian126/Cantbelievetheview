@@ -1,0 +1,731 @@
+{
+  "visited": [
+    {
+      "key": "peru",
+      "name": "Perú",
+      "lat": -12.05,
+      "lng": -77.03,
+      "w": 26,
+      "h": 22,
+      "desc": "Andes, niebla y ruinas incas al amanecer.",
+      "descEn": "Andes, mist, and Inca ruins at dawn."
+    },
+    {
+      "key": "islandia",
+      "name": "Islandia",
+      "lat": 64.13,
+      "lng": -21.82,
+      "w": 22,
+      "h": 16,
+      "desc": "Glaciares, auroras y una luz que no se apaga.",
+      "descEn": "Glaciers, auroras, and light that never fades."
+    },
+    {
+      "key": "nz",
+      "name": "Nueva Zelanda",
+      "lat": -41.29,
+      "lng": 174.78,
+      "w": 14,
+      "h": 26,
+      "desc": "Fiordos verdes y un silencio casi absoluto.",
+      "descEn": "Green fjords and an almost total silence."
+    },
+    {
+      "key": "japon",
+      "name": "Japón",
+      "lat": 35.68,
+      "lng": 139.69,
+      "w": 12,
+      "h": 26,
+      "desc": "Templos, neón y cerezos en flor.",
+      "descEn": "Temples, neon, and cherry blossoms."
+    },
+    {
+      "key": "noruega",
+      "name": "Noruega",
+      "lat": 59.91,
+      "lng": 10.75,
+      "w": 16,
+      "h": 30,
+      "desc": "Fiordos, montañas y cielos de medianoche.",
+      "descEn": "Fjords, mountains, and midnight skies."
+    },
+    {
+      "key": "marruecos",
+      "name": "Marruecos",
+      "lat": 31.63,
+      "lng": -7.99,
+      "w": 24,
+      "h": 18,
+      "desc": "Dunas doradas y callejones color añil.",
+      "descEn": "Golden dunes and indigo alleyways."
+    },
+    {
+      "key": "namibia",
+      "name": "Namibia",
+      "lat": -22.56,
+      "lng": 17.08,
+      "w": 20,
+      "h": 24,
+      "desc": "Dunas rojas frente al Atlántico helado.",
+      "descEn": "Red dunes facing the icy Atlantic."
+    },
+    {
+      "key": "vietnam",
+      "name": "Vietnam",
+      "lat": 21.03,
+      "lng": 105.85,
+      "w": 10,
+      "h": 28,
+      "desc": "Arrozales en terraza y niebla sobre la bahía.",
+      "descEn": "Terraced rice fields and mist over the bay."
+    },
+    {
+      "key": "chile",
+      "name": "Chile",
+      "lat": -33.45,
+      "lng": -70.67,
+      "w": 10,
+      "h": 34,
+      "desc": "Desiertos, volcanes y el fin del mundo.",
+      "descEn": "Deserts, volcanoes, and the end of the world."
+    },
+    {
+      "key": "nepal",
+      "name": "Nepal",
+      "lat": 27.72,
+      "lng": 85.32,
+      "w": 22,
+      "h": 12,
+      "desc": "Picos de ocho mil metros y banderas de oración.",
+      "descEn": "Eight-thousand-meter peaks and prayer flags."
+    },
+    {
+      "key": "escocia",
+      "name": "Escocia",
+      "lat": 55.95,
+      "lng": -3.19,
+      "w": 16,
+      "h": 20,
+      "desc": "Páramos brumosos y castillos en ruinas.",
+      "descEn": "Foggy moors and ruined castles.",
+      "nameEn": "Scotland"
+    },
+    {
+      "key": "grecia",
+      "name": "Grecia",
+      "lat": 36.39,
+      "lng": 25.46,
+      "w": 22,
+      "h": 20,
+      "desc": "Blanco y azul sobre acantilados volcánicos.",
+      "descEn": "White and blue over volcanic cliffs."
+    },
+    {
+      "key": "canada",
+      "name": "Canadá",
+      "lat": 51.18,
+      "lng": -115.57,
+      "w": 34,
+      "h": 24,
+      "desc": "Lagos turquesa entre picos nevados.",
+      "descEn": "Turquoise lakes among snow-capped peaks."
+    },
+    {
+      "key": "argentina",
+      "name": "Argentina",
+      "lat": -50.34,
+      "lng": -72.26,
+      "w": 14,
+      "h": 34,
+      "desc": "Glaciares azules en la Patagonia.",
+      "descEn": "Blue glaciers in Patagonia."
+    },
+    {
+      "key": "egipto",
+      "name": "Egipto",
+      "lat": 30.04,
+      "lng": 31.24,
+      "w": 20,
+      "h": 22,
+      "desc": "Templos de piedra y el desierto infinito.",
+      "descEn": "Stone temples and endless desert."
+    },
+    {
+      "key": "indonesia",
+      "name": "Indonesia",
+      "lat": -8.34,
+      "lng": 115.09,
+      "w": 30,
+      "h": 14,
+      "desc": "Arrozales, templos y volcanes activos.",
+      "descEn": "Rice terraces, temples, and active volcanoes."
+    },
+    {
+      "key": "feroe",
+      "name": "Islas Feroe",
+      "lat": 62.0,
+      "lng": -6.79,
+      "w": 12,
+      "h": 12,
+      "desc": "Acantilados verdes entre niebla y océano.",
+      "descEn": "Green cliffs between fog and ocean."
+    },
+    {
+      "key": "jordania",
+      "name": "Jordania",
+      "lat": 30.33,
+      "lng": 35.44,
+      "w": 18,
+      "h": 20,
+      "desc": "Cañones de piedra rosa esculpidos por el tiempo.",
+      "descEn": "Pink stone canyons carved by time."
+    },
+    {
+      "key": "eeuu",
+      "name": "Estados Unidos",
+      "lat": 37.87,
+      "lng": -119.54,
+      "w": 34,
+      "h": 22,
+      "desc": "Secuoyas gigantes y valles de granito.",
+      "descEn": "Giant sequoias and granite valleys."
+    },
+    {
+      "key": "sudafrica",
+      "name": "Sudáfrica",
+      "lat": -33.92,
+      "lng": 18.42,
+      "w": 24,
+      "h": 20,
+      "desc": "Donde dos océanos se encuentran.",
+      "descEn": "Where two oceans meet."
+    }
+  ],
+  "visitedEmpty": [
+    {
+      "name": "México",
+      "lat": 19.43,
+      "lng": -99.13,
+      "w": 28,
+      "h": 22
+    },
+    {
+      "name": "España",
+      "lat": 40.42,
+      "lng": -3.7,
+      "w": 20,
+      "h": 16
+    },
+    {
+      "name": "Portugal",
+      "lat": 38.72,
+      "lng": -9.14,
+      "w": 8,
+      "h": 14
+    },
+    {
+      "name": "Italia",
+      "lat": 41.9,
+      "lng": 12.5,
+      "w": 14,
+      "h": 24
+    },
+    {
+      "name": "Francia",
+      "lat": 48.86,
+      "lng": 2.35,
+      "w": 20,
+      "h": 18
+    },
+    {
+      "name": "Alemania",
+      "lat": 52.52,
+      "lng": 13.4,
+      "w": 18,
+      "h": 18
+    },
+    {
+      "name": "Países Bajos",
+      "lat": 52.37,
+      "lng": 4.9,
+      "w": 10,
+      "h": 10
+    },
+    {
+      "name": "Bélgica",
+      "lat": 50.85,
+      "lng": 4.35,
+      "w": 8,
+      "h": 8
+    },
+    {
+      "name": "Suiza",
+      "lat": 46.95,
+      "lng": 7.45,
+      "w": 9,
+      "h": 8
+    },
+    {
+      "name": "Austria",
+      "lat": 48.21,
+      "lng": 16.37,
+      "w": 14,
+      "h": 9
+    },
+    {
+      "name": "República Checa",
+      "lat": 50.09,
+      "lng": 14.42,
+      "w": 14,
+      "h": 9
+    },
+    {
+      "name": "Polonia",
+      "lat": 52.23,
+      "lng": 21.01,
+      "w": 18,
+      "h": 14
+    },
+    {
+      "name": "Hungría",
+      "lat": 47.5,
+      "lng": 19.04,
+      "w": 14,
+      "h": 10
+    },
+    {
+      "name": "Croacia",
+      "lat": 45.81,
+      "lng": 15.98,
+      "w": 16,
+      "h": 9
+    },
+    {
+      "name": "Turquía",
+      "lat": 39.93,
+      "lng": 32.85,
+      "w": 28,
+      "h": 14
+    },
+    {
+      "name": "India",
+      "lat": 28.61,
+      "lng": 77.21,
+      "w": 26,
+      "h": 26
+    },
+    {
+      "name": "Tailandia",
+      "lat": 13.75,
+      "lng": 100.5,
+      "w": 14,
+      "h": 26
+    },
+    {
+      "name": "Camboya",
+      "lat": 11.55,
+      "lng": 104.92,
+      "w": 10,
+      "h": 10
+    },
+    {
+      "name": "Laos",
+      "lat": 17.97,
+      "lng": 102.6,
+      "w": 12,
+      "h": 20
+    },
+    {
+      "name": "Malasia",
+      "lat": 3.14,
+      "lng": 101.69,
+      "w": 18,
+      "h": 10
+    },
+    {
+      "name": "Singapur",
+      "lat": 1.35,
+      "lng": 103.82,
+      "w": 4,
+      "h": 4
+    },
+    {
+      "name": "Filipinas",
+      "lat": 14.6,
+      "lng": 120.98,
+      "w": 14,
+      "h": 22
+    },
+    {
+      "name": "China",
+      "lat": 39.9,
+      "lng": 116.4,
+      "w": 42,
+      "h": 30
+    },
+    {
+      "name": "Corea del Sur",
+      "lat": 37.57,
+      "lng": 126.98,
+      "w": 10,
+      "h": 13
+    },
+    {
+      "name": "Australia",
+      "lat": -25.27,
+      "lng": 133.77,
+      "w": 40,
+      "h": 30
+    },
+    {
+      "name": "Fiyi",
+      "lat": -18.14,
+      "lng": 178.44,
+      "w": 6,
+      "h": 6
+    },
+    {
+      "name": "Brasil",
+      "lat": -15.79,
+      "lng": -47.88,
+      "w": 38,
+      "h": 34
+    },
+    {
+      "name": "Colombia",
+      "lat": 4.71,
+      "lng": -74.07,
+      "w": 18,
+      "h": 22
+    },
+    {
+      "name": "Ecuador",
+      "lat": -0.23,
+      "lng": -78.52,
+      "w": 12,
+      "h": 16
+    },
+    {
+      "name": "Bolivia",
+      "lat": -16.5,
+      "lng": -68.15,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "name": "Uruguay",
+      "lat": -34.9,
+      "lng": -56.16,
+      "w": 9,
+      "h": 10
+    },
+    {
+      "name": "Paraguay",
+      "lat": -25.28,
+      "lng": -57.63,
+      "w": 13,
+      "h": 16
+    },
+    {
+      "name": "Costa Rica",
+      "lat": 9.93,
+      "lng": -84.08,
+      "w": 7,
+      "h": 9
+    },
+    {
+      "name": "Panamá",
+      "lat": 8.98,
+      "lng": -79.52,
+      "w": 10,
+      "h": 6
+    },
+    {
+      "name": "Cuba",
+      "lat": 23.13,
+      "lng": -82.38,
+      "w": 18,
+      "h": 7
+    },
+    {
+      "name": "Emiratos Árabes Unidos",
+      "lat": 25.2,
+      "lng": 55.27,
+      "w": 10,
+      "h": 8
+    },
+    {
+      "name": "Israel",
+      "lat": 31.77,
+      "lng": 35.21,
+      "w": 6,
+      "h": 13
+    },
+    {
+      "name": "Kenia",
+      "lat": -1.29,
+      "lng": 36.82,
+      "w": 16,
+      "h": 20
+    },
+    {
+      "name": "Tanzania",
+      "lat": -6.16,
+      "lng": 35.75,
+      "w": 18,
+      "h": 18
+    },
+    {
+      "name": "Finlandia",
+      "lat": 60.17,
+      "lng": 24.94,
+      "w": 16,
+      "h": 28
+    },
+    {
+      "name": "Suecia",
+      "lat": 59.33,
+      "lng": 18.06,
+      "w": 16,
+      "h": 30
+    }
+  ],
+  "upcoming": [
+    {
+      "name": "Groenlandia",
+      "lat": 71.7,
+      "lng": -42.6,
+      "w": 38,
+      "h": 32,
+      "date": "Marzo 2027"
+    },
+    {
+      "name": "Mongolia",
+      "lat": 46.86,
+      "lng": 103.84,
+      "w": 32,
+      "h": 20,
+      "date": "Junio 2027"
+    },
+    {
+      "name": "Madagascar",
+      "lat": -18.9,
+      "lng": 47.5,
+      "w": 14,
+      "h": 30,
+      "date": "Agosto 2027"
+    },
+    {
+      "name": "Bután",
+      "lat": 27.51,
+      "lng": 90.43,
+      "w": 9,
+      "h": 7,
+      "date": "Octubre 2027"
+    },
+    {
+      "name": "Kirguistán",
+      "lat": 41.2,
+      "lng": 74.76,
+      "w": 20,
+      "h": 12,
+      "date": "Enero 2028"
+    },
+    {
+      "name": "Botsuana",
+      "lat": -24.65,
+      "lng": 25.9,
+      "w": 18,
+      "h": 16,
+      "date": "Abril 2028"
+    },
+    {
+      "name": "Antártida",
+      "lat": -78.0,
+      "lng": 0.07,
+      "w": 50,
+      "h": 16,
+      "date": "Noviembre 2028"
+    },
+    {
+      "name": "Papúa Nueva Guinea",
+      "lat": -9.44,
+      "lng": 147.18,
+      "w": 20,
+      "h": 14,
+      "date": "2029 · por confirmar"
+    }
+  ],
+  "neNames": {
+    "Perú": "Peru",
+    "Islandia": "Iceland",
+    "Nueva Zelanda": "New Zealand",
+    "Japón": "Japan",
+    "Noruega": "Norway",
+    "Marruecos": "Morocco",
+    "Namibia": "Namibia",
+    "Vietnam": "Vietnam",
+    "Chile": "Chile",
+    "Nepal": "Nepal",
+    "Escocia": "United Kingdom",
+    "Grecia": "Greece",
+    "Canadá": "Canada",
+    "Argentina": "Argentina",
+    "Egipto": "Egypt",
+    "Indonesia": "Indonesia",
+    "Islas Feroe": "Faroe Islands",
+    "Jordania": "Jordan",
+    "Estados Unidos": "United States of America",
+    "Sudáfrica": "South Africa",
+    "México": "Mexico",
+    "España": "Spain",
+    "Portugal": "Portugal",
+    "Italia": "Italy",
+    "Francia": "France",
+    "Alemania": "Germany",
+    "Países Bajos": "Netherlands",
+    "Bélgica": "Belgium",
+    "Suiza": "Switzerland",
+    "Austria": "Austria",
+    "República Checa": "Czechia",
+    "Polonia": "Poland",
+    "Hungría": "Hungary",
+    "Croacia": "Croatia",
+    "Turquía": "Turkey",
+    "India": "India",
+    "Tailandia": "Thailand",
+    "Camboya": "Cambodia",
+    "Laos": "Laos",
+    "Malasia": "Malaysia",
+    "Singapur": "Singapore",
+    "Filipinas": "Philippines",
+    "China": "China",
+    "Corea del Sur": "South Korea",
+    "Australia": "Australia",
+    "Fiyi": "Fiji",
+    "Brasil": "Brazil",
+    "Colombia": "Colombia",
+    "Ecuador": "Ecuador",
+    "Bolivia": "Bolivia",
+    "Uruguay": "Uruguay",
+    "Paraguay": "Paraguay",
+    "Costa Rica": "Costa Rica",
+    "Panamá": "Panama",
+    "Cuba": "Cuba",
+    "Emiratos Árabes Unidos": "United Arab Emirates",
+    "Israel": "Israel",
+    "Kenia": "Kenya",
+    "Tanzania": "Tanzania",
+    "Finlandia": "Finland",
+    "Suecia": "Sweden",
+    "Groenlandia": "Greenland",
+    "Mongolia": "Mongolia",
+    "Madagascar": "Madagascar",
+    "Bután": "Bhutan",
+    "Kirguistán": "Kyrgyzstan",
+    "Botsuana": "Botswana",
+    "Antártida": "Antarctica",
+    "Papúa Nueva Guinea": "Papua New Guinea"
+  },
+  "categories": [
+    {
+      "key": "bn",
+      "name": "Blanco y Negro",
+      "nameEn": "Black & White",
+      "desc": "Contraste, silencio y forma pura, sin el ruido del color.",
+      "descEn": "Contrast, silence, and pure form, without the noise of color.",
+      "bw": true
+    },
+    {
+      "key": "retratos",
+      "name": "Retratos",
+      "nameEn": "Portraits",
+      "desc": "Rostros encontrados en el camino, siempre con permiso.",
+      "descEn": "Faces found along the way, always with permission."
+    },
+    {
+      "key": "paisajes",
+      "name": "Paisajes",
+      "nameEn": "Landscapes",
+      "desc": "La tierra vista de cerca — el motivo que le da nombre a todo esto.",
+      "descEn": "The earth seen up close — the reason this whole thing has a name."
+    },
+    {
+      "key": "edificios",
+      "name": "Edificios",
+      "nameEn": "Buildings",
+      "desc": "Arquitectura, líneas y la escala humana frente a lo construido.",
+      "descEn": "Architecture, lines, and human scale against what is built."
+    },
+    {
+      "key": "modelos",
+      "name": "Modelos",
+      "nameEn": "Models",
+      "desc": "Dirección de arte, vestuario y color en movimiento.",
+      "descEn": "Art direction, wardrobe, and color in motion."
+    }
+  ],
+  "materials": [
+    {
+      "id": "algodon",
+      "label": "Papel de algodón · mate",
+      "labelEn": "Cotton paper · matte",
+      "mod": 0
+    },
+    {
+      "id": "aluminio",
+      "label": "Aluminio · brillante",
+      "labelEn": "Aluminum · glossy",
+      "mod": 45
+    }
+  ],
+  "sizes": [
+    {
+      "id": "S",
+      "label": "S — 30×40cm",
+      "w": 30,
+      "h": 40,
+      "price": 120
+    },
+    {
+      "id": "M",
+      "label": "M — 50×70cm",
+      "w": 50,
+      "h": 70,
+      "price": 220
+    },
+    {
+      "id": "L",
+      "label": "L — 70×100cm",
+      "w": 70,
+      "h": 100,
+      "price": 380
+    }
+  ],
+  "digitalPrice": 45,
+  "microstates": {
+    "Italia": [
+      {
+        "name": "San Marino",
+        "nameEn": "San Marino",
+        "lat": 43.94,
+        "lng": 12.46
+      },
+      {
+        "name": "Ciudad del Vaticano",
+        "nameEn": "Vatican City",
+        "lat": 41.9,
+        "lng": 12.45
+      }
+    ],
+    "Sudáfrica": [
+      {
+        "name": "Lesoto",
+        "nameEn": "Lesotho",
+        "lat": -29.61,
+        "lng": 28.23
+      }
+    ]
+  }
+}

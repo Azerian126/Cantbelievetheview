@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cantbelievetheview — Mario Mazzone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+  :root{
+    --bg:#0b0d0c; --bg-alt:#111310;
+    --paper:#edeae2; --paper-dim:#a29c8e;
+    --amber:#c9834a; --amber-bright:#e4a468;
+    --line: rgba(237,234,226,0.14); --line-soft: rgba(237,234,226,0.06);
+    --chip-bg:#edeae2; --chip-ink:#14140f; --chip-ink-dim: rgba(20,20,15,0.55);
+    --overlay-ink:#f2f0ea; --overlay-ink-dim: rgba(242,240,234,0.7);
+  }
+  body.light{
+    --bg:#faf8f3; --bg-alt:#efece2;
+    --paper:#1b1c19; --paper-dim:#6f6a5c;
+    --amber:#b5713b; --amber-bright:#a8632f;
+    --line: rgba(27,28,25,0.14); --line-soft: rgba(27,28,25,0.06);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg); color:var(--paper); font-family:'Space Grotesk', sans-serif; font-weight:300; overflow-x:hidden; -webkit-font-smoothing:antialiased; transition:background .35s ease, color .35s ease;}
+  .theme-btn{width:34px; height:34px; border-radius:50%; border:1px solid var(--paper); background:none; color:var(--paper); display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .lang-btn{height:34px; padding:0 11px; border-radius:100px; border:1px solid var(--paper); background:none; color:var(--paper); display:flex; align-items:center; justify-content:center; font-size:11px; font-family:'JetBrains Mono', monospace; letter-spacing:.04em;}
+  ::selection{background:var(--amber);color:var(--bg);}
+  .mono{font-family:'JetBrains Mono', monospace; letter-spacing:0.02em;}
+  .serif{font-family:'Fraunces', serif;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer;}
+
+  nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:26px 5vw; mix-blend-mode:difference; background:transparent;}
+  body.light nav{mix-blend-mode:normal; background:linear-gradient(var(--bg) 0%, rgba(250,248,243,0.85) 70%, transparent 100%); padding-bottom:34px;}
+  .logo{font-family:'Fraunces', serif; font-weight:400; font-size:15px; letter-spacing:0.04em; text-transform:lowercase;}
+  .logo span{color:var(--amber-bright);}
+  .nav-right{display:flex; align-items:center; gap:28px;}
+  .nav-link{font-size:12px; letter-spacing:0.08em; text-transform:uppercase; font-family:'JetBrains Mono', monospace; font-weight:300; opacity:0.85; background:none; border:none; color:inherit; padding-bottom:2px; border-bottom:1px solid transparent; transition:border-color .25s ease, opacity .25s ease;}
+  .nav-link:hover{opacity:1; border-color:currentColor;}
+  .pill-btn{display:flex; align-items:center; gap:8px; font-size:12px; font-family:'JetBrains Mono', monospace; background:none; border:1px solid var(--paper); color:var(--paper); padding:8px 14px; border-radius:100px;}
+  .pill-count{background:var(--paper); color:var(--bg); border-radius:100px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; padding:0 4px;}
+
+  .hero{position:relative; height:100vh; width:100%; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at 50% 40%, var(--bg-alt) 0%, var(--bg) 70%);}
+  #globe-canvas{position:absolute; inset:0; width:100%; height:100%; cursor:grab;}
+  #globe-canvas:active{cursor:grabbing;}
+  .hero-copy{position:absolute; top:15vh; left:0; right:0; text-align:center; pointer-events:none; z-index:2;}
+  .hero-eyebrow{font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--overlay-ink-dim); margin-bottom:18px;}
+  .hero-title{font-family:'Fraunces', serif; font-weight:300; font-size:clamp(32px, 5.2vw, 70px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
+  .hero-title em{font-style:italic; color:var(--amber-bright); font-weight:400;}
+  .hero-bottom{position:absolute; bottom:34px; left:5vw; right:5vw; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; pointer-events:none;}
+  .hero-quote{max-width:320px; font-size:14px; line-height:1.65; color:var(--overlay-ink); font-style:italic; font-family:'Fraunces', serif; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  .hero-stats{text-align:right; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--overlay-ink); line-height:2.1; position:relative; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  .hero-stats b{color:var(--amber-bright); font-weight:500;}
+  .stats-line.clickable{cursor:pointer; pointer-events:auto; transition:color .2s ease;}
+  .stats-line.clickable:hover{color:var(--overlay-ink);}
+  .caret{display:inline-block; margin-left:3px; transition:transform .2s ease; font-size:9px;}
+  .caret.rot{transform:rotate(180deg);}
+  #upcoming-dropdown{position:absolute; bottom:calc(100% + 12px); right:0; width:270px; background:var(--bg-alt); border:1px solid var(--line); border-radius:6px; padding:10px 0; display:none; pointer-events:auto; box-shadow:0 20px 50px rgba(0,0,0,0.5); text-align:left;}
+  #upcoming-dropdown.show{display:block;}
+  #upcoming-dropdown .ud-item{display:flex; justify-content:space-between; align-items:center; padding:9px 16px;}
+  #upcoming-dropdown .ud-item span:first-child{color:var(--paper); font-family:'Fraunces',serif; font-style:italic; font-size:13px;}
+  #upcoming-dropdown .ud-item span:last-child{color:var(--amber-bright); font-size:10px; font-family:'JetBrains Mono',monospace; text-transform:uppercase;}
+
+  .hero-hint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--overlay-ink); text-align:center; pointer-events:none; background:rgba(0,0,0,0.62); padding:14px 26px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  .hero-hint .dot{width:6px; height:6px; border-radius:50%; background:var(--amber); margin:8px auto 0; animation:pulse 2s infinite ease-in-out;}
+  .hero-hint.paused .dot{animation:none; opacity:.6;}
+  #rotate-toggle{pointer-events:auto; margin-top:12px; width:28px; height:28px; border-radius:50%; border:1px solid var(--overlay-ink-dim); background:none; color:var(--overlay-ink-dim); font-size:9px; display:flex; align-items:center; justify-content:center; letter-spacing:0; transition:border-color .2s ease, color .2s ease;}
+  #rotate-toggle:hover{border-color:var(--overlay-ink); color:var(--overlay-ink);}
+  @keyframes pulse{0%,100%{opacity:.3; transform:scale(1);}50%{opacity:1; transform:scale(1.4);}}
+
+  #tooltip{position:fixed; z-index:60; pointer-events:none; background:var(--chip-bg); color:var(--chip-ink); padding:10px 16px 10px 14px; border-radius:6px; opacity:0; transition:opacity .12s ease; white-space:nowrap; box-shadow:0 14px 34px rgba(0,0,0,0.5); border-left:4px solid #8b8578;}
+  #tooltip.st-gallery{border-left-color:#ffc266;}
+  #tooltip #tt-name{display:block; font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:16px; color:var(--chip-ink); line-height:1.2;}
+  #tooltip .t-sub{display:block; opacity:1; font-size:10.5px; margin-top:3px; font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--chip-ink-dim);}
+
+  #microstate-menu{
+    position:fixed; z-index:210; background:var(--chip-bg); color:var(--chip-ink);
+    border-radius:6px; overflow:hidden; box-shadow:0 16px 40px rgba(0,0,0,0.45);
+    display:none; min-width:220px;
+  }
+  #microstate-menu.show{display:block;}
+  #microstate-menu button{
+    display:flex; flex-direction:column; align-items:flex-start; width:100%; padding:11px 14px;
+    background:none; border:none; border-bottom:1px solid rgba(20,20,15,0.08);
+    font-family:'Fraunces', serif; font-style:italic; font-size:14px; text-align:left;
+  }
+  #microstate-menu button:last-child{border-bottom:none;}
+  #microstate-menu button:hover{background:rgba(20,20,15,0.06);}
+  #microstate-menu button span{font-family:'JetBrains Mono', monospace; font-style:normal; font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--chip-ink-dim); margin-top:2px;}
+
+  section{position:relative; z-index:2; background:var(--bg);}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 5vw;}
+  .about{padding:130px 0 100px; border-top:1px solid var(--line);}
+  .about-grid{display:grid; grid-template-columns: 1fr 1.3fr; gap:80px; align-items:start;}
+  .section-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber-bright); margin-bottom:22px;}
+  .about h2{font-family:'Fraunces', serif; font-weight:300; font-size:clamp(26px,3vw,40px); line-height:1.3;}
+  .about p{font-size:15px; line-height:1.85; color:var(--paper-dim); margin-top:20px; max-width:480px;}
+  .about-list{list-style:none; margin-top:36px; display:flex; flex-direction:column; gap:14px;}
+  .about-list li{display:flex; justify-content:space-between; border-bottom:1px solid var(--line-soft); padding-bottom:14px; font-size:13px;}
+  .about-list .k{color:var(--paper-dim); font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em;}
+  .about-list .v{font-family:'Fraunces', serif; font-style:italic;}
+
+  .how{padding:100px 0; border-top:1px solid var(--line);}
+  .how-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line);}
+  .how-card{background:var(--bg); padding:44px 34px;}
+  .how-card .n{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--amber-bright); margin-bottom:18px;}
+  .how-card h3{font-family:'Fraunces', serif; font-weight:400; font-size:21px; margin-bottom:12px;}
+  .how-card p{font-size:13.5px; line-height:1.7; color:var(--paper-dim);}
+
+  footer{border-top:1px solid var(--line); padding:60px 0 40px;}
+  .foot-grid{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+  footer .logo{margin-bottom:10px;}
+  footer .foot-note{font-size:12px; color:var(--paper-dim); max-width:320px; line-height:1.6;}
+  .foot-links{display:flex; gap:22px; font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--paper-dim);}
+  .foot-links a:hover{color:var(--amber-bright);}
+
+  .overlay{position:fixed; inset:0; z-index:80; background:var(--bg); transform:translateX(100%); transition:transform .5s cubic-bezier(.77,0,.18,1); overflow-y:auto;}
+  .overlay.open{transform:translateX(0);}
+  .overlay-header{position:sticky; top:0; z-index:5; background:linear-gradient(var(--bg) 70%, transparent); padding:28px 5vw 20px; display:flex; justify-content:space-between; align-items:flex-start;}
+  .ov-back{display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; background:none; border:none; color:var(--paper); opacity:.8;}
+  .ov-back:hover{opacity:1;}
+  .overlay-title-block{padding:10px 5vw 30px; border-bottom:1px solid var(--line);}
+  .ov-coords{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--amber-bright); margin-bottom:14px; letter-spacing:.05em;}
+  .overlay-title-block h2{font-family:'Fraunces', serif; font-weight:300; font-size:clamp(34px,5.6vw,78px); line-height:1;}
+  .overlay-title-block p{margin-top:16px; font-style:italic; color:var(--paper-dim); font-family:'Fraunces', serif; font-size:16px; max-width:640px;}
+
+  .gallery-grid{padding:40px 5vw 100px; display:grid; grid-template-columns:repeat(5, 1fr); gap:18px;}
+  .photo-card{display:flex; flex-direction:column;}
+  .photo-frame{position:relative; width:100%; aspect-ratio: 4/5; overflow:hidden; background:var(--bg-alt);}
+  .photo-frame::after, .hub-tile::after, .country-thumb::after, .pp-frame::before{
+    content:''; position:absolute; inset:0; z-index:3; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='110'%3E%3Ctext%20x='-20'%20y='75'%20font-family='JetBrains%20Mono,monospace'%20font-size='14'%20fill='white'%20fill-opacity='0.4'%20transform='rotate(-22%20110%2055)'%3Ecantbelievetheview%3C/text%3E%3C/svg%3E");
+    background-repeat:repeat;
+    background-size:220px 110px;
+    mix-blend-mode:overlay;
+  }
+  .country-thumb::after{background-size:110px 55px;}
+  .pp-frame::before{background-size:90px 45px;}
+  .photo-frame img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(0.92) contrast(1.03); transition:transform .7s ease;}
+  .photo-frame.bw img{filter:grayscale(1) contrast(1.15);}
+  .photo-card:hover .photo-frame img{transform:scale(1.045);}
+  .photo-idx{position:absolute; top:12px; left:12px; z-index:4; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--overlay-ink); background:rgba(0,0,0,0.35); padding:3px 7px; border-radius:2px; backdrop-filter:blur(2px);}
+  .photo-meta{display:flex; justify-content:space-between; align-items:flex-start; margin-top:12px; gap:10px;}
+  .photo-name-block{display:flex; flex-direction:column; gap:3px; min-width:0;}
+  .photo-coords{font-family:'JetBrains Mono', monospace; font-size:9.5px; letter-spacing:.03em; color:var(--paper-dim); opacity:0.65;}
+  .photo-name{font-family:'Fraunces', serif; font-style:italic; font-size:13px; color:var(--paper-dim);}
+  .buy-row{display:flex; gap:8px; margin-top:10px;}
+  .buy-btn{flex:1; width:100%; font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; padding:9px 8px; border:1px solid var(--line); background:none; color:var(--paper); border-radius:2px; transition:all .2s ease; text-align:center;}
+  .buy-btn:hover{border-color:var(--amber); color:var(--amber-bright);}
+  .print-wrap{position:relative; flex:1;}
+
+  .size-pop{position:absolute; bottom:calc(100% + 6px); left:0; right:0; z-index:10; background:var(--chip-bg); color:var(--chip-ink); border-radius:4px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.4); display:none; width:240px;}
+  .size-pop.show{display:block;}
+  .material-toggle{display:flex;}
+  .material-toggle button{flex:1; padding:10px 6px; background:none; border:none; font-family:'JetBrains Mono', monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.03em; color:rgba(11,13,12,0.5); border-bottom:2px solid rgba(0,0,0,0.08);}
+  .material-toggle button.active{color:var(--bg); border-bottom-color:var(--amber);}
+  .size-list button{display:flex; justify-content:space-between; width:100%; padding:10px 12px; background:none; border:none; font-family:'JetBrains Mono', monospace; font-size:11px; border-bottom:1px solid rgba(0,0,0,0.08);}
+  .size-list button:hover{background:rgba(0,0,0,0.06);}
+  .size-list button:last-child{border-bottom:none;}
+
+  /* ---------- PRINT PREVIEW — room mockup ---------- */
+  #print-preview{position:fixed; z-index:200; width:230px; background:var(--bg-alt); border-radius:6px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:opacity .15s ease; bottom:110px; right:5vw;}
+  #print-preview.show{opacity:1;}
+  .pp-scene{position:relative; height:260px; overflow:hidden;
+    background:
+      radial-gradient(ellipse 140% 90% at 50% -10%, rgba(255,252,244,0.55) 0%, rgba(255,252,244,0) 55%),
+      linear-gradient(180deg,#e6dfcd 0%, #d6cdb6 55%, #c7bda3 100%);
+  }
+  .pp-scene::before{content:''; position:absolute; inset:0; background:
+      repeating-linear-gradient(100deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode:multiply; pointer-events:none;}
+  .pp-vignette{position:absolute; inset:0; box-shadow:inset 0 0 70px rgba(30,24,14,0.25); pointer-events:none;}
+  .pp-floor{position:absolute; left:0; right:0; bottom:0; height:34px;
+    background:repeating-linear-gradient(90deg,#8a6b49 0px,#7c5f40 18px,#6e5539 19px,#8a6b49 37px);
+    box-shadow:inset 0 6px 10px -4px rgba(0,0,0,0.35);}
+  .pp-baseboard{position:absolute; left:0; right:0; bottom:34px; height:4px; background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(0,0,0,0.2));}
+  .pp-console{position:absolute; left:50%; bottom:34px; width:58%; height:70px;
+    background:linear-gradient(100deg,#5b4636 0%,#4a3729 60%,#3c2e21 100%);
+    border-top:3px solid #6e5740; border-radius:1px 1px 0 0; transform:translateX(-50%);
+    box-shadow:0 10px 16px -4px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);}
+  .pp-console::after{content:''; position:absolute; left:8%; right:8%; top:16px; height:1px; background:rgba(255,255,255,0.09);}
+  .pp-plant{position:absolute; bottom:34px; left:9%; text-align:center; filter:drop-shadow(2px 4px 3px rgba(0,0,0,0.3));}
+  .pp-plant .leaves{width:32px; height:32px; border-radius:50% 50% 48% 50%; background:radial-gradient(circle at 32% 28%, #92b17e, #3d5535); margin:0 auto -4px; transform:rotate(-12deg);}
+  .pp-plant .pot{width:20px; height:18px; background:linear-gradient(100deg,#9a805f,#7a6248); border-radius:1px 1px 3px 3px; margin:0 auto;}
+  .pp-lamp{position:absolute; bottom:34px; right:10%; text-align:center; filter:drop-shadow(2px 3px 3px rgba(0,0,0,0.25));}
+  .pp-lamp .pole{width:2px; height:84px; background:#3a3530; margin:0 auto;}
+  .pp-lamp .shade{width:24px; height:15px; background:linear-gradient(100deg,#e8cd98,#c9a862); border-radius:2px 2px 40% 40%; margin:0 auto;}
+  .pp-frame{position:absolute; left:50%; bottom:120px; transform:translateX(-50%); background:#fff;
+    box-shadow:0 16px 26px -6px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.2);
+    transition:width .25s ease, height .25s ease; overflow:hidden;}
+  .pp-frame::after{content:''; position:absolute; inset:0; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08); pointer-events:none;}
+  .pp-frame.mat-aluminio{background:linear-gradient(135deg,#f1f1f1,#d8d8d8); box-shadow:0 16px 26px -6px rgba(0,0,0,0.55), 0 0 0 1px #b8b8b8;}
+  .pp-frame.mat-algodon{padding:5px;}
+  .pp-frame img{width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.03) contrast(1.02);}
+  .pp-shadow{position:absolute; left:50%; bottom:116px; width:40%; height:8px; background:radial-gradient(ellipse, rgba(0,0,0,0.35), transparent 70%); transform:translateX(-50%); filter:blur(2px);}
+  .pp-label{padding:10px 14px 14px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--paper); text-align:center; letter-spacing:.03em; line-height:1.5;}
+
+  .hub-grid{padding:20px 5vw 100px; display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .hub-tile{position:relative; aspect-ratio:3/4; overflow:hidden; border-radius:4px; cursor:pointer; background:var(--bg-alt);}
+  .hub-tile img{width:100%; height:100%; object-fit:cover; filter:saturate(0.85) brightness(0.7); transition:transform .6s ease, filter .4s ease;}
+  .hub-tile.bw-tile img{filter:grayscale(1) brightness(0.7);}
+  .hub-tile:hover img{transform:scale(1.06); filter:saturate(1) brightness(0.85);}
+  .hub-tile-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(11,13,12,0.9) 0%, rgba(11,13,12,0.1) 55%); display:flex; flex-direction:column; justify-content:flex-end; padding:24px; color:var(--overlay-ink);}
+  .hub-tile-overlay p{color:var(--overlay-ink-dim);}
+  .hub-tile-n{font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--amber-bright); margin-bottom:8px; text-transform:uppercase; letter-spacing:.1em;}
+  .hub-tile h3{font-family:'Fraunces', serif; font-weight:400; font-size:26px;}
+  .hub-tile p{font-size:12px; color:var(--paper-dim); margin-top:6px;}
+
+  .country-group{border-top:1px solid var(--line); padding-top:8px;}
+  .country-group:first-child{border-top:none;}
+  .country-group.group-gallery{background:linear-gradient(180deg, rgba(228,164,104,0.07) 0%, transparent 280px);}
+  .country-group.group-empty{background:rgba(139,133,120,0.05);}
+  .country-group.group-upcoming{background:rgba(139,133,120,0.02);}
+  .group-label{padding:34px 5vw 4px; display:flex; align-items:center; gap:10px;}
+  .group-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .group-gallery .group-dot{background:#e4a468; box-shadow:0 0 9px rgba(228,164,104,0.65);}
+  .group-empty .group-dot{background:#8b8578;}
+  .group-upcoming .group-dot{background:transparent; border:1.5px dashed #8b8578; box-sizing:border-box;}
+  .group-label .n{font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--amber-bright); text-transform:uppercase; letter-spacing:.12em;}
+  .group-label .t{font-family:'Fraunces', serif; font-style:italic; font-size:18px; color:var(--paper);}
+  .group-count{font-size:10px; color:var(--paper-dim); opacity:0.7;}
+  .countries-grid{padding:14px 5vw 20px; display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .country-card{cursor:pointer;}
+  .country-card.disabled{cursor:default; opacity:0.42;}
+  .country-thumb{position:relative; aspect-ratio:1/1; overflow:hidden; border-radius:3px; background:var(--bg-alt);}
+  .country-thumb img{width:100%; height:100%; object-fit:cover; filter:saturate(0.9); transition:transform .5s ease;}
+  .country-card:not(.disabled):hover .country-thumb img{transform:scale(1.08);}
+  .country-thumb .badge{position:absolute; top:8px; right:8px; font-family:'JetBrains Mono', monospace; font-size:8.5px; text-transform:uppercase; background:rgba(0,0,0,0.55); color:var(--overlay-ink); padding:3px 6px; border-radius:2px; backdrop-filter:blur(2px);}
+  .country-card h4{font-family:'Fraunces', serif; font-style:italic; font-size:14px; margin-top:10px;}
+  .country-card span{display:block; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--paper-dim); margin-top:2px;}
+
+  .empty-state{padding:90px 5vw 140px; text-align:center;}
+  .empty-state .ring{width:70px; height:70px; border-radius:50%; border:1px solid var(--line); margin:0 auto 26px;}
+  .empty-state p{font-family:'Fraunces', serif; font-style:italic; font-size:19px; color:var(--paper-dim); max-width:420px; margin:0 auto; line-height:1.6;}
+  .empty-state .sub{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--paper-dim); opacity:0.6; margin-top:18px; font-style:normal;}
+
+  #cart-drawer{position:fixed; top:0; right:0; bottom:0; width:min(420px, 92vw); z-index:110; background:var(--bg-alt); border-left:1px solid var(--line); transform:translateX(100%); transition:transform .45s cubic-bezier(.77,0,.18,1); display:flex; flex-direction:column;}
+  #cart-drawer.open{transform:translateX(0);}
+  .cart-head{padding:26px 26px 20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+  .cart-head h3{font-family:'Fraunces', serif; font-weight:400; font-size:20px;}
+  #cart-close{background:none; border:none; color:var(--paper); font-size:20px; opacity:.7;}
+  #cart-close:hover{opacity:1;}
+  .cart-items{flex:1; overflow-y:auto; padding:10px 26px;}
+  .cart-empty{color:var(--paper-dim); font-size:13px; padding:40px 0; text-align:center; font-family:'JetBrains Mono', monospace;}
+  .cart-item{display:flex; gap:14px; padding:18px 0; border-bottom:1px solid var(--line-soft);}
+  .cart-item img{width:64px; height:78px; object-fit:cover; border-radius:2px;}
+  .cart-item-info{flex:1;}
+  .cart-item-info .ci-title{font-family:'Fraunces', serif; font-style:italic; font-size:14px;}
+  .cart-item-info .ci-sub{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); margin-top:4px; text-transform:uppercase;}
+  .cart-item-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:10px;}
+  .ci-price{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--amber-bright);}
+  .ci-remove{background:none; border:none; color:var(--paper-dim); font-size:11px; font-family:'JetBrains Mono', monospace; text-decoration:underline; text-underline-offset:2px;}
+  .ci-remove:hover{color:var(--paper);}
+  .cart-foot{border-top:1px solid var(--line); padding:22px 26px 28px;}
+  .cart-sub{display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:13px; margin-bottom:16px;}
+  .cart-sub b{font-size:16px; color:var(--amber-bright);}
+  #checkout-btn{width:100%; padding:15px; background:var(--paper); color:var(--bg); border:none; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:.08em; border-radius:2px;}
+  #checkout-btn:hover{background:var(--amber-bright);}
+  #checkout-btn:disabled{opacity:.3;}
+  #scrim{position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:100; opacity:0; pointer-events:none; transition:opacity .35s ease;}
+  #scrim.show{opacity:1; pointer-events:auto;}
+
+  #checkout-modal{position:fixed; inset:0; z-index:120; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease;}
+  #checkout-modal.open{opacity:1; pointer-events:auto;}
+  .modal-box{background:var(--bg-alt); border:1px solid var(--line); width:min(460px,90vw); padding:38px; border-radius:6px; max-height:86vh; overflow-y:auto;}
+  .modal-box h3{font-family:'Fraunces', serif; font-weight:400; font-size:24px; margin-bottom:6px;}
+  .modal-note{font-size:12px; color:var(--paper-dim); margin-bottom:24px; line-height:1.6; font-family:'JetBrains Mono', monospace;}
+  .modal-note b{color:var(--amber-bright);}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--paper-dim); margin-bottom:6px; font-family:'JetBrains Mono', monospace;}
+  .field input{width:100%; background:var(--bg); border:1px solid var(--line); color:var(--paper); padding:11px 12px; border-radius:3px; font-family:'Space Grotesk', sans-serif; font-size:13px;}
+  .field input:focus{outline:none; border-color:var(--amber);}
+  #pay-btn{width:100%; margin-top:10px; padding:15px; background:var(--amber); color:var(--bg); border:none; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:.08em; border-radius:3px;}
+  #pay-btn:hover{background:var(--amber-bright);}
+  #modal-close{position:absolute; top:20px; right:5vw; background:none; border:none; color:var(--paper); font-size:22px; z-index:130;}
+  .success-view{text-align:center; padding:20px 0;}
+  .success-view .check{font-size:38px; color:var(--amber-bright); margin-bottom:16px;}
+
+  #toast{position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--paper); color:var(--bg); padding:12px 22px; border-radius:100px; font-family:'JetBrains Mono', monospace; font-size:12px; z-index:150; opacity:0; transition:all .3s ease; pointer-events:none; text-align:center; max-width:80vw;}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:1200px){
+    .gallery-grid{grid-template-columns:repeat(4,1fr);}
+  }
+  @media(max-width:860px){
+    .about-grid{grid-template-columns:1fr; gap:40px;}
+    .how-grid{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:repeat(3,1fr); gap:14px; padding:40px 5vw 100px;}
+    .hub-grid{grid-template-columns:repeat(2,1fr); padding:16px 5vw 100px;}
+    .countries-grid{grid-template-columns:repeat(2,1fr);}
+    .hero-bottom{flex-direction:column; align-items:flex-start; gap:14px;}
+    .hero-stats{text-align:left;}
+    #upcoming-dropdown{right:auto; left:0;}
+    .nav-link.hide-mobile{display:none;}
+    #print-preview{right:3vw; bottom:90px; width:190px;}
+  }
+  @media(max-width:560px){
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">cantbelieve<span>theview</span></div>
+  <div class="nav-right">
+    <button class="nav-link hide-mobile" id="nav-gallery" data-i18n="navGallery">Galería</button>
+    <a href="#about" class="nav-link hide-mobile" data-i18n="navAbout">Sobre mí</a>
+    <a href="#how" class="nav-link hide-mobile" data-i18n="navHow">Cómo comprar</a>
+    <button class="lang-btn toggle-lang" title="Change language" aria-label="Change language">ES</button>
+    <button class="theme-btn toggle-theme" id="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+    <button class="pill-btn" id="cart-btn"><span data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count">0</span></button>
+  </div>
+</nav>
+
+<section class="hero">
+  <canvas id="globe-canvas"></canvas>
+  <div class="hero-copy">
+    <div class="hero-eyebrow" data-i18n="heroEyebrow">Mario Mazzone — fotografía de paisaje</div>
+    <h1 class="hero-title" data-i18n-html="heroTitle">No tomo una fotografía.<br>La pido prestada, <em>en silencio.</em></h1>
+  </div>
+  <div class="hero-hint"><span data-i18n="heroHint">arrastrá el globo · pasá el mouse sobre un país</span><div class="dot"></div>
+    <button id="rotate-toggle" title="Pausar rotación" aria-label="Pausar rotación">❚❚</button>
+  </div>
+  <div class="hero-bottom">
+    <p class="hero-quote" data-i18n="heroQuote">Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.</p>
+    <div class="hero-stats">
+      <div><span data-i18n="statVisited">PAÍSES VISITADOS</span> — <b id="stat-visited">61</b> <span data-i18n="statOf">DE</span> <b id="stat-total">195</b></div>
+      <div><span data-i18n="statGallery">CON GALERÍA</span> — <b id="stat-gallery">20</b> &nbsp;·&nbsp; <span data-i18n="statEmpty">SIN FOTOS AÚN</span> — <b id="stat-empty">41</b></div>
+      <div class="stats-line clickable" id="upcoming-toggle" style="position:relative;">
+        <span data-i18n="statUpcoming">PRÓXIMOS DESTINOS</span> — <b id="stat-upcoming">8</b><span class="caret" id="upcoming-caret">▾</span>
+        <div id="upcoming-dropdown"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="tooltip"><span id="tt-name"></span><div class="t-sub" id="tt-sub"></div></div>
+<div id="microstate-menu"></div>
+
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div>
+      <div class="section-label" data-i18n="aboutLabel">Sobre el trabajo</div>
+      <h2 data-i18n="aboutH2">Sesenta y un países, un mismo asombro.</h2>
+    </div>
+    <div>
+      <p data-i18n="aboutP1">Cada fotografía en este archivo nace del mismo impulso: quedarme quieto un segundo más de lo razonable frente a algo que no me pertenece. El globo interactivo es mi cuaderno de bitácora — pero si preferís explorar por tema en vez de por lugar, la sección Galería reúne todo por categoría.</p>
+      <p data-i18n="aboutP2">Este sitio es un work-in-progress permanente: a medida que subo material nuevo, los países pasan de "sin fotos aún" a tener su propia galería.</p>
+      <ul class="about-list">
+        <li><span class="k" data-i18n="aboutK1">Con base en</span><span class="v">Buenos Aires, Argentina</span></li>
+        <li><span class="k" data-i18n="aboutK2">Equipo</span><span class="v" data-i18n="aboutV2">Formato completo &amp; medio formato</span></li>
+        <li><span class="k" data-i18n="aboutK3">Impresiones</span><span class="v" data-i18n="aboutV3">Papel de algodón o aluminio, tirada limitada</span></li>
+        <li><span class="k" data-i18n="aboutK4">Licencias</span><span class="v" data-i18n="aboutV4">Uso editorial y comercial disponible</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap" style="padding-bottom:44px;">
+    <div class="section-label" data-i18n="howLabel">Cómo comprar</div>
+    <h2 class="serif" style="font-size:clamp(24px,3vw,34px); font-weight:300;" data-i18n="howH2">De la pantalla a tu pared, en tres pasos.</h2>
+  </div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="n mono">01</div>
+      <h3 data-i18n="how1Title">Explorá por lugar o por tema</h3>
+      <p data-i18n="how1Desc">Pasá el mouse por el globo — el borde de un país se enciende si tiene galería — o entrá a Galería para navegar por tema.</p>
+    </div>
+    <div class="how-card">
+      <div class="n mono">02</div>
+      <h3 data-i18n="how2Title">Elegí material y tamaño</h3>
+      <p data-i18n="how2Desc">Descarga digital en alta resolución, o impresión en papel de algodón o aluminio — con vista previa de cómo se ve en una sala real, a escala.</p>
+    </div>
+    <div class="how-card">
+      <div class="n mono">03</div>
+      <h3 data-i18n="how3Title">Sumá al carrito</h3>
+      <p data-i18n="how3Desc">Combiná piezas de distintos países o categorías en una sola compra. El envío de impresiones es internacional, numerado y firmado.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="logo">cantbelieve<span>theview</span></div>
+      <p class="foot-note" data-i18n="footNote">Fotografía de paisaje y viaje. Impresiones y licencias digitales disponibles en todo el mundo.</p>
+    </div>
+    <div class="foot-links">
+      <a href="https://www.instagram.com/cantbelievetheview/" target="_blank" rel="noopener">Instagram</a>
+      <a href="#" data-i18n="footContact">Contacto</a>
+      <a href="#" data-i18n="footLicenses">Licencias</a>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="hub-overlay">
+  <div class="overlay-header">
+    <button class="ov-back" id="hub-back">&larr; <span data-i18n="backSite">volver al sitio</span></button>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="lang-btn toggle-lang">ES</button>
+      <button class="theme-btn toggle-theme" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+      <button class="pill-btn" id="cart-btn-hub"><span data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count-hub">0</span></button>
+    </div>
+  </div>
+  <div class="overlay-title-block">
+    <div class="ov-coords" data-i18n="hubEyebrow">ARCHIVO COMPLETO</div>
+    <h2 data-i18n="hubTitle">Galería</h2>
+    <p data-i18n="hubDesc">Navegá por tema — o por país, si preferís pensar en lugares en vez de motivos.</p>
+  </div>
+  <div class="hub-grid" id="hub-grid"></div>
+</div>
+
+<div class="overlay" id="countries-overlay">
+  <div class="overlay-header">
+    <button class="ov-back" id="countries-back">&larr; <span data-i18n="backGallery">volver a Galería</span></button>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="lang-btn toggle-lang">ES</button>
+      <button class="theme-btn toggle-theme" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+      <button class="pill-btn" id="cart-btn-countries"><span data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count-countries">0</span></button>
+    </div>
+  </div>
+  <div class="overlay-title-block">
+    <div class="ov-coords" id="countries-summary"></div>
+    <h2 data-i18n="countriesTitle">Países</h2>
+    <p data-i18n="countriesDesc">Cada país tiene su propia entrada. Los que aún están vacíos, muy pronto van a tener galería.</p>
+  </div>
+  <div class="country-group group-gallery">
+    <div class="group-label"><span class="group-dot"></span><span class="n">01</span><span class="t" data-i18n="groupGallery">Con galería</span><span class="group-count mono" id="count-gallery"></span></div>
+    <div class="countries-grid" id="countries-grid-gallery"></div>
+  </div>
+  <div class="country-group group-empty">
+    <div class="group-label"><span class="group-dot"></span><span class="n">02</span><span class="t" data-i18n="groupEmpty">Visitados — fotos por subir</span><span class="group-count mono" id="count-empty"></span></div>
+    <div class="countries-grid" id="countries-grid-empty"></div>
+  </div>
+  <div class="country-group group-upcoming">
+    <div class="group-label" style="padding-bottom:20px;"><span class="group-dot"></span><span class="n">03</span><span class="t" data-i18n="groupUpcoming">Próximos destinos</span><span class="group-count mono" id="count-upcoming"></span></div>
+    <div class="countries-grid" id="countries-grid-upcoming" style="padding-bottom:100px;"></div>
+  </div>
+</div>
+
+<div class="overlay" id="panel-overlay">
+  <div class="overlay-header">
+    <button class="ov-back" id="panel-back">&larr; <span data-i18n="back">volver</span></button>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="lang-btn toggle-lang">ES</button>
+      <button class="theme-btn toggle-theme" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+      <button class="pill-btn" id="cart-btn-panel"><span data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count-panel">0</span></button>
+    </div>
+  </div>
+  <div class="overlay-title-block">
+    <div class="ov-coords" id="panel-coords"></div>
+    <h2 id="panel-title"></h2>
+    <p id="panel-desc"></p>
+  </div>
+  <div id="panel-body"></div>
+</div>
+
+
+<div id="scrim"></div>
+<div id="cart-drawer">
+  <div class="cart-head"><h3 data-i18n="cartTitle">Tu carrito</h3><button id="cart-close">&times;</button></div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-foot">
+    <div class="cart-sub"><span data-i18n="subtotal">Subtotal</span><b id="cart-subtotal">USD 0</b></div>
+    <button id="checkout-btn" disabled data-i18n="checkoutBtn">Finalizar compra</button>
+  </div>
+</div>
+
+<div id="checkout-modal">
+  <button id="modal-close">&times;</button>
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<div id="print-preview">
+  <div class="pp-scene">
+    <div class="pp-shadow"></div>
+    <div class="pp-frame" id="pp-frame"><img id="pp-img" src="" alt=""></div>
+    <div class="pp-console"></div>
+    <div class="pp-plant"><div class="leaves"></div><div class="pot"></div></div>
+    <div class="pp-lamp"><div class="shade"></div><div class="pole"></div></div>
+    <div class="pp-baseboard"></div>
+    <div class="pp-floor"></div>
+    <div class="pp-vignette"></div>
+  </div>
+  <div class="pp-label" id="pp-label"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+
+/* ============ DATA ============
+   Todo el contenido (países, categorías, precios) vive en data.json, en la
+   misma carpeta que este archivo. Este bloque solo declara las variables y
+   arranca el resto del sitio (boot) una vez que el fetch resuelve. Así el
+   bot de Telegram puede editar data.json directamente sin tocar este HTML. */
+var visited, visitedEmpty, upcoming, categories, MATERIALS, SIZES, DIGITAL_PRICE, MICROSTATES;
+
+fetch('data.json')
+  .then(function(r){
+    if(!r.ok) throw new Error('data.json respondió ' + r.status);
+    return r.json();
+  })
+  .then(function(DATA){
+    visited = DATA.visited;
+    visitedEmpty = DATA.visitedEmpty;
+    upcoming = DATA.upcoming;
+    categories = DATA.categories;
+    MATERIALS = DATA.materials;
+    SIZES = DATA.sizes;
+    DIGITAL_PRICE = DATA.digitalPrice;
+    MICROSTATES = DATA.microstates;
+
+    /* Spanish name -> Natural Earth admin name, usado para dibujar la frontera
+       real de cada país al hacer hover. Escocia mapea al borde real del Reino
+       Unido (Scotland no es un país propio en este dataset) para no terminar
+       duplicada con la entrada genérica "United Kingdom". */
+    var NE_NAMES = DATA.neNames;
+    [visited, visitedEmpty, upcoming].forEach(function(arr){ arr.forEach(function(c){ c.ne = NE_NAMES[c.name] || null; c.nameEn = c.nameEn || c.ne || c.name; }); });
+
+    boot();
+  })
+  .catch(function(err){
+    console.error('No se pudo cargar data.json:', err);
+    var heroEl0 = document.getElementById('hero');
+    if(heroEl0) heroEl0.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#e4a468;font-family:monospace;padding:20px;text-align:center;">No se pudo cargar data.json — revisá que esté junto a index.html.</div>');
+  });
+
+function boot(){
+
+/* ============ i18n ============ */
+var lang = 'es';
+var T = {
+  es:{
+    navGallery:'Galería', navAbout:'Sobre mí', navHow:'Cómo comprar', cart:'carrito',
+    heroEyebrow:'Mario Mazzone — fotografía de paisaje',
+    heroTitle:'No tomo una fotografía.<br>La pido prestada, <em>en silencio.</em>',
+    heroHint:'arrastrá el globo · pasá el mouse sobre un país',
+    heroQuote:'Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.',
+    statVisited:'PAÍSES VISITADOS', statOf:'DE', statGallery:'CON GALERÍA', statEmpty:'SIN FOTOS AÚN', statUpcoming:'PRÓXIMOS DESTINOS',
+    aboutLabel:'Sobre el trabajo', aboutH2:'Sesenta y un países, un mismo asombro.',
+    aboutP1:'Cada fotografía en este archivo nace del mismo impulso: quedarme quieto un segundo más de lo razonable frente a algo que no me pertenece. El globo interactivo es mi cuaderno de bitácora — pero si preferís explorar por tema en vez de por lugar, la sección Galería reúne todo por categoría.',
+    aboutP2:'Este sitio es un work-in-progress permanente: a medida que subo material nuevo, los países pasan de "sin fotos aún" a tener su propia galería.',
+    aboutK1:'Con base en', aboutK2:'Equipo', aboutV2:'Formato completo & medio formato',
+    aboutK3:'Impresiones', aboutV3:'Papel de algodón o aluminio, tirada limitada',
+    aboutK4:'Licencias', aboutV4:'Uso editorial y comercial disponible',
+    howLabel:'Cómo comprar', howH2:'De la pantalla a tu pared, en tres pasos.',
+    how1Title:'Explorá por lugar o por tema', how1Desc:'Pasá el mouse por el globo — el borde de un país se enciende si tiene galería — o entrá a Galería para navegar por tema.',
+    how2Title:'Elegí material y tamaño', how2Desc:'Descarga digital en alta resolución, o impresión en papel de algodón o aluminio — con vista previa de cómo se ve en una sala real, a escala.',
+    how3Title:'Sumá al carrito', how3Desc:'Combiná piezas de distintos países o categorías en una sola compra. El envío de impresiones es internacional, numerado y firmado.',
+    footNote:'Fotografía de paisaje y viaje. Impresiones y licencias digitales disponibles en todo el mundo.',
+    footContact:'Contacto', footLicenses:'Licencias',
+    backSite:'volver al sitio', backGallery:'volver a Galería', back:'volver',
+    hubEyebrow:'ARCHIVO COMPLETO', hubTitle:'Galería', hubDesc:'Navegá por tema — o por país, si preferís pensar en lugares en vez de motivos.',
+    countriesTitle:'Países', countriesDesc:'Cada país tiene su propia entrada. Los que aún están vacíos, muy pronto van a tener galería.',
+    groupGallery:'Con galería', groupEmpty:'Visitados — fotos por subir', groupUpcoming:'Próximos destinos',
+    cartTitle:'Tu carrito', subtotal:'Subtotal', checkoutBtn:'Finalizar compra', cartEmpty:'Tu carrito está vacío.<br>Elegí un país o una categoría para empezar.',
+    remove:'quitar', digital:'Digital', print:'Impresión', fullCountry:'país completo', microstate:'microestado',
+    badgeGallery:'con galería', badgeEmpty:'sin fotos', badgeUpcoming:'próximo', badgeVisited:'visitado', soon:'por subir', toComeSoon:'próximamente',
+    hubPaises:'Países', hubPaisesDesc:' visitados — navegá por destino.', paisesEyebrow:'ARCHIVO COMPLETO',
+    tCountriesSummary:function(tot,g,e,u){ return tot+' VISITADOS · '+g+' CON GALERÍA · '+e+' SIN FOTOS · '+u+' PRÓXIMOS'; },
+    tttGallery:'ver galería →', tttEmpty:'visitado · aún sin fotos', tttUpcoming:'próximo destino · ', tttGeneric:'sin fotos por ahora',
+    tCoordsFmt:function(n,e){return n+e;},
+    emptyMsg:function(name){ return 'Todavía no subí fotografías de '+name+'.<br>Vuelvo pronto con la galería completa.'; },
+    emptyHint:'MIENTRAS TANTO, EXPLORÁ LOS PAÍSES CON GALERÍA →', emptyDescGeneric:'Visitado — la galería está en camino.',
+    studio:function(n,i){return n+' · Estudio '+i;}, fromPrice:'desde ',
+    modalTitle:'Finalizar compra', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' pieza(s). <br>Esta es una demo — <b>no se realizará ningún cobro real.</b>'; },
+    fName:'Nombre completo', fEmail:'Email', fAddr:'Dirección de envío (si hay impresiones)', fCard:'Tarjeta', payBtn:'Pagar ',
+    successTitle:'Gracias por tu compra', successNote:'(Demo) Recibirás un email de confirmación. Las impresiones se numeran y firman a mano antes del envío.', backToSite:'Volver al sitio',
+    toastAdded:function(t){return 'Añadido al carrito · '+t;}, toastUpcoming:function(n,d){return n+' — próximo destino · '+d;},
+    toastGeneric:function(n){return n+' — todavía no forma parte del archivo.';},
+    realScale:' · a escala real', scale:'A ESCALA REAL', dropTitle:'Próximos destinos'
+  },
+  en:{
+    navGallery:'Gallery', navAbout:'About', navHow:'How to buy', cart:'cart',
+    heroEyebrow:'Mario Mazzone — landscape photography',
+    heroTitle:"I don't take a photograph.<br>I borrow it, <em>quietly.</em>",
+    heroHint:'drag the globe · hover over a country',
+    heroQuote:"Hover over a country: if the border lights up, it has a gallery. If it stays dim, not yet.",
+    statVisited:'COUNTRIES VISITED', statOf:'OF', statGallery:'WITH GALLERY', statEmpty:'NO PHOTOS YET', statUpcoming:'UPCOMING TRIPS',
+    aboutLabel:'About the work', aboutH2:'Sixty-one countries, the same sense of wonder.',
+    aboutP1:"Every photograph in this archive comes from the same impulse: staying still one second longer than reasonable in front of something that isn't mine. The interactive globe is my logbook — but if you'd rather browse by theme than by place, the Gallery section groups everything by category.",
+    aboutP2:'This site is a permanent work in progress: as I upload new material, countries move from "no photos yet" to having their own gallery.',
+    aboutK1:'Based in', aboutK2:'Gear', aboutV2:'Full frame & medium format',
+    aboutK3:'Prints', aboutV3:'Cotton paper or aluminum, limited run',
+    aboutK4:'Licensing', aboutV4:'Editorial and commercial use available',
+    howLabel:'How to buy', howH2:'From the screen to your wall, in three steps.',
+    how1Title:'Explore by place or by theme', how1Desc:'Hover over the globe — a country\'s border lights up if it has a gallery — or go to Gallery to browse by theme.',
+    how2Title:'Choose material and size', how2Desc:'High-resolution digital download, or a print on cotton paper or aluminum — with a preview of how it looks in a real room, to scale.',
+    how3Title:'Add to cart', how3Desc:'Mix pieces from different countries or categories in one order. Print shipping is international, numbered, and signed.',
+    footNote:'Landscape and travel photography. Prints and digital licenses available worldwide.',
+    footContact:'Contact', footLicenses:'Licensing',
+    backSite:'back to site', backGallery:'back to Gallery', back:'back',
+    hubEyebrow:'FULL ARCHIVE', hubTitle:'Gallery', hubDesc:"Browse by theme — or by country, if you'd rather think in places than in subjects.",
+    countriesTitle:'Countries', countriesDesc:'Each country has its own entry. The empty ones will have a gallery soon.',
+    groupGallery:'With gallery', groupEmpty:'Visited — photos coming', groupUpcoming:'Upcoming trips',
+    cartTitle:'Your cart', subtotal:'Subtotal', checkoutBtn:'Checkout', cartEmpty:'Your cart is empty.<br>Pick a country or a category to get started.',
+    remove:'remove', digital:'Digital', print:'Print', fullCountry:'whole country', microstate:'microstate',
+    badgeGallery:'with gallery', badgeEmpty:'no photos', badgeUpcoming:'upcoming', badgeVisited:'visited', soon:'coming soon', toComeSoon:'coming soon',
+    hubPaises:'Countries', hubPaisesDesc:' visited — browse by destination.', paisesEyebrow:'FULL ARCHIVE',
+    tCountriesSummary:function(tot,g,e,u){ return tot+' VISITED · '+g+' WITH GALLERY · '+e+' NO PHOTOS · '+u+' UPCOMING'; },
+    tttGallery:'view gallery →', tttEmpty:'visited · no photos yet', tttUpcoming:'upcoming trip · ', tttGeneric:'no photos yet',
+    tCoordsFmt:function(n,e){return n+e;},
+    emptyMsg:function(name){ return "I haven't uploaded photos of "+name+' yet.<br>Coming back soon with the full gallery.'; },
+    emptyHint:'IN THE MEANTIME, EXPLORE THE COUNTRIES WITH A GALLERY →', emptyDescGeneric:'Visited — the gallery is on its way.',
+    studio:function(n,i){return n+' · Study '+i;}, fromPrice:'from ',
+    modalTitle:'Checkout', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' item(s). <br>This is a demo — <b>no real charge will be made.</b>'; },
+    fName:'Full name', fEmail:'Email', fAddr:'Shipping address (for prints)', fCard:'Card', payBtn:'Pay ',
+    successTitle:'Thanks for your order', successNote:"(Demo) You'll receive a confirmation email. Prints are numbered and hand-signed before shipping.", backToSite:'Back to site',
+    toastAdded:function(t){return 'Added to cart · '+t;}, toastUpcoming:function(n,d){return n+' — upcoming trip · '+d;},
+    toastGeneric:function(n){return n+" — not part of the archive yet.";},
+    realScale:' · true to scale', scale:'TRUE TO SCALE', dropTitle:'Upcoming trips'
+  }
+};
+function t(key){ return T[lang][key]; }
+function cname(c){ return lang==='en' ? (c.nameEn || c.name) : c.name; }
+function cdesc(c){ return lang==='en' ? (c.descEn || c.desc) : c.desc; }
+function matLabel(m){ return lang==='en' ? (m.labelEn || m.label) : m.label; }
+function applyStaticI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var v = t(el.getAttribute('data-i18n'));
+    if(v !== undefined) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(function(el){
+    var v = t(el.getAttribute('data-i18n-html'));
+    if(v !== undefined) el.innerHTML = v;
+  });
+}
+
+function updateStatsText(){
+  document.getElementById('stat-visited').textContent = visited.length + visitedEmpty.length;
+  document.getElementById('stat-gallery').textContent = visited.length;
+  document.getElementById('stat-empty').textContent = visitedEmpty.length;
+  document.getElementById('stat-upcoming').textContent = upcoming.length;
+  document.getElementById('countries-summary').textContent =
+    t('tCountriesSummary')(visited.length+visitedEmpty.length, visited.length, visitedEmpty.length, upcoming.length);
+}
+updateStatsText();
+
+/* ============ CART STATE ============ */
+var cart = [];
+function fmt(n){ return 'USD ' + n.toLocaleString('en-US'); }
+function addToCart(item){ cart.push(item); renderCart(); showToast(t('toastAdded')(item.title)); }
+function removeFromCart(idx){ cart.splice(idx,1); renderCart(); }
+function cartTotal(){ return cart.reduce(function(s,i){return s + i.price;}, 0); }
+function renderCart(){
+  ['cart-count','cart-count-hub','cart-count-countries','cart-count-panel'].forEach(function(id){
+    document.getElementById(id).textContent = cart.length;
+  });
+  var wrap = document.getElementById('cart-items');
+  wrap.innerHTML = '';
+  if(cart.length === 0){
+    wrap.innerHTML = '<div class="cart-empty">'+t('cartEmpty')+'</div>';
+  } else {
+    cart.forEach(function(item, idx){
+      var div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML =
+        '<img src="'+item.img+'" alt="">' +
+        '<div class="cart-item-info">' +
+          '<div class="ci-title">'+item.title+'</div>' +
+          '<div class="ci-sub">'+item.group+' · '+item.variant+'</div>' +
+          '<div class="cart-item-bottom"><span class="ci-price">'+fmt(item.price)+'</span><button class="ci-remove" data-idx="'+idx+'">'+t('remove')+'</button></div>' +
+        '</div>';
+      wrap.appendChild(div);
+    });
+    wrap.querySelectorAll('.ci-remove').forEach(function(btn){
+      btn.addEventListener('click', function(){ removeFromCart(parseInt(btn.dataset.idx)); });
+    });
+  }
+  document.getElementById('cart-subtotal').textContent = fmt(cartTotal());
+  document.getElementById('checkout-btn').disabled = cart.length === 0;
+}
+renderCart();
+
+var themeBtns = document.querySelectorAll('.toggle-theme');
+function syncThemeIcons(){
+  var icon = document.body.classList.contains('light') ? '☀' : '☾';
+  themeBtns.forEach(function(b){ b.textContent = icon; });
+}
+themeBtns.forEach(function(b){
+  b.addEventListener('click', function(){
+    document.body.classList.toggle('light');
+    syncThemeIcons();
+  });
+});
+
+var toastTimer;
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2400);
+}
+
+/* ============ OVERLAYS ============ */
+var hub = document.getElementById('hub-overlay');
+var countriesOv = document.getElementById('countries-overlay');
+var panel = document.getElementById('panel-overlay');
+var drawer = document.getElementById('cart-drawer');
+var scrim = document.getElementById('scrim');
+var modal = document.getElementById('checkout-modal');
+
+function updateBodyScroll(){
+  var anyOpen = hub.classList.contains('open') || countriesOv.classList.contains('open') || panel.classList.contains('open');
+  document.body.style.overflow = anyOpen ? 'hidden' : '';
+}
+function openCart(){ drawer.classList.add('open'); scrim.classList.add('show'); }
+function closeCart(){ drawer.classList.remove('open'); scrim.classList.remove('show'); }
+['cart-btn','cart-btn-hub','cart-btn-countries','cart-btn-panel'].forEach(function(id){
+  document.getElementById(id).addEventListener('click', openCart);
+});
+document.getElementById('cart-close').addEventListener('click', closeCart);
+scrim.addEventListener('click', function(){ closeCart(); closeCheckout(); });
+
+function openHub(){ hub.classList.add('open'); window.scrollTo(0,0); updateBodyScroll(); }
+document.getElementById('nav-gallery').addEventListener('click', openHub);
+document.getElementById('hub-back').addEventListener('click', function(){ hub.classList.remove('open'); updateBodyScroll(); });
+
+function openCountriesOv(){ hub.classList.remove('open'); countriesOv.classList.add('open'); window.scrollTo(0,0); updateBodyScroll(); }
+document.getElementById('countries-back').addEventListener('click', function(){ countriesOv.classList.remove('open'); hub.classList.add('open'); updateBodyScroll(); });
+
+var panelReturnTo = 'hero';
+document.getElementById('panel-back').addEventListener('click', function(){
+  panel.classList.remove('open');
+  if(panelReturnTo==='hub'){ hub.classList.add('open'); }
+  else if(panelReturnTo==='countries'){ countriesOv.classList.add('open'); }
+  updateBodyScroll();
+});
+
+/* ============ CHECKOUT ============ */
+function openCheckout(){
+  if(cart.length===0) return;
+  document.getElementById('modal-box').innerHTML =
+    '<h3>'+t('modalTitle')+'</h3>' +
+    '<div class="modal-note">'+t('modalNote')(fmt(cartTotal()), cart.length)+'</div>' +
+    '<div class="field"><label>'+t('fName')+'</label><input type="text" placeholder="'+t('fName')+'"></div>' +
+    '<div class="field"><label>'+t('fEmail')+'</label><input type="email" placeholder="you@email.com"></div>' +
+    '<div class="field"><label>'+t('fAddr')+'</label><input type="text" placeholder="'+t('fAddr')+'"></div>' +
+    '<div class="field"><label>'+t('fCard')+'</label><input type="text" placeholder="•••• •••• •••• ••••"></div>' +
+    '<button id="pay-btn">'+t('payBtn')+fmt(cartTotal())+'</button>';
+  document.getElementById('pay-btn').addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('modal-box').innerHTML =
+      '<div class="success-view"><div class="check">&#10003;</div><h3>'+t('successTitle')+'</h3>' +
+      '<p class="modal-note" style="margin-top:10px;">'+t('successNote')+'</p>' +
+      '<button id="pay-btn" style="margin-top:18px;" onclick="location.reload()">'+t('backToSite')+'</button></div>';
+    cart = []; renderCart();
+  });
+  modal.classList.add('open'); scrim.classList.add('show');
+}
+function closeCheckout(){ modal.classList.remove('open'); }
+document.getElementById('checkout-btn').addEventListener('click', openCheckout);
+document.getElementById('modal-close').addEventListener('click', closeCheckout);
+
+/* ============ PRINT PREVIEW — proportioned room mockup ============ */
+var ppEl = document.getElementById('print-preview');
+var ppFrame = document.getElementById('pp-frame');
+var ppImg = document.getElementById('pp-img');
+var ppLabel = document.getElementById('pp-label');
+var PX_PER_CM = 260/240; // scene represents ~240cm of wall height
+function showPreview(imgUrl, size, material){
+  var w = Math.round(size.w * PX_PER_CM);
+  var h = Math.round(size.h * PX_PER_CM);
+  ppFrame.style.width = w+'px';
+  ppFrame.style.height = h+'px';
+  ppFrame.className = 'pp-frame mat-'+material.id;
+  ppImg.src = imgUrl;
+  document.querySelector('.pp-shadow').style.width = Math.round(w*0.85)+'px';
+  ppLabel.textContent = size.label + ' · ' + matLabel(material) + t('realScale');
+  ppEl.classList.add('show');
+}
+function hidePreview(){ ppEl.classList.remove('show'); }
+
+/* ============ REUSABLE PRINT WIDGET (no nested buttons) ============ */
+function buildBuyRow(title, group, imgUrl){
+  var row = document.createElement('div');
+  row.className = 'buy-row';
+
+  var digitalBtn = document.createElement('button');
+  digitalBtn.className = 'buy-btn digital';
+  digitalBtn.textContent = t('digital') + ' · ' + fmt(DIGITAL_PRICE);
+  digitalBtn.addEventListener('click', function(){
+    addToCart({title:title, group:group, variant:t('digital'), price:DIGITAL_PRICE, img:imgUrl});
+  });
+
+  var printWrap = document.createElement('div');
+  printWrap.className = 'print-wrap';
+  var printBtn = document.createElement('button');
+  printBtn.className = 'buy-btn print';
+  printBtn.textContent = t('print');
+
+  var pop = document.createElement('div');
+  pop.className = 'size-pop';
+  var currentMaterial = MATERIALS[0];
+
+  var matToggle = document.createElement('div');
+  matToggle.className = 'material-toggle';
+  MATERIALS.forEach(function(mat){
+    var mBtn = document.createElement('button');
+    mBtn.type = 'button';
+    mBtn.textContent = matLabel(mat).split(' · ')[0];
+    if(mat.id === currentMaterial.id) mBtn.classList.add('active');
+    mBtn.addEventListener('click', function(){
+      currentMaterial = mat;
+      matToggle.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
+      mBtn.classList.add('active');
+      renderSizeList();
+    });
+    matToggle.appendChild(mBtn);
+  });
+  pop.appendChild(matToggle);
+
+  var sizeList = document.createElement('div');
+  sizeList.className = 'size-list';
+  pop.appendChild(sizeList);
+
+  function renderSizeList(){
+    sizeList.innerHTML = '';
+    SIZES.forEach(function(size){
+      var price = size.price + currentMaterial.mod;
+      var sBtn = document.createElement('button');
+      sBtn.type = 'button';
+      sBtn.innerHTML = '<span>'+size.label+'</span><span>'+fmt(price)+'</span>';
+      sBtn.addEventListener('mouseenter', function(){ showPreview(imgUrl, size, currentMaterial); });
+      sBtn.addEventListener('mouseleave', hidePreview);
+      sBtn.addEventListener('click', function(){
+        addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl});
+        pop.classList.remove('show');
+        hidePreview();
+      });
+      sizeList.appendChild(sBtn);
+    });
+  }
+  renderSizeList();
+
+  printBtn.addEventListener('click', function(){
+    document.querySelectorAll('.size-pop.show').forEach(function(p){ if(p!==pop) p.classList.remove('show'); });
+    pop.classList.toggle('show');
+    if(!pop.classList.contains('show')) hidePreview();
+  });
+
+  printWrap.appendChild(printBtn);
+  printWrap.appendChild(pop);
+  row.appendChild(digitalBtn);
+  row.appendChild(printWrap);
+  return row;
+}
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.print-wrap')){
+    document.querySelectorAll('.size-pop.show').forEach(function(p){ p.classList.remove('show'); });
+    hidePreview();
+  }
+});
+
+/* ============ GENERIC PANEL ============ */
+function formatCoords(c){
+  return (c.lat>=0?c.lat.toFixed(2)+'° N':Math.abs(c.lat).toFixed(2)+'° S') + '  /  ' +
+         (c.lng>=0?c.lng.toFixed(2)+'° E':Math.abs(c.lng).toFixed(2)+'° O');
+}
+
+var lastPanelCfg = null;
+function hashStr(s){ var h=0; for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i))%2147483647; } return h; }
+function seededOffset(seedStr, range){
+  var h = 0;
+  for(var i=0;i<seedStr.length;i++){ h = (h*31 + seedStr.charCodeAt(i)) % 2147483647; }
+  var r1 = Math.abs(Math.sin(h)) % 1;
+  var r2 = Math.abs(Math.sin(h*1.37+1)) % 1;
+  return { dLat:(r1-0.5)*range, dLng:(r2-0.5)*range };
+}
+function openGalleryPanel(cfg){
+  lastPanelCfg = cfg;
+  panelReturnTo = cfg.returnTo || 'hero';
+  hub.classList.remove('open'); countriesOv.classList.remove('open');
+
+  var coordsEl = document.getElementById('panel-coords');
+  coordsEl.textContent = cfg.coordsText || '';
+  coordsEl.style.display = cfg.coordsText ? '' : 'none';
+  document.getElementById('panel-title').textContent = cfg.title;
+  document.getElementById('panel-desc').textContent = cfg.desc;
+
+  var body = document.getElementById('panel-body');
+  body.innerHTML = '';
+
+  if(cfg.empty){
+    var es = document.createElement('div');
+    es.className = 'empty-state';
+    es.innerHTML = '<div class="ring"></div><p>'+t('emptyMsg')(cfg.title)+'</p><div class="sub mono">'+t('emptyHint')+'</div>';
+    body.appendChild(es);
+  } else {
+    var grid = document.createElement('div');
+    grid.className = 'gallery-grid';
+    var realPhotos = cfg.photos && cfg.photos.length ? cfg.photos : null;
+    var count = realPhotos ? realPhotos.length : (cfg.count || 6);
+    for(var i=1;i<=count;i++){
+      var photoEntry = realPhotos ? realPhotos[i-1] : null;
+      var imgUrl, title;
+      if(photoEntry){
+        imgUrl = typeof photoEntry === 'string' ? photoEntry : photoEntry.url;
+        title = (typeof photoEntry === 'object' && photoEntry.caption) ? photoEntry.caption : t('studio')(cfg.title, i);
+      } else {
+        var seed = cfg.seedPrefix + '-' + i;
+        var w = 800, h = (i % 3 === 0) ? 560 : 1000;
+        imgUrl = 'https://picsum.photos/seed/'+seed+'/'+w+'/'+h;
+        title = t('studio')(cfg.title, i);
+      }
+
+      var photoCoordsText = '';
+      var seedKey = cfg.seedPrefix + '-' + i;
+      if(photoEntry && typeof photoEntry === 'object' && photoEntry.lat !== undefined){
+        photoCoordsText = formatCoords({lat:photoEntry.lat, lng:photoEntry.lng});
+      } else if(cfg.baseLat !== undefined){
+        var off = seededOffset(seedKey, 0.9);
+        photoCoordsText = formatCoords({lat:cfg.baseLat + off.dLat, lng:cfg.baseLng + off.dLng});
+      } else if(visited.length){
+        var srcCountry = visited[Math.abs(hashStr(seedKey)) % visited.length];
+        var off2 = seededOffset(seedKey, 0.9);
+        photoCoordsText = formatCoords({lat:srcCountry.lat + off2.dLat, lng:srcCountry.lng + off2.dLng});
+      }
+
+      var card = document.createElement('div');
+      card.className = 'photo-card';
+      var frame = document.createElement('div');
+      frame.className = 'photo-frame' + (cfg.bw ? ' bw' : '');
+      frame.innerHTML = '<img src="'+imgUrl+'" loading="lazy" alt="'+title+'"><div class="photo-idx">'+String(i).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</div>';
+      var meta = document.createElement('div');
+      meta.className = 'photo-meta';
+      meta.innerHTML =
+        '<div class="photo-name-block"><span class="photo-name">'+title+'</span>' +
+        (photoCoordsText ? '<span class="photo-coords">'+photoCoordsText+'</span>' : '') +
+        '</div><span class="ci-price mono" style="font-size:11px; white-space:nowrap;">'+t('fromPrice')+fmt(DIGITAL_PRICE)+'</span>';
+      card.appendChild(frame); card.appendChild(meta);
+      card.appendChild(buildBuyRow(title, cfg.title, imgUrl));
+      grid.appendChild(card);
+    }
+    body.appendChild(grid);
+  }
+  panel.classList.add('open');
+  updateBodyScroll();
+  window.scrollTo(0,0);
+}
+var lastOpened = null;
+function openCountryPanel(c, returnTo){
+  lastOpened = {kind:'country', c:c, returnTo:returnTo};
+  openGalleryPanel({title:cname(c), coordsText:formatCoords(c), desc:cdesc(c), seedPrefix:c.key, count:6, bw:false, photos:c.photos, baseLat:c.lat, baseLng:c.lng, returnTo:returnTo||'hero'});
+}
+function openEmptyPanel(c, returnTo){
+  lastOpened = {kind:'empty', c:c, returnTo:returnTo};
+  openGalleryPanel({title:cname(c), coordsText:formatCoords(c), desc:t('emptyDescGeneric'), empty:true, returnTo:returnTo||'hero'});
+}
+
+/* ============ HUB TILES ============ */
+var hubGrid = document.getElementById('hub-grid');
+function buildHubTiles(){
+  hubGrid.innerHTML = '';
+  categories.forEach(function(cat, idx){
+    var tile = document.createElement('div');
+    tile.className = 'hub-tile' + (cat.bw ? ' bw-tile' : '');
+    tile.innerHTML =
+      '<img src="https://picsum.photos/seed/'+cat.key+'-cover/700/900" loading="lazy" alt="'+cname2(cat)+'">' +
+      '<div class="hub-tile-overlay"><div class="hub-tile-n">'+String(idx+1).padStart(2,'0')+'</div><h3>'+cname2(cat)+'</h3><p>'+cdesc2(cat)+'</p></div>';
+    tile.addEventListener('click', function(){
+      lastOpened = {kind:'category', cat:cat, returnTo:'hub'};
+      openGalleryPanel({title:cname2(cat), coordsText:null, desc:cdesc2(cat), seedPrefix:cat.key, count:9, bw:!!cat.bw, photos:cat.photos, returnTo:'hub'});
+    });
+    hubGrid.appendChild(tile);
+  });
+  var paisesTile = document.createElement('div');
+  paisesTile.className = 'hub-tile';
+  paisesTile.innerHTML =
+    '<img src="https://picsum.photos/seed/paises-cover/700/900" loading="lazy" alt="Countries">' +
+    '<div class="hub-tile-overlay"><div class="hub-tile-n">06</div><h3>'+t('hubPaises')+'</h3><p>'+(visited.length+visitedEmpty.length)+t('hubPaisesDesc')+'</p></div>';
+  paisesTile.addEventListener('click', openCountriesOv);
+  hubGrid.appendChild(paisesTile);
+}
+function cname2(cat){ return lang==='en' ? cat.nameEn : cat.name; }
+function cdesc2(cat){ return lang==='en' ? cat.descEn : cat.desc; }
+
+/* ============ COUNTRIES GRIDS ============ */
+var gGallery = document.getElementById('countries-grid-gallery');
+var gEmpty = document.getElementById('countries-grid-empty');
+var gUpcoming = document.getElementById('countries-grid-upcoming');
+function buildCountriesGrids(){
+  gGallery.innerHTML = ''; gEmpty.innerHTML = ''; gUpcoming.innerHTML = '';
+  document.getElementById('count-gallery').textContent = '('+visited.length+')';
+  document.getElementById('count-empty').textContent = '('+visitedEmpty.length+')';
+  document.getElementById('count-upcoming').textContent = '('+upcoming.length+')';
+  visited.forEach(function(c){
+    var card = document.createElement('div');
+    card.className = 'country-card';
+    card.innerHTML =
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.key+'-1/400/400" loading="lazy" alt="'+cname(c)+'"><span class="badge mono">'+t('badgeGallery')+'</span></div>' +
+      '<h4>'+cname(c)+'</h4><span>'+formatCoords(c)+'</span>';
+    card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
+    gGallery.appendChild(card);
+  });
+  visitedEmpty.forEach(function(c){
+    var card = document.createElement('div');
+    card.className = 'country-card';
+    card.innerHTML =
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-e/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
+    card.addEventListener('click', function(){ openEmptyPanel(c, 'countries'); });
+    gEmpty.appendChild(card);
+  });
+  upcoming.forEach(function(c){
+    var card = document.createElement('div');
+    card.className = 'country-card disabled';
+    card.innerHTML =
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-x/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(1) brightness(0.5);"><span class="badge mono">'+t('badgeUpcoming')+'</span></div>' +
+      '<h4>'+cname(c)+'</h4><span>'+c.date+'</span>';
+    gUpcoming.appendChild(card);
+  });
+}
+
+/* ============ UPCOMING DROPDOWN ============ */
+var udToggle = document.getElementById('upcoming-toggle');
+var udDrop = document.getElementById('upcoming-dropdown');
+var udCaret = document.getElementById('upcoming-caret');
+function buildUpcomingDropdown(){
+  udDrop.innerHTML = upcoming.map(function(c){ return '<div class="ud-item"><span>'+cname(c)+'</span><span>'+c.date+'</span></div>'; }).join('');
+}
+udToggle.addEventListener('click', function(e){
+  e.stopPropagation();
+  udDrop.classList.toggle('show');
+  udCaret.classList.toggle('rot');
+});
+document.addEventListener('click', function(){ udDrop.classList.remove('show'); udCaret.classList.remove('rot'); });
+
+buildHubTiles();
+buildCountriesGrids();
+buildUpcomingDropdown();
+
+var langBtns = document.querySelectorAll('.toggle-lang');
+function syncLangButtons(){
+  var label = lang === 'es' ? 'EN' : 'ES';
+  langBtns.forEach(function(b){ b.textContent = label; });
+}
+function setLang(newLang){
+  lang = newLang;
+  applyStaticI18n();
+  updateStatsText();
+  buildHubTiles();
+  buildCountriesGrids();
+  buildUpcomingDropdown();
+  renderCart();
+  syncLangButtons();
+  if(panel.classList.contains('open') && lastOpened){
+    if(lastOpened.kind==='country') openCountryPanel(lastOpened.c, lastOpened.returnTo);
+    else if(lastOpened.kind==='empty') openEmptyPanel(lastOpened.c, lastOpened.returnTo);
+    else if(lastOpened.kind==='category') openGalleryPanel({title:cname2(lastOpened.cat), coordsText:null, desc:cdesc2(lastOpened.cat), seedPrefix:lastOpened.cat.key, count:9, bw:!!lastOpened.cat.bw, photos:lastOpened.cat.photos, returnTo:lastOpened.returnTo});
+  }
+}
+langBtns.forEach(function(b){ b.addEventListener('click', function(){ setLang(lang==='es' ? 'en' : 'es'); }); });
+
+/* ============ THREE.JS — CLEAN EARTH, HOVER-ONLY COUNTRY BORDERS ============ */
+var canvas = document.getElementById('globe-canvas');
+var heroEl = document.querySelector('.hero');
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(45, heroEl.clientWidth/heroEl.clientHeight, 0.1, 100);
+camera.position.set(0,0,8.1);
+
+var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(heroEl.clientWidth, heroEl.clientHeight);
+if(renderer.outputEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+
+var globeGroup = new THREE.Group();
+scene.add(globeGroup);
+var R = 2.6;
+
+scene.add(new THREE.AmbientLight(0x404040, 1.1));
+var sun = new THREE.DirectionalLight(0xfff2e0, 1.6);
+sun.position.set(-5, 2, 4);
+scene.add(sun);
+
+var loader = new THREE.TextureLoader();
+loader.crossOrigin = 'anonymous';
+var earthMat = new THREE.MeshPhongMaterial({color:0x1c2b3a, shininess:6, specular:0x223344});
+var earthMesh = new THREE.Mesh(new THREE.SphereGeometry(R, 64, 64), earthMat);
+globeGroup.add(earthMesh);
+loader.load('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg', function(tex){
+  if(tex.encoding !== undefined) tex.encoding = THREE.sRGBEncoding;
+  earthMat.map = tex; earthMat.color.set(0xffffff); earthMat.needsUpdate = true;
+});
+
+var cloudMat = new THREE.MeshLambertMaterial({transparent:true, opacity:0.1, depthWrite:false});
+var cloudMesh = new THREE.Mesh(new THREE.SphereGeometry(R*1.012, 64, 64), cloudMat);
+globeGroup.add(cloudMesh);
+loader.load('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png', function(tex){
+  cloudMat.map = tex; cloudMat.opacity = 0.1; cloudMat.needsUpdate = true;
+});
+
+var rimGeo = new THREE.SphereGeometry(R*1.06, 48, 48);
+var rimMatBasic = new THREE.MeshBasicMaterial({color:0x6fa8dc, transparent:true, opacity:0.13, side:THREE.BackSide, blending:THREE.AdditiveBlending});
+globeGroup.add(new THREE.Mesh(rimGeo, rimMatBasic));
+
+var starGeo = new THREE.BufferGeometry();
+var starCount = 600;
+var starPos = new Float32Array(starCount*3);
+for(var i=0;i<starCount;i++){
+  var r = 20 + Math.random()*20;
+  var theta = Math.random()*Math.PI*2;
+  var phi = Math.acos((Math.random()*2)-1);
+  starPos[i*3] = r*Math.sin(phi)*Math.cos(theta);
+  starPos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+  starPos[i*3+2] = r*Math.cos(phi);
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos,3));
+var starMat = new THREE.PointsMaterial({color:0xa29c8e, size:0.028, transparent:true, opacity:0.55});
+scene.add(new THREE.Points(starGeo, starMat));
+
+function latLngToVec3(lat, lng, radius){
+  var phi = (90-lat) * (Math.PI/180);
+  var theta = (lng+180) * (Math.PI/180);
+  return new THREE.Vector3(-radius*Math.sin(phi)*Math.cos(theta), radius*Math.cos(phi), radius*Math.sin(phi)*Math.sin(theta));
+}
+function vec3ToLatLng(p){
+  var phi = Math.acos(Math.max(-1,Math.min(1,p.y/R)));
+  var theta = Math.atan2(p.z, -p.x);
+  var lat = 90 - phi*180/Math.PI;
+  var lng = theta*180/Math.PI - 180;
+  if(lng < -180) lng += 360;
+  if(lng > 180) lng -= 360;
+  return {lat:lat, lng:lng};
+}
+function angDiff(a,b){ var d=a-b; while(d>180)d-=360; while(d<-180)d+=360; return d; }
+
+/* build all country hover-regions with a precomputed border line (doubled for a bolder stroke) */
+var allCountries = [];
+visited.forEach(function(c){ allCountries.push({data:c, type:'gallery'}); });
+visitedEmpty.forEach(function(c){ allCountries.push({data:c, type:'empty'}); });
+upcoming.forEach(function(c){ allCountries.push({data:c, type:'upcoming'}); });
+
+function borderMaterial(isGallery){
+  return new THREE.LineBasicMaterial({ color: isGallery ? 0xffc266 : 0xaba48f, transparent:true, opacity: isGallery ? 1 : 0.75 });
+}
+function buildEllipseLines(entry){
+  var c = entry.data;
+  var latRad = c.lat*Math.PI/180;
+  var cosLat = Math.max(Math.cos(latRad), 0.2);
+  var semiW = (c.w/2)/cosLat, semiH = c.h/2;
+  var segs = 64, mat = borderMaterial(entry.type==='gallery'), lines = [];
+  [1.003, 1.007].forEach(function(rMul){
+    var pts = [];
+    for(var i=0;i<=segs;i++){
+      var t = (i/segs)*Math.PI*2;
+      pts.push(latLngToVec3(c.lat + semiH*Math.sin(t), c.lng + semiW*Math.cos(t), R*rMul));
+    }
+    var geo = new THREE.BufferGeometry().setFromPoints(pts);
+    var line = new THREE.LineLoop(geo, mat);
+    line.visible = false;
+    globeGroup.add(line);
+    lines.push(line);
+  });
+  entry.lines = lines;
+  entry._semiW = semiW; entry._semiH = semiH;
+  entry.hasReal = false;
+}
+/* build real borders from a GeoJSON geometry (Polygon or MultiPolygon), replacing the oval fallback */
+function buildRealLines(entry, geometry){
+  entry.lines.forEach(function(l){ globeGroup.remove(l); });
+  var lines = [];
+  var rings = []; // exterior rings only, for hit-testing
+  var polys = geometry.type === 'MultiPolygon' ? geometry.coordinates : [geometry.coordinates];
+  var minLat=90,maxLat=-90,minLng=180,maxLng=-180;
+  var mat = borderMaterial(entry.type==='gallery');
+  polys.forEach(function(poly){
+    var exterior = poly[0];
+    rings.push(exterior);
+    exterior.forEach(function(pair){
+      var lng=pair[0], lat=pair[1];
+      if(lat<minLat)minLat=lat; if(lat>maxLat)maxLat=lat;
+      if(lng<minLng)minLng=lng; if(lng>maxLng)maxLng=lng;
+    });
+    [1.003, 1.007].forEach(function(rMul){
+      var pts = exterior.map(function(pair){ return latLngToVec3(pair[1], pair[0], R*rMul); });
+      var geo = new THREE.BufferGeometry().setFromPoints(pts);
+      var line = new THREE.LineLoop(geo, mat);
+      line.visible = false;
+      globeGroup.add(line);
+      lines.push(line);
+    });
+  });
+  entry.lines = lines;
+  entry.rings = rings;
+  entry.bbox = {minLat:minLat,maxLat:maxLat,minLng:minLng,maxLng:maxLng};
+  entry.hasReal = true;
+}
+
+allCountries.forEach(function(entry){ buildEllipseLines(entry); });
+
+/* upgrade ellipse fallbacks to real country borders, AND add every other world country
+   (dull border, no story attached) so the whole globe responds to hover — this is a
+   deliberate load-everything test. */
+fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+  .then(function(r){ return r.json(); })
+  .then(function(world){
+    var t0 = performance.now();
+    var fc = topojson.feature(world, world.objects.countries);
+    var neToEntry = {};
+    allCountries.forEach(function(entry){ if(entry.data.ne) neToEntry[entry.data.ne] = entry; });
+
+    var added = 0;
+    fc.features.forEach(function(f){
+      var name = f.properties && f.properties.name;
+      if(!name) return;
+      var entry = neToEntry[name];
+      if(entry){
+        buildRealLines(entry, f.geometry);
+      } else {
+        var generic = { data:{ name:name, ne:name }, type:'generic', lines:[] };
+        buildRealLines(generic, f.geometry);
+        allCountries.push(generic);
+        added++;
+      }
+    });
+    console.log('Fronteras reales cargadas — '+allCountries.length+' países en el globo ('+added+' sin historia asociada) en '+Math.round(performance.now()-t0)+'ms');
+    var unmatched = allCountries.filter(function(e){ return e.type!=='generic' && !e.hasReal; }).map(function(e){ return e.data.name; });
+    if(unmatched.length){ console.warn('Sin frontera real (usan óvalo aproximado, revisar posibles duplicados):', unmatched.join(', ')); }
+  })
+  .catch(function(err){ console.warn('No se pudieron cargar las fronteras reales, se mantiene el óvalo aproximado.', err); });
+
+function pointInRing(lng, lat, ring){
+  var inside = false;
+  for(var i=0, j=ring.length-1; i<ring.length; j=i++){
+    var xi=ring[i][0], yi=ring[i][1], xj=ring[j][0], yj=ring[j][1];
+    var intersect = ((yi>lat)!==(yj>lat)) && (lng < (xj-xi)*(lat-yi)/(yj-yi)+xi);
+    if(intersect) inside = !inside;
+  }
+  return inside;
+}
+function pointInRealGeometry(lng, lat, entry){
+  var b = entry.bbox;
+  if(lat<b.minLat || lat>b.maxLat || lng<b.minLng || lng>b.maxLng) return false;
+  for(var i=0;i<entry.rings.length;i++){ if(pointInRing(lng, lat, entry.rings[i])) return true; }
+  return false;
+}
+
+var raycaster = new THREE.Raycaster();
+var pointer = new THREE.Vector2();
+var isDragging = false, lastX=0, lastY=0, velX=0, velY=0;
+globeGroup.rotation.y = 0.35; globeGroup.rotation.x = -0.15;
+var autoRotate = true;
+var rotationPaused = false;
+var rotateBtn = document.getElementById('rotate-toggle');
+var heroHintEl = document.querySelector('.hero-hint');
+rotateBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  rotationPaused = !rotationPaused;
+  rotateBtn.textContent = rotationPaused ? '▶' : '❚❚';
+  rotateBtn.title = rotationPaused ? 'Reanudar rotación' : 'Pausar rotación';
+  heroHintEl.classList.toggle('paused', rotationPaused);
+});
+var hovered = null;
+var tooltip = document.getElementById('tooltip');
+var clock = new THREE.Clock();
+
+function getPointer(e){
+  var rect = canvas.getBoundingClientRect();
+  var cx = (e.touches ? e.touches[0].clientX : e.clientX);
+  var cy = (e.touches ? e.touches[0].clientY : e.clientY);
+  pointer.x = ((cx-rect.left)/rect.width)*2 - 1;
+  pointer.y = -((cy-rect.top)/rect.height)*2 + 1;
+  return {cx:cx, cy:cy};
+}
+function setHover(entry, clientPos){
+  if(hovered === entry) { if(clientPos){ tooltip.style.left=(clientPos.cx+16)+'px'; tooltip.style.top=(clientPos.cy+8)+'px'; } return; }
+  if(hovered){ hovered.lines.forEach(function(l){ l.visible=false; }); }
+  hovered = entry;
+  if(hovered){
+    hovered.lines.forEach(function(l){ l.visible=true; });
+    document.getElementById('tt-name').textContent = cname(hovered.data);
+    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.data.date : t('tttGeneric')));
+    document.getElementById('tt-sub').textContent = sub;
+    tooltip.classList.toggle('st-gallery', hovered.type==='gallery');
+    if(clientPos){ tooltip.style.left=(clientPos.cx+16)+'px'; tooltip.style.top=(clientPos.cy+8)+'px'; }
+    tooltip.style.opacity = 1;
+    canvas.style.cursor = 'pointer';
+  } else {
+    tooltip.style.opacity = 0;
+    canvas.style.cursor = 'grab';
+  }
+}
+
+function findCountryAt(localPoint){
+  var ll = vec3ToLatLng(localPoint);
+  for(var i=0;i<allCountries.length;i++){
+    var entry = allCountries[i];
+    if(entry.hasReal && pointInRealGeometry(ll.lng, ll.lat, entry)) return entry;
+  }
+  var best = null, bestScore = 1;
+  allCountries.forEach(function(entry){
+    if(entry.hasReal) return;
+    var c = entry.data;
+    var dLat = ll.lat - c.lat;
+    var dLng = angDiff(ll.lng, c.lng) * Math.max(Math.cos(c.lat*Math.PI/180), 0.2);
+    var score = (dLng/entry._semiW)*(dLng/entry._semiW) + (dLat/entry._semiH)*(dLat/entry._semiH);
+    if(score <= 1 && score < bestScore){ bestScore = score; best = entry; }
+  });
+  return best;
+}
+
+var lastPointerClient = {cx:0, cy:0};
+
+function handleHover(e){
+  var p = getPointer(e);
+  lastPointerClient = p;
+  raycaster.setFromCamera(pointer, camera);
+  var hits = raycaster.intersectObject(earthMesh);
+  if(hits.length){
+    var local = globeGroup.worldToLocal(hits[0].point.clone());
+    var entry = findCountryAt(local);
+    setHover(entry, p);
+  } else {
+    setHover(null);
+  }
+}
+canvas.addEventListener('pointerdown', function(e){ isDragging = true; autoRotate = false; lastX = e.clientX; lastY = e.clientY; velX=0; velY=0; });
+window.addEventListener('pointerup', function(e){
+  if(isDragging && Math.abs(velX)<0.001 && Math.abs(velY)<0.001){ handleClick(); }
+  isDragging = false;
+  setTimeout(function(){ autoRotate = true; }, 2200);
+});
+window.addEventListener('pointermove', function(e){
+  if(isDragging){
+    var dx = e.clientX - lastX, dy = e.clientY - lastY;
+    velX = dx*0.005; velY = dy*0.005;
+    globeGroup.rotation.y += velX;
+    globeGroup.rotation.x = Math.max(-0.9, Math.min(0.9, globeGroup.rotation.x + velY));
+    lastX = e.clientX; lastY = e.clientY;
+  } else { handleHover(e); }
+});
+canvas.addEventListener('pointerleave', function(){ setHover(null); });
+
+var msMenu = document.getElementById('microstate-menu');
+function closeMicrostateMenu(){ msMenu.classList.remove('show'); }
+function openMicrostateMenu(entry, pos){
+  var micro = MICROSTATES[entry.data.name];
+  var items = '<button data-full="1">'+cname(entry.data)+' <span>'+t('fullCountry')+'</span></button>' +
+    micro.map(function(m,i){ return '<button data-idx="'+i+'">'+cname(m)+' <span>'+t('microstate')+'</span></button>'; }).join('');
+  msMenu.innerHTML = items;
+  var x = Math.min(pos.cx, window.innerWidth-260);
+  var y = Math.min(pos.cy, window.innerHeight-140);
+  msMenu.style.left = x+'px'; msMenu.style.top = y+'px';
+  msMenu.classList.add('show');
+  msMenu.querySelector('[data-full]').addEventListener('click', function(){
+    closeMicrostateMenu();
+    runCountryAction(entry);
+  });
+  msMenu.querySelectorAll('[data-idx]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      closeMicrostateMenu();
+      var m = micro[parseInt(btn.dataset.idx)];
+      openEmptyPanel({name:m.name, nameEn:m.nameEn, lat:m.lat, lng:m.lng}, 'hero');
+    });
+  });
+}
+document.addEventListener('click', function(e){ if(!e.target.closest('#microstate-menu')) closeMicrostateMenu(); });
+
+function runCountryAction(entry){
+  if(entry.type==='gallery'){ openCountryPanel(entry.data, 'hero'); }
+  else if(entry.type==='empty'){ openEmptyPanel(entry.data, 'hero'); }
+  else if(entry.type==='upcoming'){ showToast(t('toastUpcoming')(cname(entry.data), entry.data.date)); }
+  else { showToast(t('toastGeneric')(cname(entry.data))); }
+}
+function handleClick(){
+  if(!hovered) return;
+  if(MICROSTATES[hovered.data.name]){ openMicrostateMenu(hovered, lastPointerClient); return; }
+  runCountryAction(hovered);
+}
+canvas.addEventListener('touchstart', function(e){ isDragging = true; autoRotate=false; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; }, {passive:true});
+canvas.addEventListener('touchmove', function(e){
+  var dx = e.touches[0].clientX - lastX, dy = e.touches[0].clientY - lastY;
+  globeGroup.rotation.y += dx*0.005;
+  globeGroup.rotation.x = Math.max(-0.9, Math.min(0.9, globeGroup.rotation.x + dy*0.005));
+  lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+}, {passive:true});
+canvas.addEventListener('touchend', function(e){
+  isDragging = false;
+  handleHover({clientX:lastX, clientY:lastY});
+  handleClick();
+  setTimeout(function(){ autoRotate = true; }, 2200);
+});
+
+function animate(){
+  requestAnimationFrame(animate);
+  if(autoRotate && !isDragging && !rotationPaused){ globeGroup.rotation.y += 0.00035; }
+  cloudMesh.rotation.y += 0.00035;
+  renderer.render(scene, camera);
+}
+animate();
+window.addEventListener('resize', function(){
+  camera.aspect = heroEl.clientWidth/heroEl.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(heroEl.clientWidth, heroEl.clientHeight);
+});
+
+} /* end boot() */
+
+})();
+</script>
+</body>
+</html>
