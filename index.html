@@ -43,9 +43,19 @@
   .nav-link:hover{opacity:1; border-color:currentColor;}
   .pill-btn{display:flex; align-items:center; gap:8px; font-size:12px; font-family:'JetBrains Mono', monospace; background:none; border:1px solid var(--paper); color:var(--paper); padding:8px 14px; border-radius:100px;}
   .pill-count{background:var(--paper); color:var(--bg); border-radius:100px; min-width:18px; height:18px; display:flex; align-items:center; justify-content:center; font-size:10px; padding:0 4px;}
+  .mobile-menu-btn{display:none; font-size:15px;}
+  .mobile-nav-dropdown{position:fixed; right:5vw; background:var(--bg-alt); border:1px solid var(--line); border-radius:8px; padding:8px 0; display:none; z-index:60; min-width:200px; box-shadow:0 20px 50px rgba(0,0,0,0.5);}
+  .mobile-nav-dropdown.show{display:block;}
+  .mobile-nav-item{display:block; width:100%; text-align:left; padding:12px 20px; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; font-family:'JetBrains Mono', monospace; font-weight:300; color:var(--paper); background:none; border:none; text-decoration:none; opacity:0.85;}
+  .mobile-nav-item:hover{opacity:1;}
+  .mobile-nav-controls{display:flex; gap:10px; padding:12px 20px 4px; margin-top:4px; border-top:1px solid var(--line);}
 
   .hero{position:relative; height:100vh; width:100%; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at 50% 40%, var(--bg-alt) 0%, var(--bg) 70%);}
-  #globe-canvas{position:absolute; inset:0; width:100%; height:100%; cursor:grab; touch-action:none;}
+  /* pan-y: el swipe vertical lo maneja el navegador (scroll normal de la
+     página — el canvas cubre toda la primera pantalla en mobile, con
+     touch-action:none quedaba imposible bajar). El swipe horizontal lo
+     seguimos manejando nosotros por JS para girar el globo (ver touchmove). */
+  #globe-canvas{position:absolute; inset:0; width:100%; height:100%; cursor:grab; touch-action:pan-y;}
   #globe-canvas:active{cursor:grabbing;}
   .hero-copy{position:absolute; top:15vh; left:0; right:0; text-align:center; pointer-events:none; z-index:2;}
   .hero-eyebrow{font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--overlay-ink-dim); margin-bottom:18px;}
@@ -295,7 +305,8 @@
     .hero-bottom{flex-direction:column; align-items:flex-start; gap:14px;}
     .hero-stats{text-align:left;}
     #upcoming-dropdown{right:auto; left:0;}
-    .nav-link.hide-mobile{display:none;}
+    .hide-mobile{display:none;}
+    .mobile-menu-btn{display:flex;}
     #print-preview{right:3vw; bottom:90px; width:190px;}
   }
   @media(max-width:560px){
@@ -325,11 +336,21 @@
     <button class="nav-link hide-mobile" id="nav-gallery" data-i18n="navGallery">Galería</button>
     <a href="#about" class="nav-link hide-mobile" data-i18n="navAbout">Sobre mí</a>
     <a href="#how" class="nav-link hide-mobile" data-i18n="navHow">Cómo comprar</a>
-    <button class="lang-btn toggle-lang" title="Change language" aria-label="Change language">ES</button>
-    <button class="theme-btn toggle-theme" id="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+    <button class="lang-btn toggle-lang hide-mobile" title="Change language" aria-label="Change language">ES</button>
+    <button class="theme-btn toggle-theme hide-mobile" id="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+    <button class="theme-btn mobile-menu-btn" id="mobile-menu-btn" aria-label="Menú" aria-expanded="false">☰</button>
     <button class="pill-btn" id="cart-btn"><span class="cart-label" data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count">0</span></button>
   </div>
 </nav>
+<div id="mobile-nav-dropdown" class="mobile-nav-dropdown">
+  <button class="mobile-nav-item" id="mnav-gallery" data-i18n="navGallery">Galería</button>
+  <a href="#about" class="mobile-nav-item" data-i18n="navAbout">Sobre mí</a>
+  <a href="#how" class="mobile-nav-item" data-i18n="navHow">Cómo comprar</a>
+  <div class="mobile-nav-controls">
+    <button class="lang-btn toggle-lang" title="Change language" aria-label="Change language">ES</button>
+    <button class="theme-btn toggle-theme" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
+  </div>
+</div>
 
 <section class="hero">
   <canvas id="globe-canvas"></canvas>
@@ -1048,6 +1069,33 @@ udToggle.addEventListener('click', function(e){
 });
 document.addEventListener('click', function(){ udDrop.classList.remove('show'); udCaret.classList.remove('rot'); });
 
+/* Menú hamburguesa de mobile: junta Galería/Sobre mí/Cómo comprar + idioma/tema,
+   que en pantallas chicas se esconden de la barra principal (no entraban). */
+var mobileMenuBtn = document.getElementById('mobile-menu-btn');
+var mobileNavDropdown = document.getElementById('mobile-nav-dropdown');
+function closeMobileNav(){
+  mobileNavDropdown.classList.remove('show');
+  mobileMenuBtn.setAttribute('aria-expanded', 'false');
+}
+mobileMenuBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  var opening = !mobileNavDropdown.classList.contains('show');
+  if(opening){
+    var navRect = document.querySelector('nav').getBoundingClientRect();
+    mobileNavDropdown.style.top = (navRect.bottom + 8) + 'px';
+  }
+  mobileNavDropdown.classList.toggle('show', opening);
+  mobileMenuBtn.setAttribute('aria-expanded', String(opening));
+});
+document.getElementById('mnav-gallery').addEventListener('click', function(){ closeMobileNav(); openHub(); });
+mobileNavDropdown.querySelectorAll('a.mobile-nav-item').forEach(function(a){
+  a.addEventListener('click', closeMobileNav);
+});
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#mobile-nav-dropdown')) closeMobileNav();
+});
+window.addEventListener('resize', closeMobileNav);
+
 buildHubTiles();
 buildCountriesGrids();
 buildUpcomingDropdown();
@@ -1450,6 +1498,14 @@ canvas.addEventListener('touchend', function(e){
       lastTapTime = now;
     }
   }
+  setTimeout(function(){ autoRotate = true; }, 2200);
+});
+// Con touch-action:pan-y, si el navegador decide que el gesto es un scroll
+// vertical nos "saca" el touch a mitad de camino con touchcancel (no llega
+// touchend). Sin esto, isDragging quedaba trabado en true y el globo nunca
+// retomaba la rotación automática.
+canvas.addEventListener('touchcancel', function(){
+  isDragging = false;
   setTimeout(function(){ autoRotate = true; }, 2200);
 });
 
