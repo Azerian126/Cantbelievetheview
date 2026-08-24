@@ -204,6 +204,7 @@
   ],
   "visitedEmpty": [
     {
+      "key": "mexico",
       "name": "México",
       "lat": 19.43,
       "lng": -99.13,
@@ -211,6 +212,7 @@
       "h": 22
     },
     {
+      "key": "espana",
       "name": "España",
       "lat": 40.42,
       "lng": -3.7,
@@ -218,6 +220,7 @@
       "h": 16
     },
     {
+      "key": "portugal",
       "name": "Portugal",
       "lat": 38.72,
       "lng": -9.14,
@@ -225,6 +228,7 @@
       "h": 14
     },
     {
+      "key": "italia",
       "name": "Italia",
       "lat": 41.9,
       "lng": 12.5,
@@ -232,6 +236,7 @@
       "h": 24
     },
     {
+      "key": "francia",
       "name": "Francia",
       "lat": 48.86,
       "lng": 2.35,
@@ -239,6 +244,7 @@
       "h": 18
     },
     {
+      "key": "alemania",
       "name": "Alemania",
       "lat": 52.52,
       "lng": 13.4,
@@ -246,6 +252,7 @@
       "h": 18
     },
     {
+      "key": "paises-bajos",
       "name": "Países Bajos",
       "lat": 52.37,
       "lng": 4.9,
@@ -253,6 +260,7 @@
       "h": 10
     },
     {
+      "key": "belgica",
       "name": "Bélgica",
       "lat": 50.85,
       "lng": 4.35,
@@ -260,6 +268,7 @@
       "h": 8
     },
     {
+      "key": "suiza",
       "name": "Suiza",
       "lat": 46.95,
       "lng": 7.45,
@@ -267,6 +276,7 @@
       "h": 8
     },
     {
+      "key": "austria",
       "name": "Austria",
       "lat": 48.21,
       "lng": 16.37,
@@ -274,6 +284,7 @@
       "h": 9
     },
     {
+      "key": "republica-checa",
       "name": "República Checa",
       "lat": 50.09,
       "lng": 14.42,
@@ -281,6 +292,7 @@
       "h": 9
     },
     {
+      "key": "polonia",
       "name": "Polonia",
       "lat": 52.23,
       "lng": 21.01,
@@ -288,6 +300,7 @@
       "h": 14
     },
     {
+      "key": "hungria",
       "name": "Hungría",
       "lat": 47.5,
       "lng": 19.04,
@@ -295,6 +308,7 @@
       "h": 10
     },
     {
+      "key": "croacia",
       "name": "Croacia",
       "lat": 45.81,
       "lng": 15.98,
@@ -302,6 +316,7 @@
       "h": 9
     },
     {
+      "key": "turquia",
       "name": "Turquía",
       "lat": 39.93,
       "lng": 32.85,
@@ -309,6 +324,7 @@
       "h": 14
     },
     {
+      "key": "india",
       "name": "India",
       "lat": 28.61,
       "lng": 77.21,
@@ -316,6 +332,7 @@
       "h": 26
     },
     {
+      "key": "tailandia",
       "name": "Tailandia",
       "lat": 13.75,
       "lng": 100.5,
@@ -323,6 +340,7 @@
       "h": 26
     },
     {
+      "key": "camboya",
       "name": "Camboya",
       "lat": 11.55,
       "lng": 104.92,
@@ -330,6 +348,7 @@
       "h": 10
     },
     {
+      "key": "laos",
       "name": "Laos",
       "lat": 17.97,
       "lng": 102.6,
@@ -337,6 +356,7 @@
       "h": 20
     },
     {
+      "key": "malasia",
       "name": "Malasia",
       "lat": 3.14,
       "lng": 101.69,
@@ -344,6 +364,7 @@
       "h": 10
     },
     {
+      "key": "singapur",
       "name": "Singapur",
       "lat": 1.35,
       "lng": 103.82,
@@ -351,6 +372,7 @@
       "h": 4
     },
     {
+      "key": "filipinas",
       "name": "Filipinas",
       "lat": 14.6,
       "lng": 120.98,
@@ -358,6 +380,7 @@
       "h": 22
     },
     {
+      "key": "china",
       "name": "China",
       "lat": 39.9,
       "lng": 116.4,
@@ -365,6 +388,7 @@
       "h": 30
     },
     {
+      "key": "corea-del-sur",
       "name": "Corea del Sur",
       "lat": 37.57,
       "lng": 126.98,
@@ -372,6 +396,7 @@
       "h": 13
     },
     {
+      "key": "australia",
       "name": "Australia",
       "lat": -25.27,
       "lng": 133.77,
@@ -379,6 +404,7 @@
       "h": 30
     },
     {
+      "key": "fiyi",
       "name": "Fiyi",
       "lat": -18.14,
       "lng": 178.44,
@@ -386,6 +412,7 @@
       "h": 6
     },
     {
+      "key": "brasil",
       "name": "Brasil",
       "lat": -15.79,
       "lng": -47.88,
@@ -393,6 +420,7 @@
       "h": 34
     },
     {
+      "key": "colombia",
       "name": "Colombia",
       "lat": 4.71,
       "lng": -74.07,
@@ -400,6 +428,7 @@
       "h": 22
     },
     {
+      "key": "ecuador",
       "name": "Ecuador",
       "lat": -0.23,
       "lng": -78.52,
@@ -407,6 +436,7 @@
       "h": 16
     },
     {
+      "key": "bolivia",
       "name": "Bolivia",
       "lat": -16.5,
       "lng": -68.15,
@@ -414,6 +444,7 @@
       "h": 20
     },
     {
+      "key": "uruguay",
       "name": "Uruguay",
       "lat": -34.9,
       "lng": -56.16,
@@ -421,6 +452,7 @@
       "h": 10
     },
     {
+      "key": "paraguay",
       "name": "Paraguay",
       "lat": -25.28,
       "lng": -57.63,
@@ -428,6 +460,7 @@
       "h": 16
     },
     {
+      "key": "costa-rica",
       "name": "Costa Rica",
       "lat": 9.93,
       "lng": -84.08,
@@ -435,6 +468,7 @@
       "h": 9
     },
     {
+      "key": "panama",
       "name": "Panamá",
       "lat": 8.98,
       "lng": -79.52,
@@ -442,6 +476,7 @@
       "h": 6
     },
     {
+      "key": "cuba",
       "name": "Cuba",
       "lat": 23.13,
       "lng": -82.38,
@@ -449,6 +484,7 @@
       "h": 7
     },
     {
+      "key": "emiratos-arabes-unidos",
       "name": "Emiratos Árabes Unidos",
       "lat": 25.2,
       "lng": 55.27,
@@ -456,6 +492,7 @@
       "h": 8
     },
     {
+      "key": "israel",
       "name": "Israel",
       "lat": 31.77,
       "lng": 35.21,
@@ -463,6 +500,7 @@
       "h": 13
     },
     {
+      "key": "kenia",
       "name": "Kenia",
       "lat": -1.29,
       "lng": 36.82,
@@ -470,6 +508,7 @@
       "h": 20
     },
     {
+      "key": "tanzania",
       "name": "Tanzania",
       "lat": -6.16,
       "lng": 35.75,
@@ -477,6 +516,7 @@
       "h": 18
     },
     {
+      "key": "finlandia",
       "name": "Finlandia",
       "lat": 60.17,
       "lng": 24.94,
@@ -484,6 +524,7 @@
       "h": 28
     },
     {
+      "key": "suecia",
       "name": "Suecia",
       "lat": 59.33,
       "lng": 18.06,
