@@ -300,6 +300,20 @@
   }
   @media(max-width:560px){
     .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    /* En mobile solo quedan ES + tema + carrito en nav-right (el resto ya se
+       esconde en el breakpoint de 860px) — con el gap y padding de desktop
+       igual no entraban en pantallas angostas y "carrito" quedaba cortado
+       fuera de la pantalla. */
+    nav{padding-left:4vw; padding-right:4vw;}
+    .nav-right{gap:10px;}
+    .pill-btn{padding:7px 10px; font-size:11px; gap:5px;}
+  }
+  @media(max-width:380px){
+    /* En los teléfonos más chicos, hasta con el ajuste de arriba el texto
+       "carrito" aprieta demasiado — se deja solo el ícono + contador. */
+    #cart-btn .cart-label{display:none;}
+    #cart-btn::before{content:'🛒';}
+    #cart-btn{padding:7px 9px;}
   }
 </style>
 </head>
@@ -313,7 +327,7 @@
     <a href="#how" class="nav-link hide-mobile" data-i18n="navHow">Cómo comprar</a>
     <button class="lang-btn toggle-lang" title="Change language" aria-label="Change language">ES</button>
     <button class="theme-btn toggle-theme" id="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">☾</button>
-    <button class="pill-btn" id="cart-btn"><span data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count">0</span></button>
+    <button class="pill-btn" id="cart-btn"><span class="cart-label" data-i18n="cart">carrito</span> <span class="pill-count" id="cart-count">0</span></button>
   </div>
 </nav>
 
@@ -1064,8 +1078,24 @@ langBtns.forEach(function(b){ b.addEventListener('click', function(){ setLang(la
 var canvas = document.getElementById('globe-canvas');
 var heroEl = document.querySelector('.hero');
 var scene = new THREE.Scene();
+var R = 2.6;
+var BASE_CAMERA_DIST = 8.1; // distancia original, tuneada para pantallas anchas (aspect >= 1)
+
+// Con FOV vertical fijo, si el aspect ratio del hero es angosto (mobile en
+// vertical) el FOV horizontal se angosta junto con él y el globo termina
+// recortado a los costados — se ve un primer plano en vez de la esfera
+// completa. Acá alejamos la cámara lo necesario para que entre completa,
+// sin tocar en absoluto el encuadre en pantallas anchas (aspect >= 1).
+function cameraDistanceFor(aspect, fovDeg){
+  if(aspect >= 1) return BASE_CAMERA_DIST;
+  var RTOTAL = R*1.06; // incluye el halo/atmósfera por fuera de la esfera
+  var marginH = 1.08; // aire chico a los costados, para que se vea grande y prolijo
+  var neededForHorizontal = (RTOTAL*marginH) / (Math.tan(fovDeg*Math.PI/360)*aspect);
+  return Math.max(BASE_CAMERA_DIST, neededForHorizontal);
+}
+
 var camera = new THREE.PerspectiveCamera(45, heroEl.clientWidth/heroEl.clientHeight, 0.1, 100);
-camera.position.set(0,0,8.1);
+camera.position.set(0, 0, cameraDistanceFor(camera.aspect, camera.fov));
 
 var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
@@ -1074,7 +1104,6 @@ if(renderer.outputEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEn
 
 var globeGroup = new THREE.Group();
 scene.add(globeGroup);
-var R = 2.6;
 
 scene.add(new THREE.AmbientLight(0x404040, 1.1));
 var sun = new THREE.DirectionalLight(0xfff2e0, 1.6);
@@ -1433,6 +1462,7 @@ function animate(){
 animate();
 window.addEventListener('resize', function(){
   camera.aspect = heroEl.clientWidth/heroEl.clientHeight;
+  camera.position.z = cameraDistanceFor(camera.aspect, camera.fov);
   camera.updateProjectionMatrix();
   renderer.setSize(heroEl.clientWidth, heroEl.clientHeight);
 });
