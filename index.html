@@ -1392,11 +1392,23 @@ canvas.addEventListener('touchmove', function(e){
   // (girar el globo) y no un tap — así no dispara el click del país al soltar.
   if(Math.hypot(lastX - touchStartX, lastY - touchStartY) > 8){ touchMoved = true; }
 }, {passive:true});
+var lastTapEntry = null, lastTapTime = 0;
+var DOUBLE_TAP_MS = 3000;
 canvas.addEventListener('touchend', function(e){
   isDragging = false;
   if(!touchMoved){
+    var now = Date.now();
     handleHover({clientX:lastX, clientY:lastY});
-    handleClick();
+    // En touch no hay hover previo al tap, así que el primer tap solo selecciona
+    // (resalta el país, igual que pasaría al pasar el mouse en desktop). Recién
+    // un segundo tap sobre ese mismo país, hecho poco después, abre la galería.
+    if(hovered && hovered === lastTapEntry && (now - lastTapTime) < DOUBLE_TAP_MS){
+      handleClick();
+      lastTapEntry = null;
+    } else {
+      lastTapEntry = hovered;
+      lastTapTime = now;
+    }
   }
   setTimeout(function(){ autoRotate = true; }, 2200);
 });
