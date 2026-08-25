@@ -575,6 +575,12 @@ fetch('data.json')
 
 function boot(){
 
+// Semilla al azar por carga de página: se le suma a los seeds de las fotos
+// de relleno (picsum) para que cambien en cada visita/recarga, en vez de
+// mostrar siempre la misma imagen. Un solo valor compartido, así distintas
+// fotos de relleno siguen siendo distintas entre sí dentro de la misma carga.
+var RANDOM_SEED = Math.floor(Math.random() * 1e6);
+
 /* ============ i18n ============ */
 var lang = 'es';
 var T = {
@@ -1028,7 +1034,7 @@ function openGalleryPanel(cfg){
         imgUrl = typeof photoEntry === 'string' ? photoEntry : photoEntry.url;
         title = (typeof photoEntry === 'object' && photoEntry.caption) ? photoEntry.caption : t('studio')(cfg.title, i);
       } else {
-        var seed = cfg.seedPrefix + '-' + i;
+        var seed = cfg.seedPrefix + '-' + i + '-' + RANDOM_SEED;
         var w = 800, h = (i % 3 === 0) ? 560 : 1000;
         imgUrl = 'https://picsum.photos/seed/'+seed+'/'+w+'/'+h;
         title = t('studio')(cfg.title, i);
@@ -1086,7 +1092,7 @@ function buildHubTiles(){
     var tile = document.createElement('div');
     tile.className = 'hub-tile' + (cat.bw ? ' bw-tile' : '');
     tile.innerHTML =
-      '<img src="https://picsum.photos/seed/'+cat.key+'-cover/700/900" loading="lazy" alt="'+cname2(cat)+'">' +
+      '<img src="https://picsum.photos/seed/'+cat.key+'-cover-'+RANDOM_SEED+'/700/900" loading="lazy" alt="'+cname2(cat)+'">' +
       '<div class="hub-tile-overlay"><div class="hub-tile-n">'+String(idx+1).padStart(2,'0')+'</div><h3>'+cname2(cat)+'</h3><p>'+cdesc2(cat)+'</p></div>';
     tile.addEventListener('click', function(){
       lastOpened = {kind:'category', cat:cat, returnTo:'hub'};
@@ -1097,7 +1103,7 @@ function buildHubTiles(){
   var paisesTile = document.createElement('div');
   paisesTile.className = 'hub-tile';
   paisesTile.innerHTML =
-    '<img src="https://picsum.photos/seed/paises-cover/700/900" loading="lazy" alt="Countries">' +
+    '<img src="https://picsum.photos/seed/paises-cover-'+RANDOM_SEED+'/700/900" loading="lazy" alt="Countries">' +
     '<div class="hub-tile-overlay"><div class="hub-tile-n">06</div><h3>'+t('hubPaises')+'</h3><p>'+(visited.length+visitedEmpty.length)+t('hubPaisesDesc')+'</p></div>';
   paisesTile.addEventListener('click', openCountriesOv);
   hubGrid.appendChild(paisesTile);
@@ -1118,7 +1124,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.key+'-1/400/400" loading="lazy" alt="'+cname(c)+'"><span class="badge mono">'+t('badgeGallery')+'</span></div>' +
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.key+'-1-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'"><span class="badge mono">'+t('badgeGallery')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+formatCoords(c)+'</span>';
     card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
     gGallery.appendChild(card);
@@ -1127,7 +1133,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-e/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-e-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
     card.addEventListener('click', function(){ openEmptyPanel(c, 'countries'); });
     gEmpty.appendChild(card);
@@ -1136,7 +1142,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card disabled';
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-x/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(1) brightness(0.5);"><span class="badge mono">'+t('badgeUpcoming')+'</span></div>' +
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-x-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(1) brightness(0.5);"><span class="badge mono">'+t('badgeUpcoming')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+c.date+'</span>';
     gUpcoming.appendChild(card);
   });
