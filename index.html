@@ -156,7 +156,14 @@
   .photo-frame{position:relative; width:100%; aspect-ratio: 4/5; overflow:hidden; background:var(--bg-alt);}
   .photo-frame::after, .hub-tile::after, .country-thumb::after, .pp-frame::before{
     content:''; position:absolute; inset:0; z-index:3; pointer-events:none;
-    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='110'%3E%3Ctext%20x='-20'%20y='75'%20font-family='JetBrains%20Mono,monospace'%20font-size='14'%20fill='white'%20fill-opacity='0.4'%20transform='rotate(-22%20110%2055)'%3Ecantbelievetheview%3C/text%3E%3C/svg%3E");
+    /* Fallback con la fuente genérica del sistema — se reemplaza por
+       --watermark-tile en cuanto JS confirma que JetBrains Mono (la
+       tipografía real del sitio) terminó de cargar. Un SVG usado como
+       background-image de CSS vive en un documento aparte y NO tiene acceso
+       a las fuentes que cargó la página — por eso este texto, sin el JS de
+       abajo, siempre cae a la monoespaciada del sistema por más que se le
+       pida JetBrains Mono acá. */
+    background-image:var(--watermark-tile, url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='220'%20height='110'%3E%3Ctext%20x='-20'%20y='75'%20font-family='JetBrains%20Mono,monospace'%20font-size='14'%20fill='white'%20fill-opacity='0.4'%20transform='rotate(-22%20110%2055)'%3Ecantbelievetheview%3C/text%3E%3C/svg%3E"));
     background-repeat:repeat;
     background-size:220px 110px;
     mix-blend-mode:overlay;
@@ -551,6 +558,39 @@
    arranca el resto del sitio (boot) una vez que el fetch resuelve. Así el
    bot de Telegram puede editar data.json directamente sin tocar este HTML. */
 var visited, visitedEmpty, upcoming, categories, MATERIALS, DIGITAL_PRICE, MICROSTATES;
+
+/* ============ MARCA DE AGUA REPETIDA (canvas, no SVG) ============
+   La versión CSS (más abajo, background-image de .photo-frame::after etc.)
+   es un SVG cargado como imagen de fondo — ese SVG vive en su propio
+   documento y no puede usar las tipografías que carga esta página (por más
+   que le pidamos JetBrains Mono, cae siempre a la monoespaciada del
+   sistema). Un <canvas>, en cambio, sí dibuja con las fuentes ya cargadas
+   por la página — así que generamos acá el mismo patrón, con la fuente
+   real, y lo publicamos como variable CSS para que el fallback de arriba
+   quede reemplazado apenas esté listo. */
+function buildWatermarkTile(){
+  var c = document.createElement('canvas');
+  c.width = 220; c.height = 110;
+  var ctx = c.getContext('2d');
+  ctx.save();
+  ctx.translate(110, 55);
+  ctx.rotate(-22 * Math.PI / 180);
+  ctx.translate(-110, -55);
+  ctx.font = '14px "JetBrains Mono", monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('cantbelievetheview', -20, 75);
+  ctx.restore();
+  document.documentElement.style.setProperty('--watermark-tile', 'url(' + c.toDataURL('image/png') + ')');
+}
+if(document.fonts && document.fonts.load){
+  document.fonts.load('14px "JetBrains Mono"').then(buildWatermarkTile).catch(function(){});
+  // Por si la carga de arriba resuelve antes de que el navegador termine de
+  // aplicar la fuente en todos lados — nos aseguramos con "ready" también.
+  document.fonts.ready.then(buildWatermarkTile).catch(function(){});
+} else {
+  buildWatermarkTile(); // navegador viejo sin Font Loading API — mejor con system font que nada
+}
 
 // Backend de checkout (Stripe + Prodigi) — repo cantbelievetheview-api.
 // Actualizar esta URL si algún día se deploya bajo un subdominio propio
