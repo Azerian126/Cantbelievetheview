@@ -34,8 +34,13 @@
   a{color:inherit; text-decoration:none;}
   button{font-family:inherit; cursor:pointer;}
 
-  nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:26px 5vw; mix-blend-mode:difference; background:transparent;}
-  body.light nav{mix-blend-mode:normal; background:linear-gradient(var(--bg) 0%, rgba(250,248,243,0.85) 70%, transparent 100%); padding-bottom:34px;}
+  /* El nav siempre se mantiene claro (igual que en el tema oscuro), sin
+     importar el tema del sitio — el fondo del globo (.hero) también se
+     mantiene oscuro siempre, así que el nav necesita seguir siendo claro
+     encima para que se lea. mix-blend-mode:difference lo autoajusta si en
+     algún momento queda sobre una sección clara al hacer scroll. */
+  nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:26px 5vw; mix-blend-mode:difference; background:transparent; color:#edeae2;}
+  nav .theme-btn, nav .lang-btn, nav .pill-btn, nav .nav-link{color:#edeae2; border-color:#edeae2;}
   .logo{font-family:'Fraunces', serif; font-weight:400; font-size:15px; letter-spacing:0.04em; text-transform:lowercase;}
   .logo span{color:var(--amber-bright);}
   .nav-right{display:flex; align-items:center; gap:28px;}
@@ -51,6 +56,10 @@
   .mobile-nav-controls{display:flex; gap:10px; padding:12px 20px 4px; margin-top:4px; border-top:1px solid var(--line);}
 
   .hero{position:relative; height:100vh; width:100%; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse at 50% 40%, var(--bg-alt) 0%, var(--bg) 70%);}
+  /* El globo siempre vive sobre un fondo oscuro — en tema claro, gris oscuro
+     en vez del negro casi puro del tema oscuro, pero nunca blanco/crema
+     (rompía el contraste del globo y del nav). */
+  body.light .hero{background:radial-gradient(ellipse at 50% 40%, #3d3f3a 0%, #232420 70%);}
   /* pan-y: el swipe vertical lo maneja el navegador (scroll normal de la
      página — el canvas cubre toda la primera pantalla en mobile, con
      touch-action:none quedaba imposible bajar). El swipe horizontal lo
@@ -59,7 +68,11 @@
   #globe-canvas:active{cursor:grabbing;}
   .hero-copy{position:absolute; top:15vh; left:0; right:0; text-align:center; pointer-events:none; z-index:2;}
   .hero-eyebrow{font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--overlay-ink-dim); margin-bottom:18px;}
-  .hero-title{font-family:'Fraunces', serif; font-weight:300; font-size:clamp(32px, 5.2vw, 70px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
+  /* font-variation-settings fija el eje "opsz" (optical size) de Fraunces en
+     un valor alto — sin esto, el navegador puede quedarse en un opsz bajo,
+     que en Fraunces da letras con un trazo bien ondulado/"wonky" a propósito
+     del diseño de la fuente, poco legible a este tamaño. */
+  .hero-title{font-family:'Fraunces', serif; font-weight:300; font-optical-sizing:auto; font-variation-settings:'opsz' 90; font-size:clamp(32px, 5.2vw, 70px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
   .hero-title em{font-style:italic; color:var(--amber-bright); font-weight:400;}
   .hero-bottom{position:absolute; bottom:34px; left:5vw; right:5vw; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; pointer-events:none;}
   .hero-quote{max-width:320px; font-size:14px; line-height:1.65; color:var(--overlay-ink); font-style:italic; font-family:'Fraunces', serif; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
@@ -168,6 +181,7 @@
   .material-toggle{display:flex;}
   .material-toggle button{flex:1; padding:10px 6px; background:none; border:none; font-family:'JetBrains Mono', monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.03em; color:rgba(11,13,12,0.5); border-bottom:2px solid rgba(0,0,0,0.08);}
   .material-toggle button.active{color:var(--bg); border-bottom-color:var(--amber);}
+  .size-list{max-height:280px; overflow-y:auto;}
   .size-list button{display:flex; justify-content:space-between; width:100%; padding:10px 12px; background:none; border:none; font-family:'JetBrains Mono', monospace; font-size:11px; border-bottom:1px solid rgba(0,0,0,0.08);}
   .size-list button:hover{background:rgba(0,0,0,0.06);}
   .size-list button:last-child{border-bottom:none;}
@@ -536,7 +550,7 @@
    misma carpeta que este archivo. Este bloque solo declara las variables y
    arranca el resto del sitio (boot) una vez que el fetch resuelve. Así el
    bot de Telegram puede editar data.json directamente sin tocar este HTML. */
-var visited, visitedEmpty, upcoming, categories, MATERIALS, SIZES, DIGITAL_PRICE, MICROSTATES;
+var visited, visitedEmpty, upcoming, categories, MATERIALS, DIGITAL_PRICE, MICROSTATES;
 
 // Backend de checkout (Stripe + Prodigi) — repo cantbelievetheview-api.
 // Actualizar esta URL si algún día se deploya bajo un subdominio propio
@@ -554,7 +568,6 @@ fetch('data.json')
     upcoming = DATA.upcoming;
     categories = DATA.categories;
     MATERIALS = DATA.materials;
-    SIZES = DATA.sizes;
     DIGITAL_PRICE = DATA.digitalPrice;
     MICROSTATES = DATA.microstates;
 
@@ -952,8 +965,8 @@ function buildBuyRow(title, group, imgUrl){
 
   function renderSizeList(){
     sizeList.innerHTML = '';
-    SIZES.forEach(function(size){
-      var price = size.price + currentMaterial.mod;
+    currentMaterial.sizes.forEach(function(size){
+      var price = size.price;
       var sBtn = document.createElement('button');
       sBtn.type = 'button';
       sBtn.innerHTML = '<span>'+size.label+'</span><span>'+fmt(price)+'</span>';
