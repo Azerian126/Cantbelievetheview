@@ -822,7 +822,7 @@ function startStripeCheckout(){
 
   var email = (document.getElementById('checkout-email').value || '').trim();
   var items = cart.map(function(it){
-    return {type:it.type, title:it.title, group:it.group, photoUrl:it.img, materialId:it.materialId||null, sizeId:it.sizeId||null};
+    return {type:it.type, title:it.title, group:it.group, photoId:it.photoId, materialId:it.materialId||null, sizeId:it.sizeId||null};
   });
 
   fetch(API_BASE + '/api/checkout', {
@@ -925,7 +925,7 @@ function showPreview(imgUrl, size, material){
 function hidePreview(){ ppEl.classList.remove('show'); }
 
 /* ============ REUSABLE PRINT WIDGET (no nested buttons) ============ */
-function buildBuyRow(title, group, imgUrl){
+function buildBuyRow(title, group, imgUrl, photoId){
   var row = document.createElement('div');
   row.className = 'buy-row';
 
@@ -933,7 +933,7 @@ function buildBuyRow(title, group, imgUrl){
   digitalBtn.className = 'buy-btn digital';
   digitalBtn.textContent = t('digital') + ' · ' + fmt(DIGITAL_PRICE);
   digitalBtn.addEventListener('click', function(){
-    addToCart({title:title, group:group, variant:t('digital'), price:DIGITAL_PRICE, img:imgUrl, type:'digital'});
+    addToCart({title:title, group:group, variant:t('digital'), price:DIGITAL_PRICE, img:imgUrl, photoId:photoId, type:'digital'});
   });
 
   var printWrap = document.createElement('div');
@@ -977,7 +977,7 @@ function buildBuyRow(title, group, imgUrl){
       sBtn.addEventListener('mouseenter', function(){ showPreview(imgUrl, size, currentMaterial); });
       sBtn.addEventListener('mouseleave', hidePreview);
       sBtn.addEventListener('click', function(){
-        addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, type:'print', materialId:currentMaterial.id, sizeId:size.id});
+        addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:size.id});
         pop.classList.remove('show');
         hidePreview();
       });
@@ -1046,14 +1046,18 @@ function openGalleryPanel(cfg){
     var count = realPhotos ? realPhotos.length : (cfg.count || 6);
     for(var i=1;i<=count;i++){
       var photoEntry = realPhotos ? realPhotos[i-1] : null;
-      var imgUrl, title;
+      var imgUrl, title, photoId;
       if(photoEntry){
-        imgUrl = typeof photoEntry === 'string' ? photoEntry : photoEntry.url;
-        title = (typeof photoEntry === 'object' && photoEntry.caption) ? photoEntry.caption : t('studio')(cfg.title, i);
+        // displayUrl (con marca de agua) — nunca la URL limpia, esa vive
+        // aparte en el backend y solo se resuelve después de pagar.
+        imgUrl = photoEntry.displayUrl;
+        photoId = photoEntry.id;
+        title = photoEntry.caption || t('studio')(cfg.title, i);
       } else {
         var seed = cfg.seedPrefix + '-' + i + '-' + RANDOM_SEED;
         var w = 800, h = (i % 3 === 0) ? 560 : 1000;
         imgUrl = 'https://picsum.photos/seed/'+seed+'/'+w+'/'+h;
+        photoId = null; // foto de relleno, no existe de verdad — no se puede comprar
         title = t('studio')(cfg.title, i);
       }
 
@@ -1082,7 +1086,7 @@ function openGalleryPanel(cfg){
         (photoCoordsText ? '<span class="photo-coords">'+photoCoordsText+'</span>' : '') +
         '</div><span class="ci-price mono" style="font-size:11px; white-space:nowrap;">'+t('fromPrice')+fmt(DIGITAL_PRICE)+'</span>';
       card.appendChild(frame); card.appendChild(meta);
-      card.appendChild(buildBuyRow(title, cfg.title, imgUrl));
+      card.appendChild(buildBuyRow(title, cfg.title, imgUrl, photoId));
       grid.appendChild(card);
     }
     body.appendChild(grid);

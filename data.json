@@ -676,13 +676,7 @@
       "nameEn": "Black & White",
       "desc": "Contraste, silencio y forma pura, sin el ruido del color.",
       "descEn": "Contrast, silence, and pure form, without the noise of color.",
-      "bw": true,
-      "photos": [
-        {
-          "url": "https://res.cloudinary.com/demo/image/upload/sample.jpg",
-          "caption": "FOTO DE PRUEBA — sacar antes de publicar"
-        }
-      ]
+      "bw": true
     },
     {
       "key": "retratos",
