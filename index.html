@@ -1074,7 +1074,11 @@ function openGalleryPanel(cfg){
   var body = document.getElementById('panel-body');
   body.innerHTML = '';
 
-  if(cfg.empty){
+  // Sin fotos reales todavía (país recién agregado o categoría sin tags) →
+  // mismo estado vacío honesto que un país sin galería, en vez de rellenar
+  // con fotos de stock de Picsum que no tienen nada que ver con el sitio.
+  var hasRealPhotos = cfg.photos && cfg.photos.length > 0;
+  if(cfg.empty || !hasRealPhotos){
     var es = document.createElement('div');
     es.className = 'empty-state';
     es.innerHTML = '<div class="ring"></div><p>'+t('emptyMsg')(cfg.title)+'</p><div class="sub mono">'+t('emptyHint')+'</div>';
@@ -1082,24 +1086,15 @@ function openGalleryPanel(cfg){
   } else {
     var grid = document.createElement('div');
     grid.className = 'gallery-grid';
-    var realPhotos = cfg.photos && cfg.photos.length ? cfg.photos : null;
-    var count = realPhotos ? realPhotos.length : (cfg.count || 6);
+    var realPhotos = cfg.photos;
+    var count = realPhotos.length;
     for(var i=1;i<=count;i++){
-      var photoEntry = realPhotos ? realPhotos[i-1] : null;
-      var imgUrl, title, photoId;
-      if(photoEntry){
-        // displayUrl (con marca de agua) — nunca la URL limpia, esa vive
-        // aparte en el backend y solo se resuelve después de pagar.
-        imgUrl = photoEntry.displayUrl;
-        photoId = photoEntry.id;
-        title = photoEntry.caption || t('studio')(cfg.title, i);
-      } else {
-        var seed = cfg.seedPrefix + '-' + i + '-' + RANDOM_SEED;
-        var w = 800, h = (i % 3 === 0) ? 560 : 1000;
-        imgUrl = 'https://picsum.photos/seed/'+seed+'/'+w+'/'+h;
-        photoId = null; // foto de relleno, no existe de verdad — no se puede comprar
-        title = t('studio')(cfg.title, i);
-      }
+      var photoEntry = realPhotos[i-1];
+      // displayUrl (con marca de agua) — nunca la URL limpia, esa vive
+      // aparte en el backend y solo se resuelve después de pagar.
+      var imgUrl = photoEntry.displayUrl;
+      var photoId = photoEntry.id;
+      var title = photoEntry.caption || t('studio')(cfg.title, i);
 
       var photoCoordsText = '';
       var seedKey = cfg.seedPrefix + '-' + i;

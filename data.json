@@ -164,7 +164,7 @@
     {
       "key": "feroe",
       "name": "Islas Feroe",
-      "lat": 62.0,
+      "lat": 62,
       "lng": -6.79,
       "w": 12,
       "h": 12,
@@ -583,7 +583,7 @@
     },
     {
       "name": "Antártida",
-      "lat": -78.0,
+      "lat": -78,
       "lng": 0.07,
       "w": 50,
       "h": 16,
@@ -698,15 +698,7 @@
       "nameEn": "Buildings",
       "desc": "Arquitectura, líneas y la escala humana frente a lo construido.",
       "descEn": "Architecture, lines, and human scale against what is built.",
-      "photos": [
-        {
-          "id": "IMG_4098",
-          "lat": 3.1579,
-          "lng": 101.7116,
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/IMG_4098",
-          "caption": "Torres Petronas, Kuala Lumpur"
-        }
-      ]
+      "photos": []
     },
     {
       "key": "modelos",
@@ -977,21 +969,21 @@
         {
           "id": "8x8",
           "label": "8×8″ · 20×20cm",
-          "price": 62.0,
+          "price": 62,
           "w": 20,
           "h": 20
         },
         {
           "id": "8x10",
           "label": "8×10″ · 20×25cm",
-          "price": 81.0,
+          "price": 81,
           "w": 20,
           "h": 25
         },
         {
           "id": "8x12",
           "label": "8×12″ · 20×30cm",
-          "price": 81.0,
+          "price": 81,
           "w": 20,
           "h": 30
         },
@@ -1005,7 +997,7 @@
         {
           "id": "10x10",
           "label": "10×10″ · 25×25cm",
-          "price": 81.0,
+          "price": 81,
           "w": 25,
           "h": 25
         },
@@ -1075,7 +1067,7 @@
         {
           "id": "20x30",
           "label": "20×30″ · 51×76cm",
-          "price": 228.0,
+          "price": 228,
           "w": 51,
           "h": 76
         },
@@ -1096,14 +1088,14 @@
         {
           "id": "24x36",
           "label": "24×36″ · 61×91cm",
-          "price": 303.0,
+          "price": 303,
           "w": 61,
           "h": 91
         },
         {
           "id": "30x30",
           "label": "30×30″ · 76×76cm",
-          "price": 303.0,
+          "price": 303,
           "w": 76,
           "h": 76
         },
