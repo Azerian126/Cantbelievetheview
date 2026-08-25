@@ -1157,7 +1157,7 @@ function buildHubTiles(){
       '<div class="hub-tile-overlay"><div class="hub-tile-n">'+String(idx+1).padStart(2,'0')+'</div><h3>'+cname2(cat)+'</h3><p>'+cdesc2(cat)+'</p></div>';
     tile.addEventListener('click', function(){
       lastOpened = {kind:'category', cat:cat, returnTo:'hub'};
-      openGalleryPanel({title:cname2(cat), coordsText:null, desc:cdesc2(cat), seedPrefix:cat.key, count:9, bw:!!cat.bw, photos:cat.photos, returnTo:'hub'});
+      openGalleryPanel({title:cname2(cat), coordsText:null, desc:cdesc2(cat), seedPrefix:cat.key, count:9, bw:!!cat.bw, photos:photosForCategory(cat), returnTo:'hub'});
     });
     hubGrid.appendChild(tile);
   });
@@ -1171,6 +1171,21 @@ function buildHubTiles(){
 }
 function cname2(cat){ return lang==='en' ? cat.nameEn : cat.name; }
 function cdesc2(cat){ return lang==='en' ? cat.descEn : cat.desc; }
+// Una categoría muestra sus fotos propias (las que no tienen país, ej. Modelos)
+// más cualquier foto de un país que además haya sido etiquetada con esta
+// categoría (photoEntry.categoryKey) — así una foto puede aparecer a la vez
+// en la página de su país y en la de su categoría temática, sin duplicarla
+// en data.json.
+function photosForCategory(cat){
+  var own = cat.photos || [];
+  var tagged = [];
+  visited.forEach(function(c){
+    (c.photos||[]).forEach(function(p){
+      if(p && p.categoryKey === cat.key) tagged.push(p);
+    });
+  });
+  return own.concat(tagged);
+}
 
 /* ============ COUNTRIES GRIDS ============ */
 var gGallery = document.getElementById('countries-grid-gallery');
@@ -1271,7 +1286,7 @@ function setLang(newLang){
   if(panel.classList.contains('open') && lastOpened){
     if(lastOpened.kind==='country') openCountryPanel(lastOpened.c, lastOpened.returnTo);
     else if(lastOpened.kind==='empty') openEmptyPanel(lastOpened.c, lastOpened.returnTo);
-    else if(lastOpened.kind==='category') openGalleryPanel({title:cname2(lastOpened.cat), coordsText:null, desc:cdesc2(lastOpened.cat), seedPrefix:lastOpened.cat.key, count:9, bw:!!lastOpened.cat.bw, photos:lastOpened.cat.photos, returnTo:lastOpened.returnTo});
+    else if(lastOpened.kind==='category') openGalleryPanel({title:cname2(lastOpened.cat), coordsText:null, desc:cdesc2(lastOpened.cat), seedPrefix:lastOpened.cat.key, count:9, bw:!!lastOpened.cat.bw, photos:photosForCategory(lastOpened.cat), returnTo:lastOpened.returnTo});
   }
 }
 langBtns.forEach(function(b){ b.addEventListener('click', function(){ setLang(lang==='es' ? 'en' : 'es'); }); });
