@@ -402,13 +402,13 @@
   <div class="wrap about-grid">
     <div>
       <div class="section-label" data-i18n="aboutLabel">Sobre el trabajo</div>
-      <h2 data-i18n="aboutH2">Sesenta y un países, un mismo asombro.</h2>
+      <h2 id="about-h2">Sesenta y un países, un mismo asombro.</h2>
     </div>
     <div>
       <p data-i18n="aboutP1">Cada fotografía en este archivo nace del mismo impulso: quedarme quieto un segundo más de lo razonable frente a algo que no me pertenece. El globo interactivo es mi cuaderno de bitácora — pero si preferís explorar por tema en vez de por lugar, la sección Galería reúne todo por categoría.</p>
       <p data-i18n="aboutP2">Este sitio es un work-in-progress permanente: a medida que subo material nuevo, los países pasan de "sin fotos aún" a tener su propia galería.</p>
       <ul class="about-list">
-        <li><span class="k" data-i18n="aboutK1">Con base en</span><span class="v">Buenos Aires, Argentina</span></li>
+        <li><span class="k" data-i18n="aboutK1">Con base en</span><span class="v">Caracas · Medellín · Madrid · Rotterdam · Panamá</span></li>
         <li><span class="k" data-i18n="aboutK2">Equipo</span><span class="v" data-i18n="aboutV2">Formato completo &amp; medio formato</span></li>
         <li><span class="k" data-i18n="aboutK3">Impresiones</span><span class="v" data-i18n="aboutV3">Papel de algodón o aluminio, tirada limitada</span></li>
         <li><span class="k" data-i18n="aboutK4">Licencias</span><span class="v" data-i18n="aboutV4">Uso editorial y comercial disponible</span></li>
@@ -644,7 +644,7 @@ var T = {
     heroHint:'arrastrá el globo · pasá el mouse sobre un país',
     heroQuote:'Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.',
     statVisited:'PAÍSES VISITADOS', statOf:'DE', statGallery:'CON GALERÍA', statEmpty:'SIN FOTOS AÚN', statUpcoming:'PRÓXIMOS DESTINOS',
-    aboutLabel:'Sobre el trabajo', aboutH2:'Sesenta y un países, un mismo asombro.',
+    aboutLabel:'Sobre el trabajo', aboutH2:function(n){ return n+' países, un mismo asombro.'; },
     aboutP1:'Cada fotografía en este archivo nace del mismo impulso: quedarme quieto un segundo más de lo razonable frente a algo que no me pertenece. El globo interactivo es mi cuaderno de bitácora — pero si preferís explorar por tema en vez de por lugar, la sección Galería reúne todo por categoría.',
     aboutP2:'Este sitio es un work-in-progress permanente: a medida que subo material nuevo, los países pasan de "sin fotos aún" a tener su propia galería.',
     aboutK1:'Con base en', aboutK2:'Equipo', aboutV2:'Formato completo & medio formato',
@@ -686,7 +686,7 @@ var T = {
     heroHint:'drag the globe · hover over a country',
     heroQuote:"Hover over a country: if the border lights up, it has a gallery. If it stays dim, not yet.",
     statVisited:'COUNTRIES VISITED', statOf:'OF', statGallery:'WITH GALLERY', statEmpty:'NO PHOTOS YET', statUpcoming:'UPCOMING TRIPS',
-    aboutLabel:'About the work', aboutH2:'Sixty-one countries, the same sense of wonder.',
+    aboutLabel:'About the work', aboutH2:function(n){ return n+' countries, the same sense of wonder.'; },
     aboutP1:"Every photograph in this archive comes from the same impulse: staying still one second longer than reasonable in front of something that isn't mine. The interactive globe is my logbook — but if you'd rather browse by theme than by place, the Gallery section groups everything by category.",
     aboutP2:'This site is a permanent work in progress: as I upload new material, countries move from "no photos yet" to having their own gallery.',
     aboutK1:'Based in', aboutK2:'Gear', aboutV2:'Full frame & medium format',
@@ -752,6 +752,7 @@ function updateStatsText(){
   document.getElementById('stat-upcoming').textContent = upcoming.length;
   document.getElementById('countries-summary').textContent =
     t('tCountriesSummary')(visited.length+visitedEmpty.length, withPhotos, noPhotos, upcoming.length);
+  document.getElementById('about-h2').textContent = t('aboutH2')(visited.length+visitedEmpty.length);
 }
 updateStatsText();
 
