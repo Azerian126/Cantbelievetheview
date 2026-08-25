@@ -737,13 +737,21 @@ function applyStaticI18n(){
   });
 }
 
+// "visited" trae ficha propia (desc, coords) pero eso no implica que ya
+// tenga fotos reales cargadas — "con galería" se cuenta por fotos de
+// verdad, no por estar en esta lista (ver también buildCountriesGrids).
+function countriesWithPhotos(){ return visited.filter(function(c){ return c.photos && c.photos.length > 0; }); }
+function countriesVisitedNoPhotos(){ return visited.filter(function(c){ return !(c.photos && c.photos.length > 0); }); }
+
 function updateStatsText(){
+  var withPhotos = countriesWithPhotos().length;
+  var noPhotos = visitedEmpty.length + countriesVisitedNoPhotos().length;
   document.getElementById('stat-visited').textContent = visited.length + visitedEmpty.length;
-  document.getElementById('stat-gallery').textContent = visited.length;
-  document.getElementById('stat-empty').textContent = visitedEmpty.length;
+  document.getElementById('stat-gallery').textContent = withPhotos;
+  document.getElementById('stat-empty').textContent = noPhotos;
   document.getElementById('stat-upcoming').textContent = upcoming.length;
   document.getElementById('countries-summary').textContent =
-    t('tCountriesSummary')(visited.length+visitedEmpty.length, visited.length, visitedEmpty.length, upcoming.length);
+    t('tCountriesSummary')(visited.length+visitedEmpty.length, withPhotos, noPhotos, upcoming.length);
 }
 updateStatsText();
 
@@ -1188,17 +1196,31 @@ var gEmpty = document.getElementById('countries-grid-empty');
 var gUpcoming = document.getElementById('countries-grid-upcoming');
 function buildCountriesGrids(){
   gGallery.innerHTML = ''; gEmpty.innerHTML = ''; gUpcoming.innerHTML = '';
-  document.getElementById('count-gallery').textContent = '('+visited.length+')';
-  document.getElementById('count-empty').textContent = '('+visitedEmpty.length+')';
+  var withPhotos = countriesWithPhotos();
+  var visitedNoPhotos = countriesVisitedNoPhotos();
+  document.getElementById('count-gallery').textContent = '('+withPhotos.length+')';
+  document.getElementById('count-empty').textContent = '('+(visitedNoPhotos.length + visitedEmpty.length)+')';
   document.getElementById('count-upcoming').textContent = '('+upcoming.length+')';
-  visited.forEach(function(c){
+  withPhotos.forEach(function(c){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.key+'-1-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'"><span class="badge mono">'+t('badgeGallery')+'</span></div>' +
+      '<div class="country-thumb"><img src="'+c.photos[0].displayUrl+'" loading="lazy" alt="'+cname(c)+'"><span class="badge mono">'+t('badgeGallery')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+formatCoords(c)+'</span>';
     card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
     gGallery.appendChild(card);
+  });
+  // Tiene ficha (desc/coords) pero todavía sin fotos reales — mismo trato
+  // visual que un país sin ficha: nada de "con galería" hasta que haya
+  // una foto de verdad adentro.
+  visitedNoPhotos.forEach(function(c){
+    var card = document.createElement('div');
+    card.className = 'country-card';
+    card.innerHTML =
+      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.key+'-e-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
+    card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
+    gEmpty.appendChild(card);
   });
   visitedEmpty.forEach(function(c){
     var card = document.createElement('div');

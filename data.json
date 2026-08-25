@@ -1,535 +1,554 @@
 {
-  "visited": [
+  "visited": [],
+  "visitedEmpty": [
     {
-      "key": "peru",
-      "name": "Perú",
-      "lat": -12.05,
-      "lng": -77.03,
-      "w": 26,
-      "h": 22,
-      "desc": "Andes, niebla y ruinas incas al amanecer.",
-      "descEn": "Andes, mist, and Inca ruins at dawn."
-    },
-    {
-      "key": "islandia",
-      "name": "Islandia",
-      "lat": 64.13,
-      "lng": -21.82,
-      "w": 22,
-      "h": 16,
-      "desc": "Glaciares, auroras y una luz que no se apaga.",
-      "descEn": "Glaciers, auroras, and light that never fades."
-    },
-    {
-      "key": "nz",
-      "name": "Nueva Zelanda",
-      "lat": -41.29,
-      "lng": 174.78,
-      "w": 14,
-      "h": 26,
-      "desc": "Fiordos verdes y un silencio casi absoluto.",
-      "descEn": "Green fjords and an almost total silence."
-    },
-    {
-      "key": "japon",
-      "name": "Japón",
-      "lat": 35.68,
-      "lng": 139.69,
-      "w": 12,
-      "h": 26,
-      "desc": "Templos, neón y cerezos en flor.",
-      "descEn": "Temples, neon, and cherry blossoms."
-    },
-    {
-      "key": "noruega",
-      "name": "Noruega",
-      "lat": 59.91,
-      "lng": 10.75,
-      "w": 16,
-      "h": 30,
-      "desc": "Fiordos, montañas y cielos de medianoche.",
-      "descEn": "Fjords, mountains, and midnight skies."
-    },
-    {
-      "key": "marruecos",
-      "name": "Marruecos",
-      "lat": 31.63,
-      "lng": -7.99,
-      "w": 24,
-      "h": 18,
-      "desc": "Dunas doradas y callejones color añil.",
-      "descEn": "Golden dunes and indigo alleyways."
-    },
-    {
-      "key": "namibia",
-      "name": "Namibia",
-      "lat": -22.56,
-      "lng": 17.08,
-      "w": 20,
-      "h": 24,
-      "desc": "Dunas rojas frente al Atlántico helado.",
-      "descEn": "Red dunes facing the icy Atlantic."
-    },
-    {
-      "key": "vietnam",
-      "name": "Vietnam",
-      "lat": 21.03,
-      "lng": 105.85,
-      "w": 10,
-      "h": 28,
-      "desc": "Arrozales en terraza y niebla sobre la bahía.",
-      "descEn": "Terraced rice fields and mist over the bay."
-    },
-    {
-      "key": "chile",
-      "name": "Chile",
-      "lat": -33.45,
-      "lng": -70.67,
-      "w": 10,
-      "h": 34,
-      "desc": "Desiertos, volcanes y el fin del mundo.",
-      "descEn": "Deserts, volcanoes, and the end of the world."
-    },
-    {
-      "key": "nepal",
-      "name": "Nepal",
-      "lat": 27.72,
-      "lng": 85.32,
-      "w": 22,
-      "h": 12,
-      "desc": "Picos de ocho mil metros y banderas de oración.",
-      "descEn": "Eight-thousand-meter peaks and prayer flags."
-    },
-    {
-      "key": "escocia",
-      "name": "Escocia",
-      "lat": 55.95,
-      "lng": -3.19,
-      "w": 16,
-      "h": 20,
-      "desc": "Páramos brumosos y castillos en ruinas.",
-      "descEn": "Foggy moors and ruined castles.",
-      "nameEn": "Scotland"
-    },
-    {
-      "key": "grecia",
-      "name": "Grecia",
-      "lat": 36.39,
-      "lng": 25.46,
-      "w": 22,
-      "h": 20,
-      "desc": "Blanco y azul sobre acantilados volcánicos.",
-      "descEn": "White and blue over volcanic cliffs."
-    },
-    {
-      "key": "canada",
-      "name": "Canadá",
-      "lat": 51.18,
-      "lng": -115.57,
-      "w": 34,
-      "h": 24,
-      "desc": "Lagos turquesa entre picos nevados.",
-      "descEn": "Turquoise lakes among snow-capped peaks."
+      "key": "antigua-barbuda",
+      "name": "Antigua y Barbuda",
+      "nameEn": "Antigua and Barbuda",
+      "lat": 17.12,
+      "lng": -61.85,
+      "w": 3,
+      "h": 2
     },
     {
       "key": "argentina",
       "name": "Argentina",
-      "lat": -50.34,
-      "lng": -72.26,
-      "w": 14,
-      "h": 34,
-      "desc": "Glaciares azules en la Patagonia.",
-      "descEn": "Blue glaciers in Patagonia."
-    },
-    {
-      "key": "egipto",
-      "name": "Egipto",
-      "lat": 30.04,
-      "lng": 31.24,
+      "nameEn": "Argentina",
+      "lat": -34.61,
+      "lng": -58.38,
       "w": 20,
-      "h": 22,
-      "desc": "Templos de piedra y el desierto infinito.",
-      "descEn": "Stone temples and endless desert."
+      "h": 48
     },
     {
-      "key": "indonesia",
-      "name": "Indonesia",
-      "lat": -8.34,
-      "lng": 115.09,
-      "w": 30,
-      "h": 14,
-      "desc": "Arrozales, templos y volcanes activos.",
-      "descEn": "Rice terraces, temples, and active volcanoes."
-    },
-    {
-      "key": "feroe",
-      "name": "Islas Feroe",
-      "lat": 62,
-      "lng": -6.79,
-      "w": 12,
-      "h": 12,
-      "desc": "Acantilados verdes entre niebla y océano.",
-      "descEn": "Green cliffs between fog and ocean."
-    },
-    {
-      "key": "jordania",
-      "name": "Jordania",
-      "lat": 30.33,
-      "lng": 35.44,
-      "w": 18,
-      "h": 20,
-      "desc": "Cañones de piedra rosa esculpidos por el tiempo.",
-      "descEn": "Pink stone canyons carved by time."
-    },
-    {
-      "key": "eeuu",
-      "name": "Estados Unidos",
-      "lat": 37.87,
-      "lng": -119.54,
-      "w": 34,
-      "h": 22,
-      "desc": "Secuoyas gigantes y valles de granito.",
-      "descEn": "Giant sequoias and granite valleys."
-    },
-    {
-      "key": "sudafrica",
-      "name": "Sudáfrica",
-      "lat": -33.92,
-      "lng": 18.42,
-      "w": 24,
-      "h": 20,
-      "desc": "Donde dos océanos se encuentran.",
-      "descEn": "Where two oceans meet."
-    }
-  ],
-  "visitedEmpty": [
-    {
-      "key": "mexico",
-      "name": "México",
-      "lat": 19.43,
-      "lng": -99.13,
-      "w": 28,
-      "h": 22
-    },
-    {
-      "key": "espana",
-      "name": "España",
-      "lat": 40.42,
-      "lng": -3.7,
-      "w": 20,
-      "h": 16
-    },
-    {
-      "key": "portugal",
-      "name": "Portugal",
-      "lat": 38.72,
-      "lng": -9.14,
-      "w": 8,
-      "h": 14
-    },
-    {
-      "key": "italia",
-      "name": "Italia",
-      "lat": 41.9,
-      "lng": 12.5,
-      "w": 14,
-      "h": 24
-    },
-    {
-      "key": "francia",
-      "name": "Francia",
-      "lat": 48.86,
-      "lng": 2.35,
-      "w": 20,
-      "h": 18
-    },
-    {
-      "key": "alemania",
-      "name": "Alemania",
-      "lat": 52.52,
-      "lng": 13.4,
-      "w": 18,
-      "h": 18
-    },
-    {
-      "key": "paises-bajos",
-      "name": "Países Bajos",
-      "lat": 52.37,
-      "lng": 4.9,
-      "w": 10,
-      "h": 10
-    },
-    {
-      "key": "belgica",
-      "name": "Bélgica",
-      "lat": 50.85,
-      "lng": 4.35,
-      "w": 8,
-      "h": 8
-    },
-    {
-      "key": "suiza",
-      "name": "Suiza",
-      "lat": 46.95,
-      "lng": 7.45,
-      "w": 9,
-      "h": 8
-    },
-    {
-      "key": "austria",
-      "name": "Austria",
-      "lat": 48.21,
-      "lng": 16.37,
-      "w": 14,
-      "h": 9
-    },
-    {
-      "key": "republica-checa",
-      "name": "República Checa",
-      "lat": 50.09,
-      "lng": 14.42,
-      "w": 14,
-      "h": 9
-    },
-    {
-      "key": "polonia",
-      "name": "Polonia",
-      "lat": 52.23,
-      "lng": 21.01,
-      "w": 18,
-      "h": 14
-    },
-    {
-      "key": "hungria",
-      "name": "Hungría",
-      "lat": 47.5,
-      "lng": 19.04,
-      "w": 14,
-      "h": 10
-    },
-    {
-      "key": "croacia",
-      "name": "Croacia",
-      "lat": 45.81,
-      "lng": 15.98,
-      "w": 16,
-      "h": 9
-    },
-    {
-      "key": "turquia",
-      "name": "Turquía",
-      "lat": 39.93,
-      "lng": 32.85,
-      "w": 28,
-      "h": 14
-    },
-    {
-      "key": "india",
-      "name": "India",
-      "lat": 28.61,
-      "lng": 77.21,
-      "w": 26,
-      "h": 26
-    },
-    {
-      "key": "tailandia",
-      "name": "Tailandia",
-      "lat": 13.75,
-      "lng": 100.5,
-      "w": 14,
-      "h": 26
-    },
-    {
-      "key": "camboya",
-      "name": "Camboya",
-      "lat": 11.55,
-      "lng": 104.92,
-      "w": 10,
-      "h": 10
-    },
-    {
-      "key": "laos",
-      "name": "Laos",
-      "lat": 17.97,
-      "lng": 102.6,
-      "w": 12,
-      "h": 20
-    },
-    {
-      "key": "malasia",
-      "name": "Malasia",
-      "lat": 3.14,
-      "lng": 101.69,
-      "w": 18,
-      "h": 10
-    },
-    {
-      "key": "singapur",
-      "name": "Singapur",
-      "lat": 1.35,
-      "lng": 103.82,
-      "w": 4,
-      "h": 4
-    },
-    {
-      "key": "filipinas",
-      "name": "Filipinas",
-      "lat": 14.6,
-      "lng": 120.98,
-      "w": 14,
-      "h": 22
-    },
-    {
-      "key": "china",
-      "name": "China",
-      "lat": 39.9,
-      "lng": 116.4,
-      "w": 42,
-      "h": 30
-    },
-    {
-      "key": "corea-del-sur",
-      "name": "Corea del Sur",
-      "lat": 37.57,
-      "lng": 126.98,
-      "w": 10,
-      "h": 13
+      "key": "aruba",
+      "name": "Aruba",
+      "nameEn": "Aruba",
+      "lat": 12.52,
+      "lng": -70.03,
+      "w": 2,
+      "h": 1.5
     },
     {
       "key": "australia",
       "name": "Australia",
-      "lat": -25.27,
-      "lng": 133.77,
-      "w": 40,
-      "h": 30
+      "nameEn": "Australia",
+      "lat": -35.28,
+      "lng": 149.13,
+      "w": 50,
+      "h": 34
     },
     {
-      "key": "fiyi",
-      "name": "Fiyi",
-      "lat": -18.14,
-      "lng": 178.44,
-      "w": 6,
+      "key": "austria",
+      "name": "Austria",
+      "nameEn": "Austria",
+      "lat": 48.21,
+      "lng": 16.37,
+      "w": 14,
       "h": 6
+    },
+    {
+      "key": "barbados",
+      "name": "Barbados",
+      "nameEn": "Barbados",
+      "lat": 13.1,
+      "lng": -59.62,
+      "w": 1.5,
+      "h": 2
+    },
+    {
+      "key": "belgica",
+      "name": "Bélgica",
+      "nameEn": "Belgium",
+      "lat": 50.85,
+      "lng": 4.35,
+      "w": 6,
+      "h": 5
     },
     {
       "key": "brasil",
       "name": "Brasil",
+      "nameEn": "Brazil",
       "lat": -15.79,
       "lng": -47.88,
       "w": 38,
       "h": 34
     },
     {
+      "key": "islas-virgenes-britanicas",
+      "name": "Islas Vírgenes Británicas",
+      "nameEn": "British Virgin Islands",
+      "lat": 18.43,
+      "lng": -64.62,
+      "w": 1.5,
+      "h": 1
+    },
+    {
+      "key": "canada",
+      "name": "Canadá",
+      "nameEn": "Canada",
+      "lat": 45.42,
+      "lng": -75.7,
+      "w": 70,
+      "h": 38
+    },
+    {
+      "key": "chile",
+      "name": "Chile",
+      "nameEn": "Chile",
+      "lat": -33.45,
+      "lng": -70.67,
+      "w": 9,
+      "h": 60
+    },
+    {
+      "key": "china",
+      "name": "China",
+      "nameEn": "China",
+      "lat": 39.9,
+      "lng": 116.4,
+      "w": 48,
+      "h": 32
+    },
+    {
       "key": "colombia",
       "name": "Colombia",
+      "nameEn": "Colombia",
       "lat": 4.71,
       "lng": -74.07,
-      "w": 18,
-      "h": 22
-    },
-    {
-      "key": "ecuador",
-      "name": "Ecuador",
-      "lat": -0.23,
-      "lng": -78.52,
-      "w": 12,
-      "h": 16
-    },
-    {
-      "key": "bolivia",
-      "name": "Bolivia",
-      "lat": -16.5,
-      "lng": -68.15,
-      "w": 20,
-      "h": 20
-    },
-    {
-      "key": "uruguay",
-      "name": "Uruguay",
-      "lat": -34.9,
-      "lng": -56.16,
-      "w": 9,
-      "h": 10
-    },
-    {
-      "key": "paraguay",
-      "name": "Paraguay",
-      "lat": -25.28,
-      "lng": -57.63,
-      "w": 13,
+      "w": 14,
       "h": 16
     },
     {
       "key": "costa-rica",
       "name": "Costa Rica",
+      "nameEn": "Costa Rica",
       "lat": 9.93,
-      "lng": -84.08,
-      "w": 7,
-      "h": 9
+      "lng": -84.09,
+      "w": 6,
+      "h": 4
     },
     {
-      "key": "panama",
-      "name": "Panamá",
-      "lat": 8.98,
-      "lng": -79.52,
-      "w": 10,
-      "h": 6
-    },
-    {
-      "key": "cuba",
-      "name": "Cuba",
-      "lat": 23.13,
-      "lng": -82.38,
-      "w": 18,
-      "h": 7
-    },
-    {
-      "key": "emiratos-arabes-unidos",
-      "name": "Emiratos Árabes Unidos",
-      "lat": 25.2,
-      "lng": 55.27,
+      "key": "croacia",
+      "name": "Croacia",
+      "nameEn": "Croatia",
+      "lat": 45.82,
+      "lng": 15.98,
       "w": 10,
       "h": 8
     },
     {
-      "key": "israel",
-      "name": "Israel",
-      "lat": 31.77,
-      "lng": 35.21,
+      "key": "curazao",
+      "name": "Curazao",
+      "nameEn": "Curaçao",
+      "lat": 12.11,
+      "lng": -68.93,
+      "w": 1.5,
+      "h": 1
+    },
+    {
+      "key": "republica-checa",
+      "name": "República Checa",
+      "nameEn": "Czech Republic",
+      "lat": 50.08,
+      "lng": 14.44,
+      "w": 10,
+      "h": 5
+    },
+    {
+      "key": "dinamarca",
+      "name": "Dinamarca",
+      "nameEn": "Denmark",
+      "lat": 55.68,
+      "lng": 12.57,
+      "w": 10,
+      "h": 8
+    },
+    {
+      "key": "republica-dominicana",
+      "name": "República Dominicana",
+      "nameEn": "Dominican Republic",
+      "lat": 18.49,
+      "lng": -69.93,
       "w": 6,
-      "h": 13
-    },
-    {
-      "key": "kenia",
-      "name": "Kenia",
-      "lat": -1.29,
-      "lng": 36.82,
-      "w": 16,
-      "h": 20
-    },
-    {
-      "key": "tanzania",
-      "name": "Tanzania",
-      "lat": -6.16,
-      "lng": 35.75,
-      "w": 18,
-      "h": 18
+      "h": 3
     },
     {
       "key": "finlandia",
       "name": "Finlandia",
+      "nameEn": "Finland",
       "lat": 60.17,
       "lng": 24.94,
+      "w": 14,
+      "h": 22
+    },
+    {
+      "key": "francia",
+      "name": "Francia",
+      "nameEn": "France",
+      "lat": 48.86,
+      "lng": 2.35,
+      "w": 14,
+      "h": 14
+    },
+    {
+      "key": "alemania",
+      "name": "Alemania",
+      "nameEn": "Germany",
+      "lat": 52.52,
+      "lng": 13.4,
+      "w": 14,
+      "h": 14
+    },
+    {
+      "key": "gibraltar",
+      "name": "Gibraltar",
+      "nameEn": "Gibraltar",
+      "lat": 36.14,
+      "lng": -5.35,
+      "w": 0.5,
+      "h": 0.5
+    },
+    {
+      "key": "grecia",
+      "name": "Grecia",
+      "nameEn": "Greece",
+      "lat": 37.98,
+      "lng": 23.73,
+      "w": 12,
+      "h": 12
+    },
+    {
+      "key": "hong-kong",
+      "name": "Hong Kong",
+      "nameEn": "Hong Kong",
+      "lat": 22.32,
+      "lng": 114.17,
+      "w": 1.5,
+      "h": 1.5
+    },
+    {
+      "key": "hungria",
+      "name": "Hungría",
+      "nameEn": "Hungary",
+      "lat": 47.5,
+      "lng": 19.04,
+      "w": 10,
+      "h": 6
+    },
+    {
+      "key": "islandia",
+      "name": "Islandia",
+      "nameEn": "Iceland",
+      "lat": 64.13,
+      "lng": -21.82,
+      "w": 22,
+      "h": 16
+    },
+    {
+      "key": "indonesia",
+      "name": "Indonesia",
+      "nameEn": "Indonesia",
+      "lat": -6.21,
+      "lng": 106.85,
+      "w": 50,
+      "h": 18
+    },
+    {
+      "key": "irlanda",
+      "name": "Irlanda",
+      "nameEn": "Ireland",
+      "lat": 53.35,
+      "lng": -6.26,
+      "w": 8,
+      "h": 9
+    },
+    {
+      "key": "italia",
+      "name": "Italia",
+      "nameEn": "Italy",
+      "lat": 41.9,
+      "lng": 12.5,
+      "w": 12,
+      "h": 24
+    },
+    {
+      "key": "japon",
+      "name": "Japón",
+      "nameEn": "Japan",
+      "lat": 35.68,
+      "lng": 139.69,
+      "w": 24,
+      "h": 30
+    },
+    {
+      "key": "luxemburgo",
+      "name": "Luxemburgo",
+      "nameEn": "Luxembourg",
+      "lat": 49.61,
+      "lng": 6.13,
+      "w": 2,
+      "h": 2
+    },
+    {
+      "key": "macao",
+      "name": "Macao",
+      "nameEn": "Macau",
+      "lat": 22.2,
+      "lng": 113.54,
+      "w": 1,
+      "h": 1
+    },
+    {
+      "key": "malasia",
+      "name": "Malasia",
+      "nameEn": "Malaysia",
+      "lat": 3.14,
+      "lng": 101.69,
+      "w": 24,
+      "h": 8
+    },
+    {
+      "key": "mexico",
+      "name": "México",
+      "nameEn": "Mexico",
+      "lat": 19.43,
+      "lng": -99.13,
+      "w": 28,
+      "h": 22
+    },
+    {
+      "key": "marruecos",
+      "name": "Marruecos",
+      "nameEn": "Morocco",
+      "lat": 34.02,
+      "lng": -6.83,
+      "w": 14,
+      "h": 12
+    },
+    {
+      "key": "paises-bajos",
+      "name": "Países Bajos",
+      "nameEn": "Netherlands",
+      "lat": 52.37,
+      "lng": 4.9,
+      "w": 6,
+      "h": 8
+    },
+    {
+      "key": "noruega",
+      "name": "Noruega",
+      "nameEn": "Norway",
+      "lat": 59.91,
+      "lng": 10.75,
       "w": 16,
-      "h": 28
+      "h": 26
+    },
+    {
+      "key": "panama",
+      "name": "Panamá",
+      "nameEn": "Panama",
+      "lat": 8.98,
+      "lng": -79.52,
+      "w": 12,
+      "h": 4
+    },
+    {
+      "key": "filipinas",
+      "name": "Filipinas",
+      "nameEn": "Philippines",
+      "lat": 14.6,
+      "lng": 120.98,
+      "w": 14,
+      "h": 20
+    },
+    {
+      "key": "polonia",
+      "name": "Polonia",
+      "nameEn": "Poland",
+      "lat": 52.23,
+      "lng": 21.01,
+      "w": 16,
+      "h": 8
+    },
+    {
+      "key": "portugal",
+      "name": "Portugal",
+      "nameEn": "Portugal",
+      "lat": 38.72,
+      "lng": -9.14,
+      "w": 8,
+      "h": 14
+    },
+    {
+      "key": "puerto-rico",
+      "name": "Puerto Rico",
+      "nameEn": "Puerto Rico",
+      "lat": 18.47,
+      "lng": -66.11,
+      "w": 3,
+      "h": 1.5
+    },
+    {
+      "key": "santa-lucia",
+      "name": "Santa Lucía",
+      "nameEn": "Saint Lucia",
+      "lat": 14.01,
+      "lng": -60.99,
+      "w": 1,
+      "h": 1.5
+    },
+    {
+      "key": "san-martin",
+      "name": "San Martín",
+      "nameEn": "Saint Martin",
+      "lat": 18.07,
+      "lng": -63.08,
+      "w": 0.5,
+      "h": 0.5
+    },
+    {
+      "key": "singapur",
+      "name": "Singapur",
+      "nameEn": "Singapore",
+      "lat": 1.35,
+      "lng": 103.82,
+      "w": 1,
+      "h": 1
+    },
+    {
+      "key": "sint-maarten",
+      "name": "Sint Maarten",
+      "nameEn": "Sint Maarten",
+      "lat": 18.03,
+      "lng": -63.05,
+      "w": 0.5,
+      "h": 0.5
+    },
+    {
+      "key": "eslovaquia",
+      "name": "Eslovaquia",
+      "nameEn": "Slovakia",
+      "lat": 48.15,
+      "lng": 17.11,
+      "w": 10,
+      "h": 4
+    },
+    {
+      "key": "eslovenia",
+      "name": "Eslovenia",
+      "nameEn": "Slovenia",
+      "lat": 46.06,
+      "lng": 14.51,
+      "w": 6,
+      "h": 4
+    },
+    {
+      "key": "corea-del-sur",
+      "name": "Corea del Sur",
+      "nameEn": "South Korea",
+      "lat": 37.57,
+      "lng": 126.98,
+      "w": 8,
+      "h": 12
+    },
+    {
+      "key": "espana",
+      "name": "España",
+      "nameEn": "Spain",
+      "lat": 40.42,
+      "lng": -3.7,
+      "w": 20,
+      "h": 16
     },
     {
       "key": "suecia",
       "name": "Suecia",
+      "nameEn": "Sweden",
       "lat": 59.33,
       "lng": 18.06,
-      "w": 16,
-      "h": 30
+      "w": 12,
+      "h": 34
+    },
+    {
+      "key": "suiza",
+      "name": "Suiza",
+      "nameEn": "Switzerland",
+      "lat": 46.95,
+      "lng": 7.45,
+      "w": 8,
+      "h": 5
+    },
+    {
+      "key": "turquia",
+      "name": "Turquía",
+      "nameEn": "Turkey",
+      "lat": 39.93,
+      "lng": 32.85,
+      "w": 28,
+      "h": 14
+    },
+    {
+      "key": "emiratos-arabes-unidos",
+      "name": "Emiratos Árabes Unidos",
+      "nameEn": "United Arab Emirates",
+      "lat": 24.45,
+      "lng": 54.38,
+      "w": 10,
+      "h": 6
+    },
+    {
+      "key": "reino-unido",
+      "name": "Reino Unido",
+      "nameEn": "United Kingdom",
+      "lat": 51.51,
+      "lng": -0.13,
+      "w": 12,
+      "h": 20
+    },
+    {
+      "key": "islas-virgenes-eeuu",
+      "name": "Islas Vírgenes de EE.UU.",
+      "nameEn": "U.S. Virgin Islands",
+      "lat": 18.34,
+      "lng": -64.93,
+      "w": 1.5,
+      "h": 1
+    },
+    {
+      "key": "estados-unidos",
+      "name": "Estados Unidos",
+      "nameEn": "United States",
+      "lat": 38.9,
+      "lng": -77.04,
+      "w": 60,
+      "h": 26
+    },
+    {
+      "key": "vaticano",
+      "name": "Vaticano",
+      "nameEn": "Vatican City",
+      "lat": 41.9,
+      "lng": 12.45,
+      "w": 0.3,
+      "h": 0.3
+    },
+    {
+      "key": "vietnam",
+      "name": "Vietnam",
+      "nameEn": "Vietnam",
+      "lat": 21.03,
+      "lng": 105.85,
+      "w": 10,
+      "h": 28
+    },
+    {
+      "key": "venezuela",
+      "name": "Venezuela",
+      "nameEn": "Venezuela",
+      "lat": 10.48,
+      "lng": -66.9,
+      "w": 14,
+      "h": 14
     }
   ],
   "upcoming": [
