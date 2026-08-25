@@ -632,7 +632,7 @@ var T = {
     studio:function(n,i){return n+' · Estudio '+i;}, fromPrice:'desde ',
     modalTitle:'Finalizar compra', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' pieza(s). <br>Vas a pagar en la página segura de Stripe (tarjeta o PayPal). Si hay impresiones, ahí mismo te pide la dirección de envío.'; },
     fEmail:'Email (para la confirmación)', payBtn:'Pagar ', payBtnLoading:'Redirigiendo a pago seguro…', payError:'Hubo un problema iniciando el pago. Probá de nuevo.',
-    successTitle:'Gracias por tu compra', successNote:'Las impresiones se numeran y firman a mano antes del envío. Vas a recibir la confirmación por email.', backToSite:'Volver al sitio',
+    successTitle:'Gracias por tu compra', successNotePrint:'Cada impresión es numerada, con una tarjeta firmada por mí con las coordenadas de dónde se tomó. Vas a recibir la confirmación por email.', successNoteDigital:'Vas a recibir la confirmación por email.', successNoteMixed:'Las impresiones son numeradas, con una tarjeta firmada por mí con las coordenadas de dónde se tomó. Vas a recibir la confirmación por email.', backToSite:'Volver al sitio',
     checkingOrder:'Confirmando tu pedido…', orderCancelled:'Pago cancelado — tu carrito sigue como estaba.',
     digitalReadyTitle:'Tus fotos digitales', digitalDownload:'Descargar',
     toastAdded:function(t){return 'Añadido al carrito · '+t;}, toastUpcoming:function(n,d){return n+' — próximo destino · '+d;},
@@ -674,7 +674,7 @@ var T = {
     studio:function(n,i){return n+' · Study '+i;}, fromPrice:'from ',
     modalTitle:'Checkout', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' item(s). <br>You\'ll pay on Stripe\'s secure page (card or PayPal). If your order includes prints, it\'ll ask for a shipping address there.'; },
     fEmail:'Email (for the confirmation)', payBtn:'Pay ', payBtnLoading:'Redirecting to secure payment…', payError:'There was a problem starting the payment. Please try again.',
-    successTitle:'Thanks for your order', successNote:"Prints are numbered and hand-signed before shipping. You'll get a confirmation by email.", backToSite:'Back to site',
+    successTitle:'Thanks for your order', successNotePrint:"Each print is numbered, with a card signed by me showing the coordinates of where it was taken. You'll get a confirmation by email.", successNoteDigital:"You'll get a confirmation by email.", successNoteMixed:"Prints are numbered, with a card signed by me showing the coordinates of where they were taken. You'll get a confirmation by email.", backToSite:'Back to site',
     checkingOrder:'Confirming your order…', orderCancelled:'Payment cancelled — your cart is untouched.',
     digitalReadyTitle:'Your digital photos', digitalDownload:'Download',
     toastAdded:function(t){return 'Added to cart · '+t;}, toastUpcoming:function(n,d){return n+' — upcoming trip · '+d;},
@@ -856,7 +856,11 @@ document.getElementById('checkout-btn').addEventListener('click', openCheckout);
 
 /* ============ Vuelta desde Stripe (éxito o cancelación) ============ */
 function renderOrderSuccess(order){
-  var digitalItems = (order.items || []).filter(function(it){ return it.type === 'digital' && it.downloadUrl; });
+  var items = order.items || [];
+  var digitalItems = items.filter(function(it){ return it.type === 'digital' && it.downloadUrl; });
+  var hasPrint = items.some(function(it){ return it.type === 'print'; });
+  var hasDigital = items.some(function(it){ return it.type === 'digital'; });
+  var note = hasPrint && hasDigital ? t('successNoteMixed') : hasPrint ? t('successNotePrint') : t('successNoteDigital');
   var digitalHtml = '';
   if(digitalItems.length){
     digitalHtml = '<div class="digital-links" style="margin-top:18px; text-align:left;"><h4 style="font-size:13px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;">'+t('digitalReadyTitle')+'</h4>' +
@@ -866,7 +870,7 @@ function renderOrderSuccess(order){
   }
   document.getElementById('modal-box').innerHTML =
     '<div class="success-view"><div class="check">&#10003;</div><h3>'+t('successTitle')+'</h3>' +
-    '<p class="modal-note" style="margin-top:10px;">'+t('successNote')+'</p>' +
+    '<p class="modal-note" style="margin-top:10px;">'+note+'</p>' +
     digitalHtml +
     '<button id="pay-btn" style="margin-top:18px;" onclick="location.href=location.pathname">'+t('backToSite')+'</button></div>';
   cart = []; try{ sessionStorage.removeItem('cbtv_pending_cart'); }catch(e){}
