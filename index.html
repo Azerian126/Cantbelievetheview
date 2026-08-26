@@ -1243,8 +1243,14 @@ function buildHubTiles(){
   categories.forEach(function(cat, idx){
     var tile = document.createElement('div');
     tile.className = 'hub-tile' + (cat.bw ? ' bw-tile' : '');
+    // Si la categoría ya tiene alguna foto real (propia o de un país
+    // taggeado), la portada del mosaico usa esa foto — antes siempre caía
+    // en un relleno random de Picsum, sin importar cuántas fotos reales
+    // hubiera ya cargadas.
+    var catPhotos = photosForCategory(cat);
+    var coverImg = catPhotos.length ? catPhotos[0].displayUrl : 'https://picsum.photos/seed/'+cat.key+'-cover-'+RANDOM_SEED+'/700/900';
     tile.innerHTML =
-      '<img src="https://picsum.photos/seed/'+cat.key+'-cover-'+RANDOM_SEED+'/700/900" loading="lazy" alt="'+cname2(cat)+'">' +
+      '<img src="'+coverImg+'" loading="lazy" alt="'+cname2(cat)+'">' +
       '<div class="hub-tile-overlay"><div class="hub-tile-n">'+String(idx+1).padStart(2,'0')+'</div><h3>'+cname2(cat)+'</h3><p>'+cdesc2(cat)+'</p></div>';
     tile.addEventListener('click', function(){
       lastOpened = {kind:'category', cat:cat, returnTo:'hub'};
