@@ -730,6 +730,7 @@ var T = {
 function t(key){ return T[lang][key]; }
 function cname(c){ return lang==='en' ? (c.nameEn || c.name) : c.name; }
 function cdesc(c){ return lang==='en' ? (c.descEn || c.desc) : c.desc; }
+function pcaption(p){ return lang==='en' ? (p.captionEn || p.caption) : p.caption; }
 function matLabel(m){ return lang==='en' ? (m.labelEn || m.label) : m.label; }
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(function(el){
@@ -1156,7 +1157,7 @@ function openGalleryPanel(cfg){
       // aparte en el backend y solo se resuelve después de pagar.
       var imgUrl = photoEntry.displayUrl;
       var photoId = photoEntry.id;
-      var title = photoEntry.caption || t('studio')(cfg.title, i);
+      var title = pcaption(photoEntry) || t('studio')(cfg.title, i);
 
       var photoCoordsText = '';
       var seedKey = cfg.seedPrefix + '-' + i;
