@@ -209,6 +209,7 @@
   .size-list button{display:flex; justify-content:space-between; width:100%; padding:10px 12px; background:none; border:none; font-family:'JetBrains Mono', monospace; font-size:11px; border-bottom:1px solid rgba(0,0,0,0.08);}
   .size-list button:hover{background:rgba(0,0,0,0.06);}
   .size-list button:last-child{border-bottom:none;}
+  .size-note{padding:10px 12px; font-family:'JetBrains Mono', monospace; font-size:10px; line-height:1.5; opacity:0.6; font-style:italic;}
 
   /* ---------- PRINT PREVIEW — room mockup ---------- */
   #print-preview{position:fixed; z-index:200; width:230px; background:var(--bg-alt); border-radius:6px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:opacity .15s ease; bottom:110px; right:5vw;}
@@ -703,7 +704,9 @@ var T = {
     digitalReadyTitle:'Tus fotos digitales', digitalDownload:'Descargar',
     toastAdded:function(t){return 'Añadido al carrito · '+t;}, toastUpcoming:function(n,d){return n+' — próximo destino · '+d;},
     toastGeneric:function(n){return n+' — todavía no forma parte del archivo.';},
-    realScale:' · a escala real', scale:'A ESCALA REAL', dropTitle:'Próximos destinos'
+    realScale:' · a escala real', scale:'A ESCALA REAL', dropTitle:'Próximos destinos',
+    sizeLimitNote:function(maxLabel){ return 'Esta imagen respeta su resolución — impresión disponible hasta '+maxLabel+'.'; },
+    sizeNoneFit:'Esta foto todavía no alcanza la resolución para imprimirse en este material.'
   },
   en:{
     navGallery:'Gallery', navAbout:'About', navHow:'How to buy', cart:'cart',
@@ -746,7 +749,9 @@ var T = {
     digitalReadyTitle:'Your digital photos', digitalDownload:'Download',
     toastAdded:function(t){return 'Added to cart · '+t;}, toastUpcoming:function(n,d){return n+' — upcoming trip · '+d;},
     toastGeneric:function(n){return n+" — not part of the archive yet.";},
-    realScale:' · true to scale', scale:'TRUE TO SCALE', dropTitle:'Upcoming trips'
+    realScale:' · true to scale', scale:'TRUE TO SCALE', dropTitle:'Upcoming trips',
+    sizeLimitNote:function(maxLabel){ return 'This image respects its resolution — printing available up to '+maxLabel+'.'; },
+    sizeNoneFit:"This photo doesn't yet have the resolution to print on this material."
   }
 };
 function t(key){ return T[lang][key]; }
@@ -1047,8 +1052,28 @@ function showPreview(imgUrl, size, material){
 }
 function hidePreview(){ ppEl.classList.remove('show'); }
 
+/* ============ PISO DE RESOLUCIÓN POR TAMAÑO ============ */
+// Mario eligió 200dpi el 26 de agosto de 2026, después de ver el impacto
+// real sobre su catálogo (12/24/48 MP) antes de decidir — por debajo de
+// esto una pieza grande se ve blanda de cerca, y eso cuesta el cliente y
+// la reputación, no solo la venta. Un solo lugar si algún día lo cambia.
+var MIN_PRINT_DPI = 200;
+
+// size.w/size.h están en centímetros (ver data.json) — se compara el lado
+// largo del tamaño (en pulgadas) contra el lado largo real del archivo
+// (en píxeles). Si la foto no tiene w/h guardado (subida antes de este
+// cambio), no se filtra nada — se ofrece el catálogo completo, como
+// siempre se hizo. El día que Mario resuba esa foto en mejor resolución,
+// esto se recalcula solo — no hay ninguna lista fija por foto que editar.
+function sizeFitsPhoto(size, photoW, photoH){
+  if(!photoW || !photoH) return true;
+  var longPx = Math.max(photoW, photoH);
+  var longIn = Math.max(size.w, size.h) / 2.54;
+  return (longPx / longIn) >= MIN_PRINT_DPI;
+}
+
 /* ============ REUSABLE PRINT WIDGET (no nested buttons) ============ */
-function buildBuyRow(title, group, imgUrl, photoId){
+function buildBuyRow(title, group, imgUrl, photoId, photoW, photoH){
   var row = document.createElement('div');
   row.className = 'buy-row';
 
@@ -1092,7 +1117,18 @@ function buildBuyRow(title, group, imgUrl, photoId){
 
   function renderSizeList(){
     sizeList.innerHTML = '';
-    currentMaterial.sizes.forEach(function(size){
+    var allSizes = currentMaterial.sizes;
+    var fitSizes = allSizes.filter(function(s){ return sizeFitsPhoto(s, photoW, photoH); });
+
+    if(!fitSizes.length){
+      var none = document.createElement('div');
+      none.className = 'size-note';
+      none.textContent = t('sizeNoneFit');
+      sizeList.appendChild(none);
+      return;
+    }
+
+    fitSizes.forEach(function(size){
       var price = size.price;
       var sBtn = document.createElement('button');
       sBtn.type = 'button';
@@ -1108,6 +1144,23 @@ function buildBuyRow(title, group, imgUrl, photoId){
       });
       sizeList.appendChild(sBtn);
     });
+
+    // Catálogo recortado por resolución, no por falta de tamaños en el
+    // material — un recordatorio contenido, no una explicación grande. El
+    // catálogo no está ordenado de chico a grande (hay formatos alargados
+    // y cuadrados intercalados), así que el tamaño a mostrar es el de
+    // mayor lado largo entre los que sí entran, no el último del filtro.
+    if(fitSizes.length < allSizes.length){
+      var biggest = fitSizes.reduce(function(best, s){
+        var sLong = Math.max(s.w, s.h), bLong = Math.max(best.w, best.h);
+        if(sLong !== bLong) return sLong > bLong ? s : best;
+        return (s.w * s.h) > (best.w * best.h) ? s : best; // mismo lado largo: el de mayor área "se ve" más grande
+      });
+      var note = document.createElement('div');
+      note.className = 'size-note';
+      note.textContent = t('sizeLimitNote')(biggest.label);
+      sizeList.appendChild(note);
+    }
   }
   renderSizeList();
 
@@ -1220,7 +1273,7 @@ function openGalleryPanel(cfg){
         '<span class="photo-coords">'+(photoCoordsText || '')+'</span>' +
         '<span class="ci-price mono" style="font-size:11px; white-space:nowrap;">'+t('fromPrice')+fmt(DIGITAL_PRICE)+'</span>' +
         '</div>';
-      footer.appendChild(buildBuyRow(title, cfg.title, imgUrl, photoId));
+      footer.appendChild(buildBuyRow(title, cfg.title, imgUrl, photoId, photoEntry.w, photoEntry.h));
 
       card.appendChild(frame); card.appendChild(text); card.appendChild(footer);
       grid.appendChild(card);
