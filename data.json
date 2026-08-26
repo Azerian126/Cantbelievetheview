@@ -463,68 +463,14 @@
   ],
   "upcoming": [
     {
-      "name": "Groenlandia",
-      "lat": 71.7,
-      "lng": -42.6,
-      "w": 38,
-      "h": 32,
-      "date": "Marzo 2027"
-    },
-    {
-      "name": "Mongolia",
-      "lat": 46.86,
-      "lng": 103.84,
-      "w": 32,
-      "h": 20,
-      "date": "Junio 2027"
-    },
-    {
-      "name": "Madagascar",
-      "lat": -18.9,
-      "lng": 47.5,
+      "name": "Tanzania",
+      "nameEn": "Tanzania",
+      "lat": -3.37,
+      "lng": 36.68,
       "w": 14,
-      "h": 30,
-      "date": "Agosto 2027"
-    },
-    {
-      "name": "Bután",
-      "lat": 27.51,
-      "lng": 90.43,
-      "w": 9,
-      "h": 7,
-      "date": "Octubre 2027"
-    },
-    {
-      "name": "Kirguistán",
-      "lat": 41.2,
-      "lng": 74.76,
-      "w": 20,
-      "h": 12,
-      "date": "Enero 2028"
-    },
-    {
-      "name": "Botsuana",
-      "lat": -24.65,
-      "lng": 25.9,
-      "w": 18,
-      "h": 16,
-      "date": "Abril 2028"
-    },
-    {
-      "name": "Antártida",
-      "lat": -78,
-      "lng": 0.07,
-      "w": 50,
-      "h": 16,
-      "date": "Noviembre 2028"
-    },
-    {
-      "name": "Papúa Nueva Guinea",
-      "lat": -9.44,
-      "lng": 147.18,
-      "w": 20,
       "h": 14,
-      "date": "2029 · por confirmar"
+      "date": "Octubre 2026",
+      "confirmed": false
     }
   ],
   "neNames": {
