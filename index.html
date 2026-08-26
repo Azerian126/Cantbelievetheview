@@ -283,6 +283,7 @@
   .cart-item-info{flex:1;}
   .cart-item-info .ci-title{font-family:'Fraunces', serif; font-style:italic; font-size:14px;}
   .cart-item-info .ci-sub{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); margin-top:4px; text-transform:uppercase;}
+  .cart-item-info .ci-gift{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--amber-bright); margin-top:3px;}
   .cart-item-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:10px;}
   .ci-price{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--amber-bright);}
   .ci-remove{background:none; border:none; color:var(--paper-dim); font-size:11px; font-family:'JetBrains Mono', monospace; text-decoration:underline; text-underline-offset:2px;}
@@ -304,10 +305,13 @@
   .modal-note b{color:var(--amber-bright);}
   .field{margin-bottom:14px;}
   .field label{display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--paper-dim); margin-bottom:6px; font-family:'JetBrains Mono', monospace;}
-  .field input{width:100%; background:var(--bg); border:1px solid var(--line); color:var(--paper); padding:11px 12px; border-radius:3px; font-family:'Space Grotesk', sans-serif; font-size:13px;}
-  .field input:focus{outline:none; border-color:var(--amber);}
-  #pay-btn{width:100%; margin-top:10px; padding:15px; background:var(--amber); color:var(--bg); border:none; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:.08em; border-radius:3px;}
-  #pay-btn:hover{background:var(--amber-bright);}
+  .field input, .field textarea{width:100%; background:var(--bg); border:1px solid var(--line); color:var(--paper); padding:11px 12px; border-radius:3px; font-family:'Space Grotesk', sans-serif; font-size:13px; resize:vertical;}
+  .field input:focus, .field textarea:focus{outline:none; border-color:var(--amber);}
+  .gift-toggle{display:flex; gap:8px; margin-bottom:20px;}
+  .gift-opt{flex:1; padding:12px; background:var(--bg); border:1px solid var(--line); color:var(--paper-dim); font-family:'JetBrains Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; border-radius:3px;}
+  .gift-opt.active{border-color:var(--amber); color:var(--amber-bright);}
+  #pay-btn, .modal-btn{width:100%; margin-top:10px; padding:15px; background:var(--amber); color:var(--bg); border:none; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:.08em; border-radius:3px;}
+  #pay-btn:hover, .modal-btn:hover{background:var(--amber-bright);}
   #modal-close{position:absolute; top:20px; right:5vw; background:none; border:none; color:var(--paper); font-size:22px; z-index:130;}
   .success-view{text-align:center; padding:20px 0;}
   .success-view .check{font-size:38px; color:var(--amber-bright); margin-bottom:16px;}
@@ -670,6 +674,8 @@ var T = {
     studio:function(n,i){return n+' · Estudio '+i;}, fromPrice:'desde ',
     modalTitle:'Finalizar compra', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' pieza(s). <br>Vas a pagar en la página segura de Stripe (tarjeta o PayPal). Si hay impresiones, ahí mismo te pide la dirección de envío.'; },
     fEmail:'Email (para la confirmación)', payBtn:'Pagar ', payBtnLoading:'Redirigiendo a pago seguro…', payError:'Hubo un problema iniciando el pago. Probá de nuevo.',
+    giftModalTitle:'¿Para quién es esta impresión?', giftForMe:'Es para mí', giftIsGift:'Es un regalo',
+    giftTo:'Para', giftFrom:'De', giftNote:'Nota (opcional)', addToCartBtn:'Agregar al carrito', cartGiftTag:'🎁 Regalo para ',
     successTitle:'Gracias por tu compra', successNotePrint:'Cada impresión es numerada, con una tarjeta firmada por mí con las coordenadas de dónde se tomó. Vas a recibir la confirmación por email.', successNoteDigital:'Vas a recibir la confirmación por email.', successNoteMixed:'Las impresiones son numeradas, con una tarjeta firmada por mí con las coordenadas de dónde se tomó. Vas a recibir la confirmación por email.', backToSite:'Volver al sitio',
     checkingOrder:'Confirmando tu pedido…', orderCancelled:'Pago cancelado — tu carrito sigue como estaba.',
     digitalReadyTitle:'Tus fotos digitales', digitalDownload:'Descargar',
@@ -711,6 +717,8 @@ var T = {
     studio:function(n,i){return n+' · Study '+i;}, fromPrice:'from ',
     modalTitle:'Checkout', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' item(s). <br>You\'ll pay on Stripe\'s secure page (card or PayPal). If your order includes prints, it\'ll ask for a shipping address there.'; },
     fEmail:'Email (for the confirmation)', payBtn:'Pay ', payBtnLoading:'Redirecting to secure payment…', payError:'There was a problem starting the payment. Please try again.',
+    giftModalTitle:'Who is this print for?', giftForMe:'It\'s for me', giftIsGift:'It\'s a gift',
+    giftTo:'To', giftFrom:'From', giftNote:'Note (optional)', addToCartBtn:'Add to cart', cartGiftTag:'🎁 Gift for ',
     successTitle:'Thanks for your order', successNotePrint:"Each print is numbered, with a card signed by me showing the coordinates of where it was taken. You'll get a confirmation by email.", successNoteDigital:"You'll get a confirmation by email.", successNoteMixed:"Prints are numbered, with a card signed by me showing the coordinates of where they were taken. You'll get a confirmation by email.", backToSite:'Back to site',
     checkingOrder:'Confirming your order…', orderCancelled:'Payment cancelled — your cart is untouched.',
     digitalReadyTitle:'Your digital photos', digitalDownload:'Download',
@@ -776,6 +784,7 @@ function renderCart(){
         '<div class="cart-item-info">' +
           '<div class="ci-title">'+item.title+'</div>' +
           '<div class="ci-sub">'+item.group+' · '+item.variant+'</div>' +
+          (item.gift ? '<div class="ci-gift">'+t('cartGiftTag')+(item.gift.to||'—')+'</div>' : '') +
           '<div class="cart-item-bottom"><span class="ci-price">'+fmt(item.price)+'</span><button class="ci-remove" data-idx="'+idx+'">'+t('remove')+'</button></div>' +
         '</div>';
       wrap.appendChild(div);
@@ -868,7 +877,7 @@ function startStripeCheckout(){
 
   var email = (document.getElementById('checkout-email').value || '').trim();
   var items = cart.map(function(it){
-    return {type:it.type, title:it.title, group:it.group, photoId:it.photoId, materialId:it.materialId||null, sizeId:it.sizeId||null};
+    return {type:it.type, title:it.title, group:it.group, photoId:it.photoId, materialId:it.materialId||null, sizeId:it.sizeId||null, gift:it.gift||null};
   });
 
   fetch(API_BASE + '/api/checkout', {
@@ -899,6 +908,51 @@ function startStripeCheckout(){
 }
 function closeCheckout(){ modal.classList.remove('open'); }
 document.getElementById('checkout-btn').addEventListener('click', openCheckout);
+
+/* ============ Regalo (solo para impresiones) ============ */
+// Se pregunta al elegir tamaño de una impresión, antes de agregarla al
+// carrito — cada impresión puede tener un destino distinto (una para vos,
+// otra de regalo), así que va por ítem, no una vez por todo el pedido.
+function openGiftModal(onConfirm){
+  document.getElementById('modal-box').innerHTML =
+    '<h3>'+t('giftModalTitle')+'</h3>' +
+    '<div class="gift-toggle">' +
+      '<button type="button" class="gift-opt active" data-gift="0">'+t('giftForMe')+'</button>' +
+      '<button type="button" class="gift-opt" data-gift="1">'+t('giftIsGift')+'</button>' +
+    '</div>' +
+    '<div id="gift-fields" style="display:none;">' +
+      '<div class="field"><label>'+t('giftTo')+'</label><input type="text" id="gift-to" maxlength="60"></div>' +
+      '<div class="field"><label>'+t('giftFrom')+'</label><input type="text" id="gift-from" maxlength="60"></div>' +
+      '<div class="field"><label>'+t('giftNote')+'</label><textarea id="gift-note" maxlength="220" rows="3"></textarea></div>' +
+    '</div>' +
+    '<button id="gift-confirm-btn" class="modal-btn">'+t('addToCartBtn')+'</button>';
+
+  var isGift = false;
+  var opts = Array.prototype.slice.call(document.querySelectorAll('.gift-opt'));
+  var fields = document.getElementById('gift-fields');
+  opts.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      opts.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      isGift = btn.dataset.gift === '1';
+      fields.style.display = isGift ? 'block' : 'none';
+    });
+  });
+
+  document.getElementById('gift-confirm-btn').addEventListener('click', function(){
+    var gift = null;
+    if(isGift){
+      var to = (document.getElementById('gift-to').value||'').trim();
+      var from = (document.getElementById('gift-from').value||'').trim();
+      var note = (document.getElementById('gift-note').value||'').trim();
+      if(to || from || note) gift = {to:to, from:from, note:note};
+    }
+    modal.classList.remove('open');
+    onConfirm(gift);
+  });
+
+  modal.classList.add('open');
+}
 
 /* ============ Vuelta desde Stripe (éxito o cancelación) ============ */
 function renderOrderSuccess(order){
@@ -1023,9 +1077,11 @@ function buildBuyRow(title, group, imgUrl, photoId){
       sBtn.addEventListener('mouseenter', function(){ showPreview(imgUrl, size, currentMaterial); });
       sBtn.addEventListener('mouseleave', hidePreview);
       sBtn.addEventListener('click', function(){
-        addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:size.id});
         pop.classList.remove('show');
         hidePreview();
+        openGiftModal(function(gift){
+          addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:size.id, gift:gift});
+        });
       });
       sizeList.appendChild(sBtn);
     });
