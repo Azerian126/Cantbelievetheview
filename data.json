@@ -35,7 +35,8 @@
       "lat": -35.28,
       "lng": 149.13,
       "w": 50,
-      "h": 34
+      "h": 34,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-australia"
     },
     {
       "key": "austria",
@@ -80,7 +81,8 @@
       "lat": 45.42,
       "lng": -75.7,
       "w": 70,
-      "h": 38
+      "h": 38,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-canada"
     },
     {
       "key": "chile",
@@ -125,7 +127,8 @@
       "lat": 9.93,
       "lng": -84.09,
       "w": 6,
-      "h": 4
+      "h": 4,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-costa-rica"
     },
     {
       "key": "croacia",
@@ -242,7 +245,8 @@
       "lat": -6.21,
       "lng": 106.85,
       "w": 50,
-      "h": 18
+      "h": 18,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-indonesia"
     },
     {
       "key": "irlanda",
@@ -269,7 +273,8 @@
       "lat": 41.9,
       "lng": 12.5,
       "w": 12,
-      "h": 24
+      "h": 24,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-italia"
     },
     {
       "key": "japon",
@@ -278,7 +283,8 @@
       "lat": 35.68,
       "lng": 139.69,
       "w": 24,
-      "h": 30
+      "h": 30,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-japon"
     },
     {
       "key": "luxemburgo",
@@ -305,7 +311,8 @@
       "lat": 34.02,
       "lng": -6.83,
       "w": 14,
-      "h": 12
+      "h": 12,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-marruecos"
     },
     {
       "key": "mexico",
@@ -341,7 +348,8 @@
       "lat": 8.98,
       "lng": -79.52,
       "w": 12,
-      "h": 4
+      "h": 4,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-panama"
     },
     {
       "key": "polonia",
