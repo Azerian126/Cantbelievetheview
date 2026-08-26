@@ -178,7 +178,14 @@
   .photo-name-block{display:flex; flex-direction:column; gap:3px; min-width:0;}
   .photo-coords{font-family:'JetBrains Mono', monospace; font-size:9.5px; letter-spacing:.03em; color:var(--paper-dim); opacity:0.65;}
   .photo-name{font-family:'Fraunces', serif; font-style:italic; font-size:13px; color:var(--paper-dim);}
-  .buy-row{display:flex; gap:8px; margin-top:10px;}
+  /* margin-top:auto — clava los botones al fondo de la tarjeta pase lo que
+     pase arriba. El grid ya estira todas las tarjetas de una fila a la
+     misma altura (comportamiento default de CSS Grid); sin esto, una
+     tarjeta con título de 3 líneas (ej. la traducción al inglés) empuja sus
+     botones más abajo que la de al lado con un título de 1-2 líneas, y la
+     fila queda despareja. Así los botones quedan siempre a la misma altura
+     entre tarjetas de una fila, sea cual sea el idioma o el largo del texto. */
+  .buy-row{display:flex; gap:8px; margin-top:auto; padding-top:10px;}
   .buy-btn{flex:1; width:100%; font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; padding:9px 8px; border:1px solid var(--line); background:none; color:var(--paper); border-radius:2px; transition:all .2s ease; text-align:center;}
   .buy-btn:hover{border-color:var(--amber); color:var(--amber-bright);}
   .print-wrap{position:relative; flex:1;}
