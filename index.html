@@ -1668,10 +1668,15 @@ function setHover(entry, clientPos){
 
 function findCountryAt(localPoint){
   var ll = vec3ToLatLng(localPoint);
-  for(var i=0;i<allCountries.length;i++){
-    var entry = allCountries[i];
-    if(entry.hasReal && pointInRealGeometry(ll.lng, ll.lat, entry)) return entry;
-  }
+  // Los óvalos de respaldo son de países chicos que se quedaron sin
+  // frontera real (ver el warning en consola al cargar) — varios son
+  // micro-estados enclavados adentro de otro país (ej. Vaticano, adentro
+  // de Italia). Si se chequeara PRIMERO la frontera real, la de Italia
+  // (grande, cubre ese mismo punto) siempre "ganaba" antes de llegar
+  // siquiera a evaluar el óvalo de Vaticano — nunca se encontraba. Por
+  // eso el óvalo se revisa primero: son todos chicos a propósito (el más
+  // grande mide 3° de ancho), así que esto no le come territorio a
+  // ningún país real de al lado.
   var best = null, bestScore = 1;
   allCountries.forEach(function(entry){
     if(entry.hasReal) return;
@@ -1681,7 +1686,12 @@ function findCountryAt(localPoint){
     var score = (dLng/entry._semiW)*(dLng/entry._semiW) + (dLat/entry._semiH)*(dLat/entry._semiH);
     if(score <= 1 && score < bestScore){ bestScore = score; best = entry; }
   });
-  return best;
+  if(best) return best;
+  for(var i=0;i<allCountries.length;i++){
+    var entry = allCountries[i];
+    if(entry.hasReal && pointInRealGeometry(ll.lng, ll.lat, entry)) return entry;
+  }
+  return null;
 }
 
 var lastPointerClient = {cx:0, cy:0};
