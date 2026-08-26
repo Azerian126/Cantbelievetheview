@@ -15,8 +15,9 @@
 //   CLOUDINARY_API_SECRET=...
 //
 // Uso:
-//   node scripts/generate-country-covers.js --dry-run   (solo muestra los prompts, no gasta nada)
-//   node scripts/generate-country-covers.js             (genera todo lo que falte)
+//   node scripts/generate-country-covers.js --dry-run    (solo muestra los prompts, no gasta nada)
+//   node scripts/generate-country-covers.js              (genera todo lo que falte)
+//   node scripts/generate-country-covers.js --limit=4    (solo los próximos 4 — tandas chicas, conexión inestable)
 //   node scripts/generate-country-covers.js --only=turquia,japon
 
 const fs = require('fs');
@@ -44,6 +45,8 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const onlyArg = args.find((a) => a.startsWith('--only='));
 const ONLY = onlyArg ? onlyArg.slice('--only='.length).split(',') : null;
+const limitArg = args.find((a) => a.startsWith('--limit='));
+const LIMIT = limitArg ? parseInt(limitArg.slice('--limit='.length), 10) : null;
 
 if (!DRY_RUN && (!XAI_API_KEY || !CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET)) {
   console.error(
@@ -146,6 +149,7 @@ async function main() {
   const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
   let targets = data.visitedEmpty.filter((c) => !c.coverUrl);
   if (ONLY) targets = targets.filter((c) => ONLY.includes(c.key));
+  if (LIMIT) targets = targets.slice(0, LIMIT);
 
   if (targets.length === 0) {
     console.log('Nada para generar — todos los países ya tienen coverUrl (o --only no matcheó ninguno).');
