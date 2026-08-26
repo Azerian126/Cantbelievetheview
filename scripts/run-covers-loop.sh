@@ -22,7 +22,10 @@ while true; do
 
   if ! git diff --quiet data.json; then
     country=$(git diff data.json | grep -m1 '"coverUrl"' | sed -E 's/.*cover-([a-z-]+)".*/\1/')
-    git add data.json
+    # git add -A (no solo data.json) — si queda cualquier otro cambio suelto
+    # sin comitear (ej. una edición al propio script), bloquea el rebase de
+    # la vuelta siguiente y el commit de la portada se queda sin subir.
+    git add -A
     git commit -m "Portada IA generada: ${country:-país nuevo} (tanda automática de a 1)" --quiet
     git pull origin main --rebase --quiet
     git push origin main --quiet
