@@ -1,5 +1,26 @@
 {
-  "visited": [],
+  "visited": [
+    {
+      "key": "turquia",
+      "name": "Turquía",
+      "lat": 39.93,
+      "lng": 32.85,
+      "w": 28,
+      "h": 14,
+      "desc": "“Templos y neblina.”",
+      "descEn": "“Templos y neblina.”",
+      "photos": [
+        {
+          "id": "turquia-1787727034104",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1787727034104?_a=BAMCr6cg0",
+          "caption": "Mavi Kemeri / Acueducto subterráneo romano en tonos azules",
+          "lat": 41.0084795,
+          "lng": 28.9783826,
+          "categoryKey": "edificios"
+        }
+      ]
+    }
+  ],
   "visitedEmpty": [
     {
       "key": "alemania",
@@ -449,14 +470,6 @@
       "lng": 7.45,
       "w": 8,
       "h": 5
-    },
-    {
-      "key": "turquia",
-      "name": "Turquía",
-      "lat": 39.93,
-      "lng": 32.85,
-      "w": 28,
-      "h": 14
     },
     {
       "key": "vaticano",
