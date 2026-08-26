@@ -1192,6 +1192,14 @@ function photosForCategory(cat){
 var gGallery = document.getElementById('countries-grid-gallery');
 var gEmpty = document.getElementById('countries-grid-empty');
 var gUpcoming = document.getElementById('countries-grid-upcoming');
+// Tapa de una tarjeta "sin fotos": si ya se generó una portada con IA para
+// ese país (coverUrl, ver scripts/generate-country-covers.js) se usa esa —
+// si no, cae al relleno de Picsum de siempre (ej. un país recién agregado
+// que todavía no pasó por el script).
+function emptyCardImg(c){
+  if(c.coverUrl) return c.coverUrl;
+  return 'https://picsum.photos/seed/'+(c.key||c.name)+'-e-'+RANDOM_SEED+'/400/400';
+}
 function buildCountriesGrids(){
   gGallery.innerHTML = ''; gEmpty.innerHTML = ''; gUpcoming.innerHTML = '';
   var withPhotos = countriesWithPhotos();
@@ -1215,7 +1223,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.key+'-e-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<div class="country-thumb"><img src="'+emptyCardImg(c)+'" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
     card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
     gEmpty.appendChild(card);
@@ -1224,7 +1232,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-e-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<div class="country-thumb"><img src="'+emptyCardImg(c)+'" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
     card.addEventListener('click', function(){ openEmptyPanel(c, 'countries'); });
     gEmpty.appendChild(card);

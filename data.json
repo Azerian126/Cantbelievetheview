@@ -1,25 +1,15 @@
 {
-  "visited": [
-    {
-      "key": "turquia",
-      "name": "Turquía",
-      "lat": 39.93,
-      "lng": 32.85,
-      "w": 28,
-      "h": 14,
-      "desc": "Templos y neblina.",
-      "descEn": "Templos y neblina.",
-      "photos": [
-        {
-          "id": "turquia-1787708214505",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1787708214505?_a=BAMCr6fk0",
-          "caption": "Kemeri/ Acueductos de Istanbul en tono naranja.",
-          "categoryKey": "edificios"
-        }
-      ]
-    }
-  ],
+  "visited": [],
   "visitedEmpty": [
+    {
+      "key": "alemania",
+      "name": "Alemania",
+      "nameEn": "Germany",
+      "lat": 52.52,
+      "lng": 13.4,
+      "w": 14,
+      "h": 14
+    },
     {
       "key": "antigua-barbuda",
       "name": "Antigua y Barbuda",
@@ -120,6 +110,15 @@
       "h": 16
     },
     {
+      "key": "corea-del-sur",
+      "name": "Corea del Sur",
+      "nameEn": "South Korea",
+      "lat": 37.57,
+      "lng": 126.98,
+      "w": 8,
+      "h": 12
+    },
+    {
       "key": "costa-rica",
       "name": "Costa Rica",
       "nameEn": "Costa Rica",
@@ -138,15 +137,6 @@
       "h": 8
     },
     {
-      "key": "republica-checa",
-      "name": "República Checa",
-      "nameEn": "Czech Republic",
-      "lat": 50.08,
-      "lng": 14.44,
-      "w": 10,
-      "h": 5
-    },
-    {
       "key": "dinamarca",
       "name": "Dinamarca",
       "nameEn": "Denmark",
@@ -156,13 +146,58 @@
       "h": 8
     },
     {
-      "key": "republica-dominicana",
-      "name": "República Dominicana",
-      "nameEn": "Dominican Republic",
-      "lat": 18.49,
-      "lng": -69.93,
+      "key": "emiratos-arabes-unidos",
+      "name": "Emiratos Árabes Unidos",
+      "nameEn": "United Arab Emirates",
+      "lat": 24.45,
+      "lng": 54.38,
+      "w": 10,
+      "h": 6
+    },
+    {
+      "key": "eslovaquia",
+      "name": "Eslovaquia",
+      "nameEn": "Slovakia",
+      "lat": 48.15,
+      "lng": 17.11,
+      "w": 10,
+      "h": 4
+    },
+    {
+      "key": "eslovenia",
+      "name": "Eslovenia",
+      "nameEn": "Slovenia",
+      "lat": 46.06,
+      "lng": 14.51,
       "w": 6,
-      "h": 3
+      "h": 4
+    },
+    {
+      "key": "espana",
+      "name": "España",
+      "nameEn": "Spain",
+      "lat": 40.42,
+      "lng": -3.7,
+      "w": 20,
+      "h": 16
+    },
+    {
+      "key": "estados-unidos",
+      "name": "Estados Unidos",
+      "nameEn": "United States",
+      "lat": 38.9,
+      "lng": -77.04,
+      "w": 60,
+      "h": 26
+    },
+    {
+      "key": "filipinas",
+      "name": "Filipinas",
+      "nameEn": "Philippines",
+      "lat": 14.6,
+      "lng": 120.98,
+      "w": 14,
+      "h": 20
     },
     {
       "key": "finlandia",
@@ -179,15 +214,6 @@
       "nameEn": "France",
       "lat": 48.86,
       "lng": 2.35,
-      "w": 14,
-      "h": 14
-    },
-    {
-      "key": "alemania",
-      "name": "Alemania",
-      "nameEn": "Germany",
-      "lat": 52.52,
-      "lng": 13.4,
       "w": 14,
       "h": 14
     },
@@ -210,15 +236,6 @@
       "h": 6
     },
     {
-      "key": "islandia",
-      "name": "Islandia",
-      "nameEn": "Iceland",
-      "lat": 64.13,
-      "lng": -21.82,
-      "w": 22,
-      "h": 16
-    },
-    {
       "key": "indonesia",
       "name": "Indonesia",
       "nameEn": "Indonesia",
@@ -235,6 +252,15 @@
       "lng": -6.26,
       "w": 8,
       "h": 9
+    },
+    {
+      "key": "islandia",
+      "name": "Islandia",
+      "nameEn": "Iceland",
+      "lat": 64.13,
+      "lng": -21.82,
+      "w": 22,
+      "h": 16
     },
     {
       "key": "italia",
@@ -273,15 +299,6 @@
       "h": 8
     },
     {
-      "key": "mexico",
-      "name": "México",
-      "nameEn": "Mexico",
-      "lat": 19.43,
-      "lng": -99.13,
-      "w": 28,
-      "h": 22
-    },
-    {
       "key": "marruecos",
       "name": "Marruecos",
       "nameEn": "Morocco",
@@ -291,13 +308,13 @@
       "h": 12
     },
     {
-      "key": "paises-bajos",
-      "name": "Países Bajos",
-      "nameEn": "Netherlands",
-      "lat": 52.37,
-      "lng": 4.9,
-      "w": 6,
-      "h": 8
+      "key": "mexico",
+      "name": "México",
+      "nameEn": "Mexico",
+      "lat": 19.43,
+      "lng": -99.13,
+      "w": 28,
+      "h": 22
     },
     {
       "key": "noruega",
@@ -309,6 +326,15 @@
       "h": 26
     },
     {
+      "key": "paises-bajos",
+      "name": "Países Bajos",
+      "nameEn": "Netherlands",
+      "lat": 52.37,
+      "lng": 4.9,
+      "w": 6,
+      "h": 8
+    },
+    {
       "key": "panama",
       "name": "Panamá",
       "nameEn": "Panama",
@@ -316,15 +342,6 @@
       "lng": -79.52,
       "w": 12,
       "h": 4
-    },
-    {
-      "key": "filipinas",
-      "name": "Filipinas",
-      "nameEn": "Philippines",
-      "lat": 14.6,
-      "lng": 120.98,
-      "w": 14,
-      "h": 20
     },
     {
       "key": "polonia",
@@ -345,6 +362,33 @@
       "h": 14
     },
     {
+      "key": "reino-unido",
+      "name": "Reino Unido",
+      "nameEn": "United Kingdom",
+      "lat": 51.51,
+      "lng": -0.13,
+      "w": 12,
+      "h": 20
+    },
+    {
+      "key": "republica-checa",
+      "name": "República Checa",
+      "nameEn": "Czech Republic",
+      "lat": 50.08,
+      "lng": 14.44,
+      "w": 10,
+      "h": 5
+    },
+    {
+      "key": "republica-dominicana",
+      "name": "República Dominicana",
+      "nameEn": "Dominican Republic",
+      "lat": 18.49,
+      "lng": -69.93,
+      "w": 6,
+      "h": 3
+    },
+    {
       "key": "santa-lucia",
       "name": "Santa Lucía",
       "nameEn": "Saint Lucia",
@@ -361,42 +405,6 @@
       "lng": 103.82,
       "w": 1,
       "h": 1
-    },
-    {
-      "key": "eslovaquia",
-      "name": "Eslovaquia",
-      "nameEn": "Slovakia",
-      "lat": 48.15,
-      "lng": 17.11,
-      "w": 10,
-      "h": 4
-    },
-    {
-      "key": "eslovenia",
-      "name": "Eslovenia",
-      "nameEn": "Slovenia",
-      "lat": 46.06,
-      "lng": 14.51,
-      "w": 6,
-      "h": 4
-    },
-    {
-      "key": "corea-del-sur",
-      "name": "Corea del Sur",
-      "nameEn": "South Korea",
-      "lat": 37.57,
-      "lng": 126.98,
-      "w": 8,
-      "h": 12
-    },
-    {
-      "key": "espana",
-      "name": "España",
-      "nameEn": "Spain",
-      "lat": 40.42,
-      "lng": -3.7,
-      "w": 20,
-      "h": 16
     },
     {
       "key": "suecia",
@@ -417,31 +425,12 @@
       "h": 5
     },
     {
-      "key": "emiratos-arabes-unidos",
-      "name": "Emiratos Árabes Unidos",
-      "nameEn": "United Arab Emirates",
-      "lat": 24.45,
-      "lng": 54.38,
-      "w": 10,
-      "h": 6
-    },
-    {
-      "key": "reino-unido",
-      "name": "Reino Unido",
-      "nameEn": "United Kingdom",
-      "lat": 51.51,
-      "lng": -0.13,
-      "w": 12,
-      "h": 20
-    },
-    {
-      "key": "estados-unidos",
-      "name": "Estados Unidos",
-      "nameEn": "United States",
-      "lat": 38.9,
-      "lng": -77.04,
-      "w": 60,
-      "h": 26
+      "key": "turquia",
+      "name": "Turquía",
+      "lat": 39.93,
+      "lng": 32.85,
+      "w": 28,
+      "h": 14
     },
     {
       "key": "vaticano",
@@ -453,15 +442,6 @@
       "h": 0.3
     },
     {
-      "key": "vietnam",
-      "name": "Vietnam",
-      "nameEn": "Vietnam",
-      "lat": 21.03,
-      "lng": 105.85,
-      "w": 10,
-      "h": 28
-    },
-    {
       "key": "venezuela",
       "name": "Venezuela",
       "nameEn": "Venezuela",
@@ -469,6 +449,15 @@
       "lng": -66.9,
       "w": 14,
       "h": 14
+    },
+    {
+      "key": "vietnam",
+      "name": "Vietnam",
+      "nameEn": "Vietnam",
+      "lat": 21.03,
+      "lng": 105.85,
+      "w": 10,
+      "h": 28
     }
   ],
   "upcoming": [
