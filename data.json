@@ -500,7 +500,8 @@
       "lat": 41.9,
       "lng": 12.45,
       "w": 0.3,
-      "h": 0.3
+      "h": 0.3,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-vaticano"
     },
     {
       "key": "venezuela",
