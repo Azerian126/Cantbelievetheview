@@ -407,6 +407,11 @@
   <div class="hero-bottom">
     <p class="hero-quote" data-i18n="heroQuote">Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.</p>
     <div class="hero-stats">
+      <!-- 195 = 193 estados miembros de la ONU + 2 observadores (Vaticano y
+           Palestina) — el conteo más citado como "países del mundo".
+           A diferencia de stat-visited (calculado en updateStatsText()),
+           este no cambia solo — es un número de referencia fijo, no un dato
+           que salga de data.json. -->
       <div><span data-i18n="statVisited">PAÍSES VISITADOS</span> — <b id="stat-visited">61</b> <span data-i18n="statOf">DE</span> <b id="stat-total">195</b></div>
       <div><span data-i18n="statGallery">CON GALERÍA</span> — <b id="stat-gallery">20</b> &nbsp;·&nbsp; <span data-i18n="statEmpty">SIN FOTOS AÚN</span> — <b id="stat-empty">41</b></div>
       <div class="stats-line clickable" id="upcoming-toggle" style="position:relative;">
