@@ -1,66 +1,5 @@
 {
-  "visited": [
-    {
-      "key": "turquia",
-      "name": "Turquía",
-      "lat": 39.93,
-      "lng": 32.85,
-      "w": 28,
-      "h": 14,
-      "desc": "“Templos y neblina.”",
-      "descEn": "“Temples and mist.”",
-      "photos": [
-        {
-          "id": "turquia-1787727034104",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1787727034104?_a=BAMCr6cg0",
-          "caption": "Mavi Kemeri / Acueducto subterráneo romano en tonos azules",
-          "captionEn": "Mavi Kemeri / Roman underground aqueduct in blue tones",
-          "lat": 41.0084795,
-          "lng": 28.9783826,
-          "categoryKey": "edificios"
-        },
-        {
-          "id": "turquia-1787753068212",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1787753068212?_a=BAMCr6cg0",
-          "caption": "Kemeri / Acueducto romano antiguo en tonos naranja",
-          "captionEn": "Kemeri / Ancient Roman aqueduct in orange tones",
-          "lat": 41.0084795,
-          "lng": 28.9783826,
-          "categoryKey": "edificios"
-        },
-        {
-          "id": "turquia-1787765422919",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1787765422919?_a=BAMCr6cg0",
-          "caption": "Mavi / La mezquita azul desde su arco principal.",
-          "captionEn": "Mavi / The Blue Mosque from its main arch",
-          "lat": 41.0053843,
-          "lng": 28.9768534,
-          "categoryKey": "edificios"
-        }
-      ]
-    },
-    {
-      "key": "malasia",
-      "name": "Malasia",
-      "lat": 3.14,
-      "lng": 101.69,
-      "w": 24,
-      "h": 8,
-      "desc": "Islas, arrecifes y atardeceres de turquesa.",
-      "descEn": "Islands, reefs and turquoise sunsets.",
-      "photos": [
-        {
-          "id": "malasia-1787767492550",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/malasia-1787767492550?_a=BAMCr6cg0",
-          "caption": "Petrons / Torres Petronas con iluminación azul",
-          "captionEn": "Petronas / Petronas Towers bathed in blue light",
-          "lat": 3.1579679,
-          "lng": 101.7112048,
-          "categoryKey": "edificios"
-        }
-      ]
-    }
-  ],
+  "visited": [],
   "visitedEmpty": [
     {
       "key": "alemania",
@@ -383,6 +322,15 @@
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-luxemburgo"
     },
     {
+      "key": "malasia",
+      "name": "Malasia",
+      "lat": 3.14,
+      "lng": 101.69,
+      "w": 24,
+      "h": 8,
+      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-malasia"
+    },
+    {
       "key": "marruecos",
       "name": "Marruecos",
       "nameEn": "Morocco",
@@ -521,6 +469,14 @@
       "w": 8,
       "h": 5,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-suiza"
+    },
+    {
+      "key": "turquia",
+      "name": "Turquía",
+      "lat": 39.93,
+      "lng": 32.85,
+      "w": 28,
+      "h": 14
     },
     {
       "key": "vaticano",
