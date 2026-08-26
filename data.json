@@ -1036,27 +1036,6 @@
   ],
   "digitalPrice": 8,
   "microstates": {
-    "Italia": [
-      {
-        "name": "San Marino",
-        "nameEn": "San Marino",
-        "lat": 43.94,
-        "lng": 12.46
-      },
-      {
-        "name": "Ciudad del Vaticano",
-        "nameEn": "Vatican City",
-        "lat": 41.9,
-        "lng": 12.45
-      }
-    ],
-    "Sudáfrica": [
-      {
-        "name": "Lesoto",
-        "nameEn": "Lesotho",
-        "lat": -29.61,
-        "lng": 28.23
-      }
-    ]
+    "Italia": ["Vaticano"]
   }
 }

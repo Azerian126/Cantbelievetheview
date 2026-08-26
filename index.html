@@ -1518,11 +1518,18 @@ upcoming.forEach(function(c){ allCountries.push({data:c, type:'upcoming'}); });
 function borderMaterial(isGallery){
   return new THREE.LineBasicMaterial({ color: isGallery ? 0xffc266 : 0xaba48f, transparent:true, opacity: isGallery ? 1 : 0.75 });
 }
+// Piso mínimo del óvalo, en grados — sin esto, un país realmente chico
+// (ej. Vaticano, 0.3° de ancho) queda con un óvalo de un par de píxeles en
+// pantalla: imposible de acertar con el mouse aunque la lógica de hover
+// esté bien. Con este piso, cualquier país mínimo tiene un área
+// razonable para hoverear, sin dejar de ser chico al lado de un país
+// grande de verdad (Italia mide 12° de ancho).
+var MIN_ELLIPSE_SEMI = 0.8;
 function buildEllipseLines(entry){
   var c = entry.data;
   var latRad = c.lat*Math.PI/180;
   var cosLat = Math.max(Math.cos(latRad), 0.2);
-  var semiW = (c.w/2)/cosLat, semiH = c.h/2;
+  var semiW = Math.max((c.w/2)/cosLat, MIN_ELLIPSE_SEMI), semiH = Math.max(c.h/2, MIN_ELLIPSE_SEMI);
   var segs = 64, mat = borderMaterial(entry.type==='gallery'), lines = [];
   [1.003, 1.007].forEach(function(rMul){
     var pts = [];
@@ -1739,10 +1746,27 @@ canvas.addEventListener('pointerleave', function(){ setHover(null); });
 
 var msMenu = document.getElementById('microstate-menu');
 function closeMicrostateMenu(){ msMenu.classList.remove('show'); }
+// El menú se abre en respuesta a un 'pointerup' del globo — pero un
+// pointerdown+pointerup válidos sobre el mismo elemento (el canvas) hacen
+// que el navegador sintetice, JUSTO DESPUÉS, un evento 'click' de verdad
+// sobre ese canvas, que burbujea hasta document y dispara el listener de
+// "click afuera cierra el menú" de más abajo — cerrando el menú que se
+// acababa de abrir, en el mismo instante. Esta bandera hace que ese único
+// click sintético (el que originó la apertura) se ignore una vez.
+var msJustOpened = false;
 function openMicrostateMenu(entry, pos){
-  var micro = MICROSTATES[entry.data.name];
+  msJustOpened = true;
+  // MICROSTATES[país] es solo una lista de NOMBRES (ej. "Vaticano") — se
+  // resuelve cada uno a su entrada real en allCountries (la misma que ya
+  // tiene país propio en visited/visitedEmpty, con su key, su coverUrl,
+  // sus fotos si las tuviera) en vez de armar un objeto aparte sin
+  // conexión a los datos reales — antes eso hacía que el microestado
+  // mostrara una portada random de Picsum en vez de la suya.
+  var micro = (MICROSTATES[entry.data.name] || []).map(function(name){
+    return allCountries.find(function(e){ return e.data.name === name; });
+  }).filter(Boolean);
   var items = '<button data-full="1">'+cname(entry.data)+' <span>'+t('fullCountry')+'</span></button>' +
-    micro.map(function(m,i){ return '<button data-idx="'+i+'">'+cname(m)+' <span>'+t('microstate')+'</span></button>'; }).join('');
+    micro.map(function(m,i){ return '<button data-idx="'+i+'">'+cname(m.data)+' <span>'+t('microstate')+'</span></button>'; }).join('');
   msMenu.innerHTML = items;
   var x = Math.min(pos.cx, window.innerWidth-260);
   var y = Math.min(pos.cy, window.innerHeight-140);
@@ -1755,12 +1779,14 @@ function openMicrostateMenu(entry, pos){
   msMenu.querySelectorAll('[data-idx]').forEach(function(btn){
     btn.addEventListener('click', function(){
       closeMicrostateMenu();
-      var m = micro[parseInt(btn.dataset.idx)];
-      openEmptyPanel({name:m.name, nameEn:m.nameEn, lat:m.lat, lng:m.lng}, 'hero');
+      runCountryAction(micro[parseInt(btn.dataset.idx)]);
     });
   });
 }
-document.addEventListener('click', function(e){ if(!e.target.closest('#microstate-menu')) closeMicrostateMenu(); });
+document.addEventListener('click', function(e){
+  if(msJustOpened){ msJustOpened = false; return; }
+  if(!e.target.closest('#microstate-menu')) closeMicrostateMenu();
+});
 
 function runCountryAction(entry){
   if(entry.type==='gallery'){ openCountryPanel(entry.data, 'hero'); }
