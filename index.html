@@ -654,11 +654,6 @@ fetch('data.json')
 
 function boot(){
 
-// Semilla al azar por carga de página: se le suma a los seeds de las fotos
-// de relleno (picsum) para que cambien en cada visita/recarga, en vez de
-// mostrar siempre la misma imagen. Un solo valor compartido, así distintas
-// fotos de relleno siguen siendo distintas entre sí dentro de la misma carga.
-var RANDOM_SEED = Math.floor(Math.random() * 1e6);
 
 /* ============ i18n ============ */
 var lang = 'es';
@@ -1306,9 +1301,8 @@ function buildHubTiles(){
     // en un relleno random de Picsum, sin importar cuántas fotos reales
     // hubiera ya cargadas.
     var catPhotos = photosForCategory(cat);
-    var coverImg = catPhotos.length ? catPhotos[0].displayUrl : 'https://picsum.photos/seed/'+cat.key+'-cover-'+RANDOM_SEED+'/700/900';
     tile.innerHTML =
-      '<img src="'+coverImg+'" loading="lazy" alt="'+cname2(cat)+'">' +
+      thumbImgHtml(catPhotos.length ? catPhotos[0].displayUrl : null, cname2(cat)) +
       '<div class="hub-tile-overlay"><div class="hub-tile-n">'+String(idx+1).padStart(2,'0')+'</div><h3>'+cname2(cat)+'</h3><p>'+cdesc2(cat)+'</p></div>';
     tile.addEventListener('click', function(){
       lastOpened = {kind:'category', cat:cat, returnTo:'hub'};
@@ -1319,7 +1313,6 @@ function buildHubTiles(){
   var paisesTile = document.createElement('div');
   paisesTile.className = 'hub-tile';
   paisesTile.innerHTML =
-    '<img src="https://picsum.photos/seed/paises-cover-'+RANDOM_SEED+'/700/900" loading="lazy" alt="Countries">' +
     '<div class="hub-tile-overlay"><div class="hub-tile-n">06</div><h3>'+t('hubPaises')+'</h3><p>'+(visited.length+visitedEmpty.length)+t('hubPaisesDesc')+'</p></div>';
   paisesTile.addEventListener('click', openCountriesOv);
   hubGrid.appendChild(paisesTile);
@@ -1348,11 +1341,19 @@ var gEmpty = document.getElementById('countries-grid-empty');
 var gUpcoming = document.getElementById('countries-grid-upcoming');
 // Tapa de una tarjeta "sin fotos": si ya se generó una portada con IA para
 // ese país (coverUrl, ver scripts/generate-country-covers.js) se usa esa —
-// si no, cae al relleno de Picsum de siempre (ej. un país recién agregado
-// que todavía no pasó por el script).
+// si no, no hay tapa. Nunca una foto de stock ajena haciendo de relleno:
+// donde no hay foto real (o su portada generada), el bloque queda vacío a
+// propósito — el fondo + la textura de marca de .country-thumb/.hub-tile
+// ya alcanzan (ver CSS), sin necesidad de nada más.
 function emptyCardImg(c){
-  if(c.coverUrl) return c.coverUrl;
-  return 'https://picsum.photos/seed/'+(c.key||c.name)+'-e-'+RANDOM_SEED+'/400/400';
+  return c.coverUrl || null;
+}
+// Arma el <img> solo si hay una URL real — si no, string vacío, y el
+// contenedor (.country-thumb, .hub-tile, etc.) queda con su textura de
+// marca sola, nunca con un relleno de foto que no es de Mario.
+function thumbImgHtml(url, alt, extraStyle){
+  if(!url) return '';
+  return '<img src="'+url+'" loading="lazy" alt="'+alt+'"'+(extraStyle ? ' style="'+extraStyle+'"' : '')+'>';
 }
 function buildCountriesGrids(){
   gGallery.innerHTML = ''; gEmpty.innerHTML = ''; gUpcoming.innerHTML = '';
@@ -1377,7 +1378,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="'+emptyCardImg(c)+'" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<div class="country-thumb">'+thumbImgHtml(emptyCardImg(c), cname(c), 'filter:grayscale(0.5) brightness(0.75);')+'<span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
     card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
     gEmpty.appendChild(card);
@@ -1386,7 +1387,7 @@ function buildCountriesGrids(){
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb"><img src="'+emptyCardImg(c)+'" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(0.5) brightness(0.75);"><span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
+      '<div class="country-thumb">'+thumbImgHtml(emptyCardImg(c), cname(c), 'filter:grayscale(0.5) brightness(0.75);')+'<span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
     card.addEventListener('click', function(){ openEmptyPanel(c, 'countries'); });
     gEmpty.appendChild(card);
@@ -1397,7 +1398,7 @@ function buildCountriesGrids(){
     var badgeCls = c.confirmed ? 'badge mono badge-confirmed' : 'badge mono';
     var badgeTxt = c.confirmed ? t('badgeConfirmed') : t('badgeUpcoming');
     card.innerHTML =
-      '<div class="country-thumb"><img src="https://picsum.photos/seed/'+c.name+'-x-'+RANDOM_SEED+'/400/400" loading="lazy" alt="'+cname(c)+'" style="filter:grayscale(1) brightness(0.5);"><span class="'+badgeCls+'">'+badgeTxt+'</span></div>' +
+      '<div class="country-thumb"><span class="'+badgeCls+'">'+badgeTxt+'</span></div>' +
       '<h4>'+cname(c)+'</h4><span>'+c.date+'</span>';
     gUpcoming.appendChild(card);
   });

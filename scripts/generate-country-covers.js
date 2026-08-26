@@ -71,20 +71,39 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Un error que reintentar no va a arreglar (clave inválida, sin saldo,
+// prompt rechazado por política de contenido) — withRetry lo deja pasar
+// directo, y main() corta el lote entero en vez de seguir gastando
+// intentos contra la misma pared en cada país que sigue.
+class PermanentError extends Error {}
+
 // La generación de imagen tarda y de vez en cuando la conexión se corta
-// sola a mitad de camino (SocketError: other side closed) — no es un error
-// real de la request, así que reintenta antes de darla por perdida.
-async function withRetry(fn, attempts = 3) {
+// sola a mitad de camino (SocketError: other side closed, o un corte del
+// otro lado a los ~60s sin error HTTP) — no es un error real de la
+// request, así que reintenta antes de darla por perdida. La espera crece
+// bastante entre intento e intento (5s, 15s, 45s) porque el corte
+// observado no es un parpadeo de un segundo — puede durar varios minutos
+// del lado de xAI, y una espera corta solo vuelve a pegar contra lo mismo.
+async function withRetry(fn, attempts = 4, baseDelayMs = 5000) {
   let lastErr;
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (err) {
+      if (err instanceof PermanentError) throw err;
       lastErr = err;
-      if (i < attempts - 1) await sleep(2000 * (i + 1));
+      if (i < attempts - 1) await sleep(baseDelayMs * Math.pow(3, i));
     }
   }
   throw lastErr;
+}
+
+// 401 (clave inválida), 402 (sin saldo) y 400 (prompt rechazado) no se
+// arreglan reintentando la misma request — todo lo demás (5xx, timeouts,
+// cortes de conexión) sí puede ser transitorio.
+function xaiError(status, text) {
+  const msg = `xAI ${status}: ${text.slice(0, 300)}`;
+  return status === 401 || status === 402 || status === 400 ? new PermanentError(msg) : new Error(msg);
 }
 
 async function generateImage(prompt) {
@@ -97,7 +116,7 @@ async function generateImage(prompt) {
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`xAI ${res.status}: ${text.slice(0, 300)}`);
+      throw xaiError(res.status, text);
     }
     const json = await res.json();
     const item = json.data && json.data[0];
@@ -135,7 +154,10 @@ async function uploadToCloudinary(image, publicId) {
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`Cloudinary ${res.status}: ${text.slice(0, 300)}`);
+      const msg = `Cloudinary ${res.status}: ${text.slice(0, 300)}`;
+      // 401/403 acá es firma o api_key/secret mal — no cambia entre
+      // intentos, así que reintentar es tan inútil como con xAI.
+      throw res.status === 401 || res.status === 403 ? new PermanentError(msg) : new Error(msg);
     }
     return res.json();
   });
@@ -159,6 +181,7 @@ async function main() {
   console.log(`${DRY_RUN ? '[DRY RUN] ' : ''}${targets.length} país(es) sin portada:\n`);
 
   let done = 0;
+  let stoppedEarly = false;
   for (const country of targets) {
     const label = `${country.name} (${country.key})`;
     const prompt = promptFor(country);
@@ -176,6 +199,15 @@ async function main() {
       console.log('OK');
     } catch (err) {
       console.log('FALLÓ: ' + err.message);
+      // Sin saldo, clave inválida o prompt rechazado: seguir con el resto
+      // del lote solo repite el mismo error país por país. Se corta acá,
+      // se guarda lo que sí se generó, y se sale con un código distinto
+      // (2) para que quien llame a esto (ej. la tarea programada) sepa
+      // que hace falta que alguien mire esto, no que reintente solo.
+      if (err instanceof PermanentError) {
+        stoppedEarly = true;
+        break;
+      }
     }
   }
 
@@ -189,6 +221,11 @@ async function main() {
     console.log(`\nListo — ${done}/${targets.length} portadas generadas y guardadas en data.json.`);
   } else {
     console.log('\nNinguna portada se generó — revisá los errores de arriba.');
+  }
+
+  if (stoppedEarly) {
+    console.log('\n⛔ Cortado antes de terminar el lote — el último error no se arregla reintentando. Revisar a mano.');
+    process.exitCode = 2;
   }
 }
 
