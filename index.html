@@ -174,18 +174,28 @@
   .photo-frame.bw img{filter:grayscale(1) contrast(1.15);}
   .photo-card:hover .photo-frame img{transform:scale(1.045);}
   .photo-idx{position:absolute; top:12px; left:12px; z-index:4; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--overlay-ink); background:rgba(0,0,0,0.35); padding:3px 7px; border-radius:2px; backdrop-filter:blur(2px);}
-  .photo-meta{display:flex; justify-content:space-between; align-items:flex-start; margin-top:12px; gap:10px;}
-  .photo-name-block{display:flex; flex-direction:column; gap:3px; min-width:0;}
+  /* El nombre propio (ej. "Mavi Kemeri") y la descripción corta (ej.
+     "Acueducto subterráneo romano...") van en líneas separadas — el nombre
+     con el mismo tratamiento que el título grande de un país (Fraunces
+     derecho, tinta plena), la descripción abajo en itálica tenue, igual que
+     la frase de intro de cada país. Pegados con "/" en una sola línea el
+     nombre perdía protagonismo. */
+  .photo-text{display:flex; flex-direction:column; gap:2px; margin-top:12px;}
+  .photo-title{font-family:'Fraunces', serif; font-size:13.5px; color:var(--paper); line-height:1.3;}
+  .photo-desc{font-family:'Fraunces', serif; font-style:italic; font-size:12px; color:var(--paper-dim); line-height:1.35;}
+  /* Footer con margin-top:auto — clava coordenadas + precio + botones al
+     fondo de la tarjeta pase lo que pase arriba. El grid ya estira todas
+     las tarjetas de una fila a la misma altura (comportamiento default de
+     CSS Grid); sin esto, una tarjeta con texto más largo (ej. la
+     traducción al inglés) empuja todo lo de abajo más lejos que la de al
+     lado con menos texto, y tanto las coordenadas como los botones quedan
+     despareja entre tarjetas de una misma fila. Agrupando coords+precio+
+     botones en un solo bloque anclado abajo, quedan siempre a la misma
+     altura sea cual sea el idioma o el largo del texto. */
+  .photo-footer{margin-top:auto; padding-top:10px;}
+  .photo-meta{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px;}
   .photo-coords{font-family:'JetBrains Mono', monospace; font-size:9.5px; letter-spacing:.03em; color:var(--paper-dim); opacity:0.65;}
-  .photo-name{font-family:'Fraunces', serif; font-style:italic; font-size:13px; color:var(--paper-dim);}
-  /* margin-top:auto — clava los botones al fondo de la tarjeta pase lo que
-     pase arriba. El grid ya estira todas las tarjetas de una fila a la
-     misma altura (comportamiento default de CSS Grid); sin esto, una
-     tarjeta con título de 3 líneas (ej. la traducción al inglés) empuja sus
-     botones más abajo que la de al lado con un título de 1-2 líneas, y la
-     fila queda despareja. Así los botones quedan siempre a la misma altura
-     entre tarjetas de una fila, sea cual sea el idioma o el largo del texto. */
-  .buy-row{display:flex; gap:8px; margin-top:auto; padding-top:10px;}
+  .buy-row{display:flex; gap:8px;}
   .buy-btn{flex:1; width:100%; font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; padding:9px 8px; border:1px solid var(--line); background:none; color:var(--paper); border-radius:2px; transition:all .2s ease; text-align:center;}
   .buy-btn:hover{border-color:var(--amber); color:var(--amber-bright);}
   .print-wrap{position:relative; flex:1;}
@@ -1184,14 +1194,30 @@ function openGalleryPanel(cfg){
       var frame = document.createElement('div');
       frame.className = 'photo-frame' + (cfg.bw ? ' bw' : '');
       frame.innerHTML = '<img src="'+imgUrl+'" loading="lazy" alt="'+title+'"><div class="photo-idx">'+String(i).padStart(2,'0')+' / '+String(count).padStart(2,'0')+'</div>';
-      var meta = document.createElement('div');
-      meta.className = 'photo-meta';
-      meta.innerHTML =
-        '<div class="photo-name-block"><span class="photo-name">'+title+'</span>' +
-        (photoCoordsText ? '<span class="photo-coords">'+photoCoordsText+'</span>' : '') +
-        '</div><span class="ci-price mono" style="font-size:11px; white-space:nowrap;">'+t('fromPrice')+fmt(DIGITAL_PRICE)+'</span>';
-      card.appendChild(frame); card.appendChild(meta);
-      card.appendChild(buildBuyRow(title, cfg.title, imgUrl, photoId));
+
+      // Muchos títulos siguen la convención "Nombre propio / descripción
+      // corta" (ej. "Mavi Kemeri / Acueducto subterráneo romano..."). Se
+      // separa en dos líneas en vez de mostrarlas pegadas con la barra —
+      // ver .photo-title/.photo-desc. Si no hay "/", queda solo el nombre.
+      var slashIdx = title.indexOf(' / ');
+      var mainTitle = slashIdx === -1 ? title : title.slice(0, slashIdx);
+      var titleDesc = slashIdx === -1 ? '' : title.slice(slashIdx + 3);
+      var text = document.createElement('div');
+      text.className = 'photo-text';
+      text.innerHTML =
+        '<span class="photo-title">'+mainTitle+'</span>' +
+        (titleDesc ? '<span class="photo-desc">'+titleDesc+'</span>' : '');
+
+      var footer = document.createElement('div');
+      footer.className = 'photo-footer';
+      footer.innerHTML =
+        '<div class="photo-meta">' +
+        '<span class="photo-coords">'+(photoCoordsText || '')+'</span>' +
+        '<span class="ci-price mono" style="font-size:11px; white-space:nowrap;">'+t('fromPrice')+fmt(DIGITAL_PRICE)+'</span>' +
+        '</div>';
+      footer.appendChild(buildBuyRow(title, cfg.title, imgUrl, photoId));
+
+      card.appendChild(frame); card.appendChild(text); card.appendChild(footer);
       grid.appendChild(card);
     }
     body.appendChild(grid);
