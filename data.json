@@ -38,6 +38,27 @@
           "categoryKey": "edificios"
         }
       ]
+    },
+    {
+      "key": "malasia",
+      "name": "Malasia",
+      "lat": 3.14,
+      "lng": 101.69,
+      "w": 24,
+      "h": 8,
+      "desc": "Islas, arrecifes y atardeceres de turquesa.",
+      "descEn": "Islands, reefs and turquoise sunsets.",
+      "photos": [
+        {
+          "id": "malasia-1787767492550",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/malasia-1787767492550?_a=BAMCr6cg0",
+          "caption": "Petrons / Torres Petronas con iluminación azul",
+          "captionEn": "Petronas / Petronas Towers bathed in blue light",
+          "lat": 3.1579679,
+          "lng": 101.7112048,
+          "categoryKey": "edificios"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -360,16 +381,6 @@
       "w": 2,
       "h": 2,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-luxemburgo"
-    },
-    {
-      "key": "malasia",
-      "name": "Malasia",
-      "nameEn": "Malaysia",
-      "lat": 3.14,
-      "lng": 101.69,
-      "w": 24,
-      "h": 8,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-malasia"
     },
     {
       "key": "marruecos",
