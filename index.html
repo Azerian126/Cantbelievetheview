@@ -600,6 +600,52 @@
    bot de Telegram puede editar data.json directamente sin tocar este HTML. */
 var visited, visitedEmpty, upcoming, current, categories, MATERIALS, DIGITAL_PRICE, MICROSTATES;
 
+// Fuente única de "qué país existe, con qué estado" — la resuelve
+// resolveCountries() apenas llegan los datos (antes de cualquier vista),
+// y de ahí toman TODAS las vistas que listan países (grilla de tarjetas,
+// globo). Antes cada vista recorría visited/visitedEmpty/upcoming por su
+// cuenta, así que un país en más de una lista (ej. Panamá: visitedEmpty +
+// upcoming a la vez) salía duplicado en cada vista por separado — quedó
+// arreglado para el globo (upsertCountry) pero no para la grilla de
+// tarjetas, que seguía recorriendo los arrays crudos. Con una sola fuente,
+// la regla "un país, un solo estado" deja de ser algo que hay que acordarse
+// de aplicar en cada vista nueva.
+var allCountries = [];
+var byCountryName = {};
+// 'Tiene fotos' (type) y 'dónde anda Mario ahora' (badge) son dos
+// dimensiones distintas, no un solo campo que compite consigo mismo. Quien
+// reclama un país PRIMERO le fija el type para siempre (no se pisa,
+// aunque sí se puede "enriquecer" data con visited/visitedEmpty, ver
+// abajo); quien lo reclama después solo puede sumar un badge informativo.
+function upsertCountry(c, type, badge, meta){
+  var existing = byCountryName[c.name];
+  if(existing){
+    // visited/visitedEmpty son la fuente rica (coverUrl, fotos, desc) — si
+    // esta llamada viene de ahí, actualiza los datos aunque el país ya
+    // hubiera sido reclamado antes por current/upcoming (objetos más
+    // finitos: solo name/nameEn/lat/lng/w/h, sin coverUrl ni fotos). Pero
+    // NUNCA al revés: si el país ya es 'gallery' (la fuente más rica de
+    // todas, y la única con fotos reales), un 'empty' que llegue después
+    // no le puede pisar la data — si no, un país con fotos podía terminar
+    // mostrando la portada genérica de visitedEmpty en vez de su foto.
+    if((type === 'gallery' || type === 'empty') && existing.type !== 'gallery') existing.data = c;
+    if(badge && existing.badge !== 'current'){ existing.badge = badge; existing.meta = meta || null; }
+    return;
+  }
+  byCountryName[c.name] = { data:c, type:type, badge:badge || null, meta:meta || null };
+  allCountries.push(byCountryName[c.name]);
+}
+function resolveCountries(){
+  allCountries = [];
+  byCountryName = {};
+  // Orden de las llamadas = precedencia de `type` — 'gallery' primero
+  // para que nada pueda bajarlo de categoría.
+  visited.forEach(function(c){ upsertCountry(c, 'gallery', null); });
+  if(current && typeof current === 'object') upsertCountry(current, 'current', 'current');
+  upcoming.forEach(function(c){ upsertCountry(c, 'upcoming', 'upcoming', {date:c.date, confirmed:c.confirmed}); });
+  visitedEmpty.forEach(function(c){ upsertCountry(c, 'empty', null); });
+}
+
 /* ============ MARCA DE AGUA REPETIDA (canvas, no SVG) ============
    La versión CSS (más abajo, background-image de .photo-frame::after etc.)
    es un SVG cargado como imagen de fondo — ese SVG vive en su propio
@@ -665,6 +711,7 @@ fetch('data.json')
     [visited, visitedEmpty, upcoming].forEach(function(arr){ arr.forEach(function(c){ c.ne = NE_NAMES[c.name] || null; c.nameEn = c.nameEn || c.ne || c.name; }); });
     if(typeof current === 'object' && current){ current.ne = NE_NAMES[current.name] || null; current.nameEn = current.nameEn || current.ne || current.name; }
 
+    resolveCountries();
     boot();
   })
   .catch(function(err){
@@ -703,7 +750,7 @@ var T = {
     groupGallery:'Con galería', groupEmpty:'Visitados — fotos por subir', groupUpcoming:'Próximos destinos',
     cartTitle:'Tu carrito', subtotal:'Subtotal', checkoutBtn:'Finalizar compra', cartEmpty:'Tu carrito está vacío.<br>Elegí un país o una categoría para empezar.',
     remove:'quitar', digital:'Digital', print:'Impresión', fullCountry:'país completo', microstate:'microestado',
-    badgeGallery:'con galería', badgeEmpty:'sin fotos', badgeUpcoming:'por confirmar', badgeConfirmed:'confirmado', badgeVisited:'visitado', soon:'por subir', toComeSoon:'próximamente',
+    badgeGallery:'con galería', badgeEmpty:'sin fotos', badgeUpcoming:'por confirmar', badgeConfirmed:'confirmado', badgeVisited:'visitado', badgeCurrent:'acá ahora', soon:'por subir', toComeSoon:'próximamente',
     hubPaises:'Países', hubPaisesDesc:' visitados — navegá por destino.', paisesEyebrow:'ARCHIVO COMPLETO',
     tCountriesSummary:function(tot,g,e,u){ return tot+' VISITADOS · '+g+' CON GALERÍA · '+e+' SIN FOTOS · '+u+' PRÓXIMOS'; },
     tttGallery:'ver galería →', tttEmpty:'visitado · aún sin fotos', tttUpcoming:'próximo destino · ', tttCurrent:'acá ahora mismo', tttGeneric:'sin fotos por ahora',
@@ -750,7 +797,7 @@ var T = {
     groupGallery:'With gallery', groupEmpty:'Visited — photos coming', groupUpcoming:'Upcoming trips',
     cartTitle:'Your cart', subtotal:'Subtotal', checkoutBtn:'Checkout', cartEmpty:'Your cart is empty.<br>Pick a country or a category to get started.',
     remove:'remove', digital:'Digital', print:'Print', fullCountry:'whole country', microstate:'microstate',
-    badgeGallery:'with gallery', badgeEmpty:'no photos', badgeUpcoming:'unconfirmed', badgeConfirmed:'confirmed', badgeVisited:'visited', soon:'coming soon', toComeSoon:'coming soon',
+    badgeGallery:'with gallery', badgeEmpty:'no photos', badgeUpcoming:'unconfirmed', badgeConfirmed:'confirmed', badgeVisited:'visited', badgeCurrent:'here now', soon:'coming soon', toComeSoon:'coming soon',
     hubPaises:'Countries', hubPaisesDesc:' visited — browse by destination.', paisesEyebrow:'FULL ARCHIVE',
     tCountriesSummary:function(tot,g,e,u){ return tot+' VISITED · '+g+' WITH GALLERY · '+e+' NO PHOTOS · '+u+' UPCOMING'; },
     tttGallery:'view gallery →', tttEmpty:'visited · no photos yet', tttUpcoming:'upcoming trip · ', tttCurrent:'here right now', tttGeneric:'no photos yet',
@@ -1380,14 +1427,30 @@ function thumbImgHtml(url, alt, extraStyle){
   if(!url) return '';
   return '<img src="'+url+'" loading="lazy" alt="'+alt+'"'+(extraStyle ? ' style="'+extraStyle+'"' : '')+'>';
 }
+function hasRealPhotos(entry){ var c = entry.data; return !!(c.photos && c.photos.length > 0); }
+
+// Una sola fuente (allCountries, ver resolveCountries()) para las 3
+// grillas — un país que está en más de una lista a la vez (ej. Panamá:
+// visitedEmpty + upcoming) ya viene resuelto a UN solo estado, así que
+// sale UNA tarjeta, nunca dos.
 function buildCountriesGrids(){
   gGallery.innerHTML = ''; gEmpty.innerHTML = ''; gUpcoming.innerHTML = '';
-  var withPhotos = countriesWithPhotos();
-  var visitedNoPhotos = countriesVisitedNoPhotos();
-  document.getElementById('count-gallery').textContent = '('+withPhotos.length+')';
-  document.getElementById('count-empty').textContent = '('+(visitedNoPhotos.length + visitedEmpty.length)+')';
-  document.getElementById('count-upcoming').textContent = '('+upcoming.length+')';
-  withPhotos.forEach(function(c){
+
+  var byType = { gallery:[], empty:[], upcoming:[], current:[] };
+  allCountries.forEach(function(entry){ if(byType[entry.type]) byType[entry.type].push(entry); });
+  var galleryReal = byType.gallery.filter(hasRealPhotos);
+  var galleryNoPhotos = byType.gallery.filter(function(e){ return !hasRealPhotos(e); });
+
+  document.getElementById('count-gallery').textContent = '('+galleryReal.length+')';
+  // 'current' sin fotos no tiene grilla propia acá (el bloque "Actualmente
+  // en:" del hero y el globo ya lo muestran aparte) — se cuenta y se pinta
+  // junto con "sin fotos", que es lo que es del lado fotográfico, con su
+  // propia marca en vez de "por subir".
+  document.getElementById('count-empty').textContent = '('+(galleryNoPhotos.length + byType.empty.length + byType.current.length)+')';
+  document.getElementById('count-upcoming').textContent = '('+byType.upcoming.length+')';
+
+  galleryReal.forEach(function(entry){
+    var c = entry.data;
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
@@ -1396,10 +1459,13 @@ function buildCountriesGrids(){
     card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
     gGallery.appendChild(card);
   });
-  // Tiene ficha (desc/coords) pero todavía sin fotos reales — mismo trato
-  // visual que un país sin ficha: nada de "con galería" hasta que haya
-  // una foto de verdad adentro.
-  visitedNoPhotos.forEach(function(c){
+  // "Con galería" pero sin fotos reales ahora mismo (ej. se borraron todas)
+  // y "sin ficha todavía" (visitedEmpty) se ven igual — nada de "con
+  // galería" hasta que haya una foto de verdad adentro — pero el click
+  // difiere: uno tiene ficha propia (openCountryPanel), el otro cae al
+  // panel vacío genérico (openEmptyPanel).
+  galleryNoPhotos.forEach(function(entry){
+    var c = entry.data;
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
@@ -1408,23 +1474,25 @@ function buildCountriesGrids(){
     card.addEventListener('click', function(){ openCountryPanel(c, 'countries'); });
     gEmpty.appendChild(card);
   });
-  visitedEmpty.forEach(function(c){
+  byType.empty.concat(byType.current).forEach(function(entry){
+    var c = entry.data, isCurrent = entry.type === 'current';
     var card = document.createElement('div');
     card.className = 'country-card';
     card.innerHTML =
-      '<div class="country-thumb">'+thumbImgHtml(emptyCardImg(c), cname(c), 'filter:grayscale(0.5) brightness(0.75);')+'<span class="badge mono">'+t('badgeEmpty')+'</span></div>' +
-      '<h4>'+cname(c)+'</h4><span>'+t('soon')+'</span>';
+      '<div class="country-thumb">'+thumbImgHtml(emptyCardImg(c), cname(c), 'filter:grayscale(0.5) brightness(0.75);')+'<span class="badge mono">'+(isCurrent ? t('badgeCurrent') : t('badgeEmpty'))+'</span></div>' +
+      '<h4>'+cname(c)+'</h4><span>'+(isCurrent ? t('tttCurrent') : t('soon'))+'</span>';
     card.addEventListener('click', function(){ openEmptyPanel(c, 'countries'); });
     gEmpty.appendChild(card);
   });
-  upcoming.forEach(function(c){
+  byType.upcoming.forEach(function(entry){
+    var c = entry.data, meta = entry.meta;
     var card = document.createElement('div');
     card.className = 'country-card disabled';
-    var badgeCls = c.confirmed ? 'badge mono badge-confirmed' : 'badge mono';
-    var badgeTxt = c.confirmed ? t('badgeConfirmed') : t('badgeUpcoming');
+    var badgeCls = meta.confirmed ? 'badge mono badge-confirmed' : 'badge mono';
+    var badgeTxt = meta.confirmed ? t('badgeConfirmed') : t('badgeUpcoming');
     card.innerHTML =
       '<div class="country-thumb"><span class="'+badgeCls+'">'+badgeTxt+'</span></div>' +
-      '<h4>'+cname(c)+'</h4><span>'+c.date+'</span>';
+      '<h4>'+cname(c)+'</h4><span>'+meta.date+'</span>';
     gUpcoming.appendChild(card);
   });
 }
@@ -1599,38 +1667,9 @@ function vec3ToLatLng(p){
 function angDiff(a,b){ var d=a-b; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 
 /* build all country hover-regions with a precomputed border line (doubled for a bolder stroke) */
-// Un país puede estar a la vez en más de una lista (ej. Panamá: visitado
-// sin fotos Y próximo destino; o, más adelante, un país con galería real
-// que además sea el destino actual) — se dibuja UNA sola vez. "Tiene
-// fotos" y "dónde anda Mario ahora" son dos cosas distintas, no un solo
-// estado que compite consigo mismo:
-// - `type` decide el borde y el click — la galería SIEMPRE gana acá, para
-//   no perder nunca el acceso real a las fotos por un indicador de más.
-//   Si no hay galería, current > upcoming > vacío.
-// - `badge` (current/upcoming/null) es información que se SUMA al
-//   tooltip sin tocar el borde ni el click — así un país con galería que
-//   además es el destino actual se lee como las dos cosas, que es la verdad.
-var allCountries = [];
-var byCountryName = {};
-function upsertCountry(c, type, badge, badgeExtra){
-  var existing = byCountryName[c.name];
-  if(existing){
-    // 'current' es más específico que 'upcoming' — no se pisa entre sí,
-    // aunque en la práctica un viaje nunca debería estar en las dos listas
-    // a la vez.
-    if(badge && existing.badge !== 'current'){ existing.badge = badge; existing.badgeExtra = badgeExtra || null; }
-    return;
-  }
-  var entry = {data:c, type:type, badge:badge || null, badgeExtra:badgeExtra || null};
-  byCountryName[c.name] = entry;
-  allCountries.push(entry);
-}
-// Orden de las llamadas = precedencia de `type` (la primera gana y ya no
-// se pisa) — 'gallery' primero para que nada pueda bajarlo de categoría.
-visited.forEach(function(c){ upsertCountry(c, 'gallery', null); });
-if(current && typeof current === 'object') upsertCountry(current, 'current', 'current');
-upcoming.forEach(function(c){ upsertCountry(c, 'upcoming', 'upcoming', c.date); });
-visitedEmpty.forEach(function(c){ upsertCountry(c, 'empty', null); });
+// allCountries ya está resuelto (ver resolveCountries(), llamada antes de
+// boot() — es la misma fuente que usa buildCountriesGrids()): un país
+// aparece acá UNA sola vez, con el `type` más específico que le tocó.
 
 function borderMaterial(isGallery){
   return new THREE.LineBasicMaterial({ color: isGallery ? 0xffc266 : 0xaba48f, transparent:true, opacity: isGallery ? 1 : 0.75 });
@@ -1778,11 +1817,11 @@ function setHover(entry, clientPos){
   if(hovered){
     hovered.lines.forEach(function(l){ l.visible=true; });
     document.getElementById('tt-name').textContent = cname(hovered.data);
-    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.data.date : (hovered.type==='current' ? t('tttCurrent') : t('tttGeneric'))));
+    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.meta.date : (hovered.type==='current' ? t('tttCurrent') : t('tttGeneric'))));
     // El borde/click son de la galería (type) — pero si ADEMÁS es el
     // destino actual o el próximo, esa info se suma acá, nunca lo tapa.
     if(hovered.type==='gallery' && hovered.badge==='current') sub += ' · ' + t('tttCurrent');
-    else if(hovered.type==='gallery' && hovered.badge==='upcoming') sub += ' · ' + t('tttUpcoming') + hovered.badgeExtra;
+    else if(hovered.type==='gallery' && hovered.badge==='upcoming') sub += ' · ' + t('tttUpcoming') + hovered.meta.date;
     document.getElementById('tt-sub').textContent = sub;
     tooltip.classList.toggle('st-gallery', hovered.type==='gallery');
     if(clientPos){ tooltip.style.left=(clientPos.cx+16)+'px'; tooltip.style.top=(clientPos.cy+8)+'px'; }
@@ -1912,7 +1951,7 @@ document.addEventListener('click', function(e){
 function runCountryAction(entry){
   if(entry.type==='gallery'){ openCountryPanel(entry.data, 'hero'); }
   else if(entry.type==='empty'){ openEmptyPanel(entry.data, 'hero'); }
-  else if(entry.type==='upcoming'){ showToast(t('toastUpcoming')(cname(entry.data), entry.data.date)); }
+  else if(entry.type==='upcoming'){ showToast(t('toastUpcoming')(cname(entry.data), entry.meta.date)); }
   else if(entry.type==='current'){ showToast(t('toastCurrent')(cname(entry.data))); }
   else { showToast(t('toastGeneric')(cname(entry.data))); }
 }
