@@ -1600,22 +1600,37 @@ function angDiff(a,b){ var d=a-b; while(d>180)d-=360; while(d<-180)d+=360; retur
 
 /* build all country hover-regions with a precomputed border line (doubled for a bolder stroke) */
 // Un país puede estar a la vez en más de una lista (ej. Panamá: visitado
-// sin fotos Y próximo destino) — se dibuja UNA sola vez, con el estado
-// más específico: current > upcoming > visited/visitedEmpty. No se saca
-// nada de las listas originales (siguen intactas para sus propios
-// contadores/paneles), es solo la prioridad de qué tipo gana al dibujar
-// el borde en el globo.
+// sin fotos Y próximo destino; o, más adelante, un país con galería real
+// que además sea el destino actual) — se dibuja UNA sola vez. "Tiene
+// fotos" y "dónde anda Mario ahora" son dos cosas distintas, no un solo
+// estado que compite consigo mismo:
+// - `type` decide el borde y el click — la galería SIEMPRE gana acá, para
+//   no perder nunca el acceso real a las fotos por un indicador de más.
+//   Si no hay galería, current > upcoming > vacío.
+// - `badge` (current/upcoming/null) es información que se SUMA al
+//   tooltip sin tocar el borde ni el click — así un país con galería que
+//   además es el destino actual se lee como las dos cosas, que es la verdad.
 var allCountries = [];
-var drawnCountryNames = {};
-function addCountryOnce(c, type){
-  if(drawnCountryNames[c.name]) return;
-  drawnCountryNames[c.name] = true;
-  allCountries.push({data:c, type:type});
+var byCountryName = {};
+function upsertCountry(c, type, badge, badgeExtra){
+  var existing = byCountryName[c.name];
+  if(existing){
+    // 'current' es más específico que 'upcoming' — no se pisa entre sí,
+    // aunque en la práctica un viaje nunca debería estar en las dos listas
+    // a la vez.
+    if(badge && existing.badge !== 'current'){ existing.badge = badge; existing.badgeExtra = badgeExtra || null; }
+    return;
+  }
+  var entry = {data:c, type:type, badge:badge || null, badgeExtra:badgeExtra || null};
+  byCountryName[c.name] = entry;
+  allCountries.push(entry);
 }
-if(current && typeof current === 'object') addCountryOnce(current, 'current');
-upcoming.forEach(function(c){ addCountryOnce(c, 'upcoming'); });
-visited.forEach(function(c){ addCountryOnce(c, 'gallery'); });
-visitedEmpty.forEach(function(c){ addCountryOnce(c, 'empty'); });
+// Orden de las llamadas = precedencia de `type` (la primera gana y ya no
+// se pisa) — 'gallery' primero para que nada pueda bajarlo de categoría.
+visited.forEach(function(c){ upsertCountry(c, 'gallery', null); });
+if(current && typeof current === 'object') upsertCountry(current, 'current', 'current');
+upcoming.forEach(function(c){ upsertCountry(c, 'upcoming', 'upcoming', c.date); });
+visitedEmpty.forEach(function(c){ upsertCountry(c, 'empty', null); });
 
 function borderMaterial(isGallery){
   return new THREE.LineBasicMaterial({ color: isGallery ? 0xffc266 : 0xaba48f, transparent:true, opacity: isGallery ? 1 : 0.75 });
@@ -1764,6 +1779,10 @@ function setHover(entry, clientPos){
     hovered.lines.forEach(function(l){ l.visible=true; });
     document.getElementById('tt-name').textContent = cname(hovered.data);
     var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.data.date : (hovered.type==='current' ? t('tttCurrent') : t('tttGeneric'))));
+    // El borde/click son de la galería (type) — pero si ADEMÁS es el
+    // destino actual o el próximo, esa info se suma acá, nunca lo tapa.
+    if(hovered.type==='gallery' && hovered.badge==='current') sub += ' · ' + t('tttCurrent');
+    else if(hovered.type==='gallery' && hovered.badge==='upcoming') sub += ' · ' + t('tttUpcoming') + hovered.badgeExtra;
     document.getElementById('tt-sub').textContent = sub;
     tooltip.classList.toggle('st-gallery', hovered.type==='gallery');
     if(clientPos){ tooltip.style.left=(clientPos.cx+16)+'px'; tooltip.style.top=(clientPos.cy+8)+'px'; }
