@@ -68,6 +68,20 @@
   #globe-canvas:active{cursor:grabbing;}
   .hero-copy{position:absolute; top:15vh; left:0; right:0; text-align:center; pointer-events:none; z-index:2;}
   .hero-eyebrow{font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--overlay-ink-dim); margin-bottom:18px;}
+  /* Siempre presente, viaje o no — si solo apareciera al viajar, su
+     ausencia ya diría "está en casa". Los tres puntos (sin viaje, por
+     privacidad, o sin confirmar) son tan parte del diseño como el nombre
+     de un país. */
+  .hero-status{
+    display:inline-flex; align-items:center; gap:9px; margin-bottom:18px;
+    padding:7px 16px; border-radius:100px; pointer-events:none;
+    background:rgba(0,0,0,0.4); backdrop-filter:blur(4px);
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--overlay-ink-dim); transition:color .3s ease;
+  }
+  .hero-status .dot{width:6px; height:6px; border-radius:50%; background:var(--paper-dim); flex:none; transition:background .3s ease;}
+  .hero-status.live{color:var(--overlay-ink);}
+  .hero-status.live .dot{background:var(--amber); animation:pulse 2s infinite ease-in-out;}
   /* font-variation-settings fija el eje "opsz" (optical size) de Fraunces en
      un valor alto — sin esto, el navegador puede quedarse en un opsz bajo,
      que en Fraunces da letras con un trazo bien ondulado/"wonky" a propósito
@@ -400,6 +414,7 @@
   <canvas id="globe-canvas"></canvas>
   <div class="hero-copy">
     <div class="hero-eyebrow" data-i18n="heroEyebrow">Mario Mazzone — fotografía de paisaje</div>
+    <div class="hero-status" id="hero-status"></div>
     <h1 class="hero-title" data-i18n-html="heroTitle">No tomo una fotografía.<br>La pido prestada, <em>en silencio.</em></h1>
   </div>
   <div class="hero-hint"><span data-i18n="heroHint">arrastrá el globo · pasá el mouse sobre un país</span><div class="dot"></div>
@@ -583,7 +598,7 @@
    misma carpeta que este archivo. Este bloque solo declara las variables y
    arranca el resto del sitio (boot) una vez que el fetch resuelve. Así el
    bot de Telegram puede editar data.json directamente sin tocar este HTML. */
-var visited, visitedEmpty, upcoming, categories, MATERIALS, DIGITAL_PRICE, MICROSTATES;
+var visited, visitedEmpty, upcoming, current, categories, MATERIALS, DIGITAL_PRICE, MICROSTATES;
 
 /* ============ MARCA DE AGUA REPETIDA (canvas, no SVG) ============
    La versión CSS (más abajo, background-image de .photo-frame::after etc.)
@@ -632,6 +647,11 @@ fetch('data.json')
     visited = DATA.visited;
     visitedEmpty = DATA.visitedEmpty;
     upcoming = DATA.upcoming;
+    // "..." (sin viaje activo, por privacidad, o sin confirmar) o un objeto
+    // con la misma forma que upcoming sin date/confirmed — lo escribe sola
+    // la tarea diaria de Kai, ver buildHeroStatus(). Si faltara el campo
+    // (data.json viejo), cae a "..." — nunca a undefined ni a un error.
+    current = DATA.current || '...';
     categories = DATA.categories;
     MATERIALS = DATA.materials;
     DIGITAL_PRICE = DATA.digitalPrice;
@@ -643,6 +663,7 @@ fetch('data.json')
        duplicada con la entrada genérica "United Kingdom". */
     var NE_NAMES = DATA.neNames;
     [visited, visitedEmpty, upcoming].forEach(function(arr){ arr.forEach(function(c){ c.ne = NE_NAMES[c.name] || null; c.nameEn = c.nameEn || c.ne || c.name; }); });
+    if(typeof current === 'object' && current){ current.ne = NE_NAMES[current.name] || null; current.nameEn = current.nameEn || current.ne || current.name; }
 
     boot();
   })
@@ -685,7 +706,7 @@ var T = {
     badgeGallery:'con galería', badgeEmpty:'sin fotos', badgeUpcoming:'por confirmar', badgeConfirmed:'confirmado', badgeVisited:'visitado', soon:'por subir', toComeSoon:'próximamente',
     hubPaises:'Países', hubPaisesDesc:' visitados — navegá por destino.', paisesEyebrow:'ARCHIVO COMPLETO',
     tCountriesSummary:function(tot,g,e,u){ return tot+' VISITADOS · '+g+' CON GALERÍA · '+e+' SIN FOTOS · '+u+' PRÓXIMOS'; },
-    tttGallery:'ver galería →', tttEmpty:'visitado · aún sin fotos', tttUpcoming:'próximo destino · ', tttGeneric:'sin fotos por ahora',
+    tttGallery:'ver galería →', tttEmpty:'visitado · aún sin fotos', tttUpcoming:'próximo destino · ', tttCurrent:'acá ahora mismo', tttGeneric:'sin fotos por ahora',
     tCoordsFmt:function(n,e){return n+e;},
     emptyMsg:function(name){ return 'Todavía no subí fotografías de '+name+'.<br>Vuelvo pronto con la galería completa.'; },
     emptyHint:'MIENTRAS TANTO, EXPLORÁ LOS PAÍSES CON GALERÍA →', emptyDescGeneric:'Visitado — la galería está en camino.',
@@ -698,10 +719,12 @@ var T = {
     checkingOrder:'Confirmando tu pedido…', orderCancelled:'Pago cancelado — tu carrito sigue como estaba.',
     digitalReadyTitle:'Tus fotos digitales', digitalDownload:'Descargar',
     toastAdded:function(t){return 'Añadido al carrito · '+t;}, toastUpcoming:function(n,d){return n+' — próximo destino · '+d;},
+    toastCurrent:function(n){return 'Actualmente en '+n+'.';},
     toastGeneric:function(n){return n+' — todavía no forma parte del archivo.';},
     realScale:' · a escala real', scale:'A ESCALA REAL', dropTitle:'Próximos destinos',
     sizeLimitNote:function(maxLabel){ return 'Esta imagen respeta su resolución — impresión disponible hasta '+maxLabel+'.'; },
-    sizeNoneFit:'Esta foto todavía no alcanza la resolución para imprimirse en este material.'
+    sizeNoneFit:'Esta foto todavía no alcanza la resolución para imprimirse en este material.',
+    currentlyIn:'Actualmente en'
   },
   en:{
     navGallery:'Gallery', navAbout:'About', navHow:'How to buy', cart:'cart',
@@ -730,7 +753,7 @@ var T = {
     badgeGallery:'with gallery', badgeEmpty:'no photos', badgeUpcoming:'unconfirmed', badgeConfirmed:'confirmed', badgeVisited:'visited', soon:'coming soon', toComeSoon:'coming soon',
     hubPaises:'Countries', hubPaisesDesc:' visited — browse by destination.', paisesEyebrow:'FULL ARCHIVE',
     tCountriesSummary:function(tot,g,e,u){ return tot+' VISITED · '+g+' WITH GALLERY · '+e+' NO PHOTOS · '+u+' UPCOMING'; },
-    tttGallery:'view gallery →', tttEmpty:'visited · no photos yet', tttUpcoming:'upcoming trip · ', tttGeneric:'no photos yet',
+    tttGallery:'view gallery →', tttEmpty:'visited · no photos yet', tttUpcoming:'upcoming trip · ', tttCurrent:'here right now', tttGeneric:'no photos yet',
     tCoordsFmt:function(n,e){return n+e;},
     emptyMsg:function(name){ return "I haven't uploaded photos of "+name+' yet.<br>Coming back soon with the full gallery.'; },
     emptyHint:'IN THE MEANTIME, EXPLORE THE COUNTRIES WITH A GALLERY →', emptyDescGeneric:'Visited — the gallery is on its way.',
@@ -743,10 +766,12 @@ var T = {
     checkingOrder:'Confirming your order…', orderCancelled:'Payment cancelled — your cart is untouched.',
     digitalReadyTitle:'Your digital photos', digitalDownload:'Download',
     toastAdded:function(t){return 'Added to cart · '+t;}, toastUpcoming:function(n,d){return n+' — upcoming trip · '+d;},
+    toastCurrent:function(n){return 'Currently in '+n+'.';},
     toastGeneric:function(n){return n+" — not part of the archive yet.";},
     realScale:' · true to scale', scale:'TRUE TO SCALE', dropTitle:'Upcoming trips',
     sizeLimitNote:function(maxLabel){ return 'This image respects its resolution — printing available up to '+maxLabel+'.'; },
-    sizeNoneFit:"This photo doesn't yet have the resolution to print on this material."
+    sizeNoneFit:"This photo doesn't yet have the resolution to print on this material.",
+    currentlyIn:'Currently in'
   }
 };
 function t(key){ return T[lang][key]; }
@@ -1415,6 +1440,14 @@ function buildUpcomingDropdown(){
     return '<div class="ud-item"><span>'+cname(c)+(c.confirmed?' ✓':'')+'</span><span>'+c.date+'</span></div>';
   }).join('');
 }
+/* ============ ESTADO ACTUAL — SIEMPRE visible, viaje o no (privacidad) ======== */
+var heroStatusEl = document.getElementById('hero-status');
+function buildHeroStatus(){
+  var isLive = current && typeof current === 'object';
+  heroStatusEl.classList.toggle('live', isLive);
+  heroStatusEl.innerHTML = '<span class="dot"></span><span>' + t('currentlyIn') + ' ' + (isLive ? cname(current) : current) + '</span>';
+}
+
 udToggle.addEventListener('click', function(e){
   e.stopPropagation();
   udDrop.classList.toggle('show');
@@ -1452,6 +1485,7 @@ window.addEventListener('resize', closeMobileNav);
 buildHubTiles();
 buildCountriesGrids();
 buildUpcomingDropdown();
+buildHeroStatus();
 
 var langBtns = document.querySelectorAll('.toggle-lang');
 function syncLangButtons(){
@@ -1465,6 +1499,7 @@ function setLang(newLang){
   buildHubTiles();
   buildCountriesGrids();
   buildUpcomingDropdown();
+  buildHeroStatus();
   renderCart();
   syncLangButtons();
   if(panel.classList.contains('open') && lastOpened){
@@ -1564,10 +1599,23 @@ function vec3ToLatLng(p){
 function angDiff(a,b){ var d=a-b; while(d>180)d-=360; while(d<-180)d+=360; return d; }
 
 /* build all country hover-regions with a precomputed border line (doubled for a bolder stroke) */
+// Un país puede estar a la vez en más de una lista (ej. Panamá: visitado
+// sin fotos Y próximo destino) — se dibuja UNA sola vez, con el estado
+// más específico: current > upcoming > visited/visitedEmpty. No se saca
+// nada de las listas originales (siguen intactas para sus propios
+// contadores/paneles), es solo la prioridad de qué tipo gana al dibujar
+// el borde en el globo.
 var allCountries = [];
-visited.forEach(function(c){ allCountries.push({data:c, type:'gallery'}); });
-visitedEmpty.forEach(function(c){ allCountries.push({data:c, type:'empty'}); });
-upcoming.forEach(function(c){ allCountries.push({data:c, type:'upcoming'}); });
+var drawnCountryNames = {};
+function addCountryOnce(c, type){
+  if(drawnCountryNames[c.name]) return;
+  drawnCountryNames[c.name] = true;
+  allCountries.push({data:c, type:type});
+}
+if(current && typeof current === 'object') addCountryOnce(current, 'current');
+upcoming.forEach(function(c){ addCountryOnce(c, 'upcoming'); });
+visited.forEach(function(c){ addCountryOnce(c, 'gallery'); });
+visitedEmpty.forEach(function(c){ addCountryOnce(c, 'empty'); });
 
 function borderMaterial(isGallery){
   return new THREE.LineBasicMaterial({ color: isGallery ? 0xffc266 : 0xaba48f, transparent:true, opacity: isGallery ? 1 : 0.75 });
@@ -1715,7 +1763,7 @@ function setHover(entry, clientPos){
   if(hovered){
     hovered.lines.forEach(function(l){ l.visible=true; });
     document.getElementById('tt-name').textContent = cname(hovered.data);
-    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.data.date : t('tttGeneric')));
+    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.data.date : (hovered.type==='current' ? t('tttCurrent') : t('tttGeneric'))));
     document.getElementById('tt-sub').textContent = sub;
     tooltip.classList.toggle('st-gallery', hovered.type==='gallery');
     if(clientPos){ tooltip.style.left=(clientPos.cx+16)+'px'; tooltip.style.top=(clientPos.cy+8)+'px'; }
@@ -1846,6 +1894,7 @@ function runCountryAction(entry){
   if(entry.type==='gallery'){ openCountryPanel(entry.data, 'hero'); }
   else if(entry.type==='empty'){ openEmptyPanel(entry.data, 'hero'); }
   else if(entry.type==='upcoming'){ showToast(t('toastUpcoming')(cname(entry.data), entry.data.date)); }
+  else if(entry.type==='current'){ showToast(t('toastCurrent')(cname(entry.data))); }
   else { showToast(t('toastGeneric')(cname(entry.data))); }
 }
 function handleClick(){
