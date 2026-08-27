@@ -512,16 +512,6 @@
   ],
   "upcoming": [
     {
-      "name": "Tanzania",
-      "nameEn": "Tanzania",
-      "lat": -3.37,
-      "lng": 36.68,
-      "w": 14,
-      "h": 14,
-      "date": "Octubre 2026",
-      "confirmed": false
-    },
-    {
       "name": "Panamá",
       "nameEn": "Panama",
       "lat": 8.98,
