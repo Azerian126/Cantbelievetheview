@@ -519,7 +519,9 @@
       "w": 12,
       "h": 4,
       "date": "Agosto 2026",
-      "confirmed": true
+      "confirmed": true,
+      "startsOn": "2026-08-30",
+      "endsOn": null
     }
   ],
   "neNames": {
