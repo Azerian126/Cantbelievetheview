@@ -67,6 +67,29 @@
           "categoryKey": "edificios"
         }
       ]
+    },
+    {
+      "key": "japon",
+      "name": "Japón",
+      "lat": 35.68,
+      "lng": 139.69,
+      "w": 24,
+      "h": 30,
+      "desc": "Islas mágicas en todo aspecto. Perderse aquí es un regalo.",
+      "descEn": "Magical islands in every way. Getting lost here is a gift.",
+      "photos": [
+        {
+          "id": "japon-1788031269275",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788031269275?_a=BAMCr6cg0",
+          "caption": "Senso / Pagoda escarlata de cinco techos en la noche",
+          "w": 2796,
+          "h": 3728,
+          "captionEn": "Senso / Five-storied scarlet pagoda at night",
+          "lat": 35.7134032,
+          "lng": 139.7955265,
+          "categoryKey": "edificios"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -369,16 +392,6 @@
       "w": 12,
       "h": 24,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-italia"
-    },
-    {
-      "key": "japon",
-      "name": "Japón",
-      "nameEn": "Japan",
-      "lat": 35.68,
-      "lng": 139.69,
-      "w": 24,
-      "h": 30,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-japon"
     },
     {
       "key": "luxemburgo",
