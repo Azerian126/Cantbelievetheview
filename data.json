@@ -43,6 +43,17 @@
           "lat": 41.0053843,
           "lng": 28.9768534,
           "categoryKey": "edificios"
+        },
+        {
+          "id": "turquia-1788030011304",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1788030011304?_a=BAMCr6cg0",
+          "caption": "Kemeri / Cisterna bizantina bañada en oro y sombra.",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Kemeri / Byzantine cistern bathed in gold and shadow.",
+          "lat": 41.0084795,
+          "lng": 28.9783826,
+          "categoryKey": "edificios"
         }
       ]
     }
