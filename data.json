@@ -54,6 +54,17 @@
           "lat": 41.0084795,
           "lng": 28.9783826,
           "categoryKey": "edificios"
+        },
+        {
+          "id": "turquia-1788030333668",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1788030333668?_a=BAMCr6cg0",
+          "caption": "Mavi Kemeri / Columnas milenarias en luz turquesa",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Mavi Kemeri / Millennial columns in turquoise light",
+          "lat": 41.0084795,
+          "lng": 28.9783826,
+          "categoryKey": "edificios"
         }
       ]
     }
