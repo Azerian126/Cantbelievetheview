@@ -22,6 +22,29 @@
           "categoryKey": "edificios"
         }
       ]
+    },
+    {
+      "key": "turquia",
+      "name": "Turquía",
+      "lat": 39.93,
+      "lng": 32.85,
+      "w": 28,
+      "h": 14,
+      "desc": "Templos antiguos entre la neblina.",
+      "descEn": "Ancient temples in the mist.",
+      "photos": [
+        {
+          "id": "turquia-1788028227469",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/turquia-1788028227469?_a=BAMCr6cg0",
+          "caption": "Mavi / Mezquita azul desde su arco principal.",
+          "w": 4203,
+          "h": 5606,
+          "captionEn": "Mavi / Blue Mosque from its main arch",
+          "lat": 41.0053843,
+          "lng": 28.9768534,
+          "categoryKey": "edificios"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -484,15 +507,6 @@
       "w": 8,
       "h": 5,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-suiza"
-    },
-    {
-      "key": "turquia",
-      "name": "Turquía",
-      "lat": 39.93,
-      "lng": 32.85,
-      "w": 28,
-      "h": 14,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-turquia"
     },
     {
       "key": "vaticano",
