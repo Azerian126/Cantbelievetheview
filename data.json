@@ -662,10 +662,10 @@
     },
     {
       "key": "edificios",
-      "name": "Edificios",
-      "nameEn": "Buildings",
-      "desc": "Arquitectura, líneas y la escala humana frente a lo construido.",
-      "descEn": "Architecture, lines, and human scale against what is built.",
+      "name": "Arquitectura",
+      "nameEn": "Architecture",
+      "desc": "Líneas, luz y la escala humana frente a lo construido.",
+      "descEn": "Lines, light, and human scale against what is built.",
       "photos": []
     },
     {
