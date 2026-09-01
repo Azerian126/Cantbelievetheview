@@ -132,6 +132,21 @@
             "edificios"
           ],
           "categoryKey": "paisajes"
+        },
+        {
+          "id": "japon-1788253548341",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788253548341?_a=BAMCr6cg0",
+          "caption": "Kenkuko / Torii de madera bajo el sol entre árboles sagrados.",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Kenkuko / Wooden torii in the sun among sacred trees.",
+          "lat": 35.6748417,
+          "lng": 139.6996266,
+          "categoryKeys": [
+            "edificios",
+            "paisajes"
+          ],
+          "categoryKey": "edificios"
         }
       ]
     },
