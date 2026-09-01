@@ -147,6 +147,20 @@
             "paisajes"
           ],
           "categoryKey": "edificios"
+        },
+        {
+          "id": "japon-1788253726258",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788253726258?_a=BAMCr6cg0",
+          "caption": "Yonides / Kimonos floreados en el metro abarrotado de Kioto.",
+          "w": 1746,
+          "h": 3571,
+          "captionEn": "Yonides / Floral kimonos on Kyoto’s packed subway.",
+          "lat": 34.987091,
+          "lng": 135.7590913,
+          "categoryKeys": [
+            "modelos"
+          ],
+          "categoryKey": "modelos"
         }
       ]
     },
