@@ -210,6 +210,12 @@
   .photo-meta{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:10px;}
   .photo-coords{font-family:'JetBrains Mono', monospace; font-size:9.5px; letter-spacing:.03em; color:var(--paper-dim); opacity:0.65;}
   .buy-row{display:flex; gap:8px;}
+  /* Qué recibís con el digital. Hasta ahora la página no lo decía en ningún
+     lado: el botón se tocaba a ciegas. Se redacta como lo que te habilita
+     —imprimirla las veces que quieras— y "uso personal" es parte de la
+     misma frase, no una advertencia aparte. */
+  .buy-note{margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:9.5px;
+    line-height:1.6; color:var(--paper-dim); letter-spacing:.02em;}
   .buy-btn{flex:1; width:100%; font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; padding:9px 8px; border:1px solid var(--line); background:none; color:var(--paper); border-radius:2px; transition:all .2s ease; text-align:center;}
   .buy-btn:hover{border-color:var(--amber); color:var(--amber-bright);}
   .print-wrap{position:relative; flex:1;}
@@ -769,6 +775,8 @@ var T = {
     groupGallery:'Con galería', groupEmpty:'Visitados — fotos por subir', groupUpcoming:'Próximos destinos',
     cartTitle:'Tu carrito', subtotal:'Subtotal', checkoutBtn:'Finalizar compra', cartEmpty:'Tu carrito está vacío.<br>Elegí un país o una categoría para empezar.',
     remove:'quitar', digital:'Digital', print:'Impresión', fullCountry:'país completo', microstate:'microestado',
+    digitalNote:'El archivo digital llega a tu correo en resolución completa: imprimilo las veces que quieras, en el tamaño que quieras, para uso personal.',
+    digitalNoteCheckout:'Los archivos digitales te llegan por correo en resolución completa, para uso personal — imprimilos cuantas veces quieras.',
     badgeGallery:'con galería', badgeEmpty:'sin fotos', badgeUpcoming:'por confirmar', badgeConfirmed:'confirmado', badgeVisited:'visitado', badgeCurrent:'acá ahora', soon:'por subir', toComeSoon:'próximamente',
     hubPaises:'Países', hubPaisesDesc:' visitados — navegá por destino.', paisesEyebrow:'ARCHIVO COMPLETO',
     tCountriesSummary:function(tot,g,e,u){ return tot+' VISITADOS · '+g+' CON GALERÍA · '+e+' SIN FOTOS · '+u+' PRÓXIMOS'; },
@@ -816,6 +824,8 @@ var T = {
     groupGallery:'With gallery', groupEmpty:'Visited — photos coming', groupUpcoming:'Upcoming trips',
     cartTitle:'Your cart', subtotal:'Subtotal', checkoutBtn:'Checkout', cartEmpty:'Your cart is empty.<br>Pick a country or a category to get started.',
     remove:'remove', digital:'Digital', print:'Print', fullCountry:'whole country', microstate:'microstate',
+    digitalNote:'The digital file arrives by email at full resolution: print it as many times as you like, at any size, for personal use.',
+    digitalNoteCheckout:'Digital files arrive by email at full resolution, for personal use — print them as many times as you like.',
     badgeGallery:'with gallery', badgeEmpty:'no photos', badgeUpcoming:'unconfirmed', badgeConfirmed:'confirmed', badgeVisited:'visited', badgeCurrent:'here now', soon:'coming soon', toComeSoon:'coming soon',
     hubPaises:'Countries', hubPaisesDesc:' visited — browse by destination.', paisesEyebrow:'FULL ARCHIVE',
     tCountriesSummary:function(tot,g,e,u){ return tot+' VISITED · '+g+' WITH GALLERY · '+e+' NO PHOTOS · '+u+' UPCOMING'; },
@@ -972,7 +982,11 @@ function openCheckout(){
   if(cart.length===0) return;
   document.getElementById('modal-box').innerHTML =
     '<h3>'+t('modalTitle')+'</h3>' +
-    '<div class="modal-note">'+t('modalNote')(fmt(cartTotal()), cart.length)+'</div>' +
+    '<div class="modal-note">'+t('modalNote')(fmt(cartTotal()), cart.length) +
+      // Solo si de verdad hay un archivo digital en el carrito — decirlo en un
+      // pedido de solo impresiones sería ruido.
+      (cart.some(function(i){ return i.type === 'digital'; }) ? '<br><br>'+t('digitalNoteCheckout') : '') +
+    '</div>' +
     '<div class="field"><label>'+t('fEmail')+'</label><input type="email" id="checkout-email" placeholder="you@email.com"></div>' +
     '<button id="pay-btn">'+t('payBtn')+fmt(cartTotal())+'</button>' +
     '<p class="modal-error" id="checkout-error" style="display:none; color:#e07a5f; font-size:12px; margin-top:10px;"></p>';
@@ -1280,7 +1294,18 @@ function buildBuyRow(title, group, imgUrl, photoId, photoW, photoH){
   printWrap.appendChild(pop);
   row.appendChild(digitalBtn);
   row.appendChild(printWrap);
-  return row;
+
+  // .buy-row es un flex horizontal: la nota va DEBAJO, así que la fila y la
+  // nota se devuelven juntas en un envoltorio. La única llamada hace
+  // appendChild del resultado, así que no rompe nada.
+  var note = document.createElement('div');
+  note.className = 'buy-note';
+  note.textContent = t('digitalNote');
+
+  var wrap = document.createElement('div');
+  wrap.appendChild(row);
+  wrap.appendChild(note);
+  return wrap;
 }
 document.addEventListener('click', function(e){
   if(!e.target.closest('.print-wrap')){
