@@ -355,6 +355,13 @@
      cabecera y costaba encontrarla. Ahora cuelga del cuadro del diálogo, que
      es de lo que cierra. Y era el glifo pelado, sin relleno: el área tocable
      medía lo que el carácter, ~22px, contra los 44 que necesita un dedo. */
+  /* La escena sangra hasta los bordes del cuadro: se lee como una ventana a
+     la pared, no como una figura pegada dentro de un formulario. La altura la
+     pone .pp-scene (260px = 240cm de pared), y no se toca: si se escalara, la
+     impresión dejaría de estar a escala real, que es lo único que hace útil
+     esta vista. */
+  .modal-preview{margin:-38px -38px 22px; border-bottom:1px solid var(--line); overflow:hidden;}
+  .modal-preview .pp-label{padding:8px 14px 12px; background:var(--bg);}
   .modal-shell{position:relative; width:min(460px,90vw);}
   .modal-shell .modal-box{width:100%;}
   #modal-close{position:absolute; top:6px; right:6px; width:44px; height:44px;
@@ -1047,8 +1054,14 @@ document.getElementById('checkout-btn').addEventListener('click', openCheckout);
 // Se pregunta al elegir tamaño de una impresión, antes de agregarla al
 // carrito — cada impresión puede tener un destino distinto (una para vos,
 // otra de regalo), así que va por ítem, no una vez por todo el pedido.
-function openGiftModal(onConfirm){
+function openGiftModal(onConfirm, preview){
   document.getElementById('modal-box').innerHTML =
+    // La vista previa vive ACÁ y no en un paso nuevo: este diálogo ya era
+    // obligatorio para comprar una impresión, así que ver el tamaño real no
+    // cuesta ni un toque más. En el teléfono era la única forma —la tarjeta
+    // flotante depende del hover, que no existe— y además, puesta en la
+    // esquina, habría tapado justo la lista de tamaños que se está mirando.
+    (preview ? '<div class="modal-preview">'+sceneHtml()+'</div>' : '') +
     '<h3>'+t('giftModalTitle')+'</h3>' +
     '<div class="gift-toggle">' +
       '<button type="button" class="gift-opt active" data-gift="0">'+t('giftForMe')+'</button>' +
@@ -1061,6 +1074,10 @@ function openGiftModal(onConfirm){
     '</div>' +
     '<button id="gift-confirm-btn" class="modal-btn">'+t('addToCartBtn')+'</button>' +
     '<button type="button" id="gift-cancel-btn" class="modal-btn-ghost">'+t('giftCancel')+'</button>';
+
+  if(preview){
+    renderScene(document.querySelector('.modal-preview'), preview.imgUrl, preview.size, preview.material);
+  }
 
   var isGift = false;
   var opts = Array.prototype.slice.call(document.querySelectorAll('.gift-opt'));
@@ -1155,19 +1172,51 @@ document.addEventListener('keydown', function(e){
 
 /* ============ PRINT PREVIEW — proportioned room mockup ============ */
 var ppEl = document.getElementById('print-preview');
-var ppFrame = document.getElementById('pp-frame');
-var ppImg = document.getElementById('pp-img');
-var ppLabel = document.getElementById('pp-label');
+// ppFrame/ppImg/ppLabel se buscaban por id; ahora renderScene los busca por
+// clase dentro del contenedor que le toca, porque hay dos escenas en la
+// página (la tarjeta flotante del escritorio y la del diálogo).
 var PX_PER_CM = 260/240; // scene represents ~240cm of wall height
-function showPreview(imgUrl, size, material){
+// Si el dispositivo tiene puntero fino con hover de verdad (ratón), la
+// tarjeta flotante sigue siendo el camino. Si no, estorba.
+var HAS_HOVER = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+// La escena se dibuja dentro del contenedor que se le pase, en vez de ir
+// siempre a la tarjeta fija: así la misma habitación —con su consola, su
+// lámpara y su zócalo haciendo de referencia de escala— se puede pintar
+// también dentro del diálogo de compra, que es donde la ve quien está en un
+// teléfono. Nada de ids acá adentro: hay dos escenas vivas a la vez.
+function renderScene(root, imgUrl, size, material){
+  var frame = root.querySelector('.pp-frame');
+  var img = root.querySelector('.pp-frame img');
+  var shadow = root.querySelector('.pp-shadow');
+  var label = root.querySelector('.pp-label');
   var w = Math.round(size.w * PX_PER_CM);
   var h = Math.round(size.h * PX_PER_CM);
-  ppFrame.style.width = w+'px';
-  ppFrame.style.height = h+'px';
-  ppFrame.className = 'pp-frame mat-'+material.id;
-  ppImg.src = imgUrl;
-  document.querySelector('.pp-shadow').style.width = Math.round(w*0.85)+'px';
-  ppLabel.textContent = size.label + ' · ' + matLabel(material) + t('realScale');
+  frame.style.width = w+'px';
+  frame.style.height = h+'px';
+  frame.className = 'pp-frame mat-'+material.id;
+  img.src = imgUrl;
+  // Antes esto era document.querySelector('.pp-shadow'), que con dos escenas
+  // en la página le habría movido la sombra a la que no era.
+  if(shadow) shadow.style.width = Math.round(w*0.85)+'px';
+  if(label) label.textContent = size.label + ' · ' + matLabel(material) + t('realScale');
+}
+
+// El markup de la escena, sin ids, para poder tener más de una.
+function sceneHtml(){
+  return '<div class="pp-scene">' +
+      '<div class="pp-shadow"></div>' +
+      '<div class="pp-frame"><img src="" alt=""></div>' +
+      '<div class="pp-console"></div>' +
+      '<div class="pp-plant"><div class="leaves"></div><div class="pot"></div></div>' +
+      '<div class="pp-lamp"><div class="shade"></div><div class="pole"></div></div>' +
+      '<div class="pp-baseboard"></div>' +
+      '<div class="pp-floor"></div>' +
+      '<div class="pp-vignette"></div>' +
+    '</div><div class="pp-label"></div>';
+}
+
+function showPreview(imgUrl, size, material){
+  renderScene(ppEl, imgUrl, size, material);
   ppEl.classList.add('show');
 }
 function hidePreview(){ ppEl.classList.remove('show'); }
@@ -1253,14 +1302,21 @@ function buildBuyRow(title, group, imgUrl, photoId, photoW, photoH){
       var sBtn = document.createElement('button');
       sBtn.type = 'button';
       sBtn.innerHTML = '<span>'+size.label+'</span><span>'+fmt(price)+'</span>';
-      sBtn.addEventListener('mouseenter', function(){ showPreview(imgUrl, size, currentMaterial); });
-      sBtn.addEventListener('mouseleave', hidePreview);
+      // La tarjeta flotante es de escritorio y ahí se queda igual que siempre.
+      // En táctil no se engancha: el navegador puede disparar un mouseenter
+      // sintético al tocar, y la tarjeta —fija abajo a la derecha, 190px en
+      // móvil— aparecería justo encima de la lista de tamaños que se está
+      // eligiendo. En el teléfono la vista previa va dentro del diálogo.
+      if(HAS_HOVER){
+        sBtn.addEventListener('mouseenter', function(){ showPreview(imgUrl, size, currentMaterial); });
+        sBtn.addEventListener('mouseleave', hidePreview);
+      }
       sBtn.addEventListener('click', function(){
         pop.classList.remove('show');
         hidePreview();
         openGiftModal(function(gift){
           addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:size.id, gift:gift});
-        });
+        }, {imgUrl:imgUrl, size:size, material:currentMaterial});
       });
       sizeList.appendChild(sBtn);
     });
