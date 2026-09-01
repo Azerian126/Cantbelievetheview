@@ -175,6 +175,21 @@
             "edificios"
           ],
           "categoryKey": "edificios"
+        },
+        {
+          "id": "japon-1788257563046",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788257563046?_a=BAMCr6cg0",
+          "caption": "Jinja / Trajes coloridos y columnas de madera bajo el sol.",
+          "w": 2492,
+          "h": 4032,
+          "captionEn": "Jinja / Colorful garments and wooden columns under the sun.",
+          "lat": 35.6748417,
+          "lng": 139.6996266,
+          "categoryKeys": [
+            "modelos",
+            "retratos"
+          ],
+          "categoryKey": "modelos"
         }
       ]
     },
