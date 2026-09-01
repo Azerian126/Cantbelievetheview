@@ -269,14 +269,32 @@
   .pp-label{padding:10px 14px 14px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--paper); text-align:center; letter-spacing:.03em; line-height:1.5;}
 
   .hub-grid{padding:20px 5vw 100px; display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
-  .hub-tile{position:relative; aspect-ratio:3/4; overflow:hidden; border-radius:4px; cursor:pointer; background:var(--bg-alt);}
+  /* container-type deja que el texto de dentro se mida contra el ANCHO DE LA
+     TARJETA (unidades cqw) y no contra el de la ventana. Es lo que hace que
+     esto se ajuste solo: da igual cuántas columnas haya o qué categoría se
+     agregue mañana, el título se dimensiona respecto al hueco que tiene. */
+  .hub-tile{position:relative; aspect-ratio:3/4; overflow:hidden; border-radius:4px; cursor:pointer; background:var(--bg-alt); container-type:inline-size;}
   .hub-tile img{width:100%; height:100%; object-fit:cover; filter:saturate(0.85) brightness(0.7); transition:transform .6s ease, filter .4s ease;}
   .hub-tile.bw-tile img{filter:grayscale(1) brightness(0.7);}
   .hub-tile:hover img{transform:scale(1.06); filter:saturate(1) brightness(0.85);}
-  .hub-tile-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(11,13,12,0.9) 0%, rgba(11,13,12,0.1) 55%); display:flex; flex-direction:column; justify-content:flex-end; padding:24px; color:var(--overlay-ink);}
+  /* El padding también se mide contra la tarjeta: 24px fijos se comían casi la
+     mitad del ancho útil en un móvil. En escritorio se queda en 24px exactos
+     (8cqw de una tarjeta de ~417px pasa del tope), así que nada cambia ahí. */
+  .hub-tile-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(11,13,12,0.9) 0%, rgba(11,13,12,0.1) 55%); display:flex; flex-direction:column; justify-content:flex-end; padding:24px; padding:clamp(12px, 8cqw, 24px); color:var(--overlay-ink);}
   .hub-tile-overlay p{color:var(--overlay-ink-dim);}
   .hub-tile-n{font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--amber-bright); margin-bottom:8px; text-transform:uppercase; letter-spacing:.1em;}
-  .hub-tile h3{font-family:'Fraunces', serif; font-weight:400; font-size:26px;}
+  /* "Arquitectura" son 12 caracteres: a 26px fijos pedía ~156px y en un móvil
+     de 390px la tarjeta solo deja 117px de texto, así que se salía por el
+     borde y overflow:hidden la cortaba. Ahora la fuente crece con la tarjeta y
+     se topa en los 26px de siempre, con lo que en escritorio queda idéntico.
+     La primera declaración es el respaldo por si el navegador no entiende cqw:
+     en ese caso se queda con el 26px de antes en vez de perder el tamaño.
+     Y aunque algún día llegue un nombre más largo del que quepa, se parte con
+     guión antes que salirse — nunca con puntos suspensivos: el nombre de la
+     categoría tiene que poder leerse entero. */
+  .hub-tile h3{font-family:'Fraunces', serif; font-weight:400; font-size:26px;
+    font-size:clamp(15px, calc(4cqw + 12px), 26px);
+    overflow-wrap:break-word; -webkit-hyphens:auto; hyphens:auto;}
   .hub-tile p{font-size:12px; color:var(--paper-dim); margin-top:6px;}
 
   .country-group{border-top:1px solid var(--line); padding-top:8px;}
