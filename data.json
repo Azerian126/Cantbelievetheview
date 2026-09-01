@@ -103,6 +103,20 @@
             "edificios"
           ],
           "categoryKey": "paisajes"
+        },
+        {
+          "id": "japon-1788245583203",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788245583203?_a=BAMCr6cg0",
+          "caption": "Fujisan / Ciudad al pie de la montaña nevada sagrada.",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Fujisan / City at the foot of the sacred snow-capped mountain.",
+          "lat": 35.5012871,
+          "lng": 138.8013556,
+          "categoryKeys": [
+            "paisajes"
+          ],
+          "categoryKey": "paisajes"
         }
       ]
     },
