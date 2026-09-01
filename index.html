@@ -1447,6 +1447,18 @@ function buildCountriesGrids(){
 
   var byType = { gallery:[], empty:[], upcoming:[], current:[] };
   allCountries.forEach(function(entry){ if(byType[entry.type]) byType[entry.type].push(entry); });
+
+  // Los países salen alfabéticos, no en el orden en que se fueron subiendo.
+  // Se ordena por el nombre QUE SE MUESTRA y con la intercalación del idioma
+  // activo: en español "Japón" va antes que "Malasia", pero en inglés el
+  // nombre es otro y el orden puede no coincidir. Como setLang() vuelve a
+  // llamar acá, cambiar de idioma reordena solo.
+  // "upcoming" queda fuera a propósito: los próximos destinos se leen por
+  // fecha, no por abecedario.
+  ['gallery','empty','current'].forEach(function(k){
+    byType[k].sort(function(a,b){ return cname(a.data).localeCompare(cname(b.data), lang==='en' ? 'en' : 'es'); });
+  });
+
   var galleryReal = byType.gallery.filter(hasRealPhotos);
   var galleryNoPhotos = byType.gallery.filter(function(e){ return !hasRealPhotos(e); });
 
