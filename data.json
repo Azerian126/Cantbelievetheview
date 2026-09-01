@@ -216,7 +216,8 @@
           "lat": 43.343343,
           "lng": 142.384223,
           "categoryKeys": [
-            "edificios"
+            "edificios",
+            "paisajes"
           ],
           "categoryKey": "edificios"
         }
