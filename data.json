@@ -90,6 +90,29 @@
           "categoryKey": "edificios"
         }
       ]
+    },
+    {
+      "key": "panama",
+      "name": "Panamá",
+      "lat": 8.98,
+      "lng": -79.52,
+      "w": 12,
+      "h": 4,
+      "desc": "Atardeceres, tucanes y calles coloniales bajo la lluvia.",
+      "descEn": "Sunsets, toucans and colonial streets in the rain.",
+      "photos": [
+        {
+          "id": "panama-1788211648652",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/panama-1788211648652?_a=BAMCr6cg0",
+          "caption": "Espiral / Torres desde la lluvia",
+          "w": 3258,
+          "h": 4344,
+          "captionEn": "Spiral / Towers from the Rain",
+          "lat": 8.985604,
+          "lng": -79.523636,
+          "categoryKey": "edificios"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -442,14 +465,6 @@
       "w": 6,
       "h": 8,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-paises-bajos"
-    },
-    {
-      "key": "panama",
-      "name": "Panamá",
-      "lat": 8.98,
-      "lng": -79.52,
-      "w": 12,
-      "h": 4
     },
     {
       "key": "polonia",

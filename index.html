@@ -1396,12 +1396,21 @@ function cdesc2(cat){ return lang==='en' ? cat.descEn : cat.desc; }
 // categoría (photoEntry.categoryKey) — así una foto puede aparecer a la vez
 // en la página de su país y en la de su categoría temática, sin duplicarla
 // en data.json.
+// Una foto puede estar en VARIAS categorías a la vez: categoryKeys (array)
+// es la fuente. categoryKey (texto, una sola) es el campo viejo — se sigue
+// leyendo para las fotos subidas antes del cambio, que no hace falta migrar:
+// se convierten solas la próxima vez que se editen desde el bot.
+function photoCategoryKeys(p){
+  if(!p) return [];
+  if(Array.isArray(p.categoryKeys)) return p.categoryKeys;
+  return p.categoryKey ? [p.categoryKey] : [];
+}
 function photosForCategory(cat){
   var own = cat.photos || [];
   var tagged = [];
   visited.forEach(function(c){
     (c.photos||[]).forEach(function(p){
-      if(p && p.categoryKey === cat.key) tagged.push(p);
+      if(photoCategoryKeys(p).indexOf(cat.key) !== -1) tagged.push(p);
     });
   });
   return own.concat(tagged);
