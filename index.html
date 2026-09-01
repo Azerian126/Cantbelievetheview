@@ -362,6 +362,29 @@
      esta vista. */
   .modal-preview{margin:-38px -38px 22px; border-bottom:1px solid var(--line); overflow:hidden;}
   .modal-preview .pp-label{padding:8px 14px 12px; background:var(--bg);}
+  /* Fila de fichas para cambiar de tamaño sin salir del diálogo. En horizontal
+     con desplazamiento lateral y no en lista: en algodón hay 29 tamaños, y una
+     columna de 29 dejaría el botón de agregar a media hora de scroll. */
+  .size-chips{display:flex; gap:6px; overflow-x:auto; padding:0 14px 12px; background:var(--bg);
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;}
+  .size-chips::-webkit-scrollbar{display:none;}
+  .size-chip{flex:0 0 auto; padding:8px 11px; background:none; border:1px solid var(--line);
+    border-radius:100px; color:var(--paper-dim); font-family:'JetBrains Mono', monospace;
+    font-size:10px; white-space:nowrap; cursor:pointer; letter-spacing:.02em;}
+  .size-chip.active{background:var(--amber); border-color:var(--amber); color:var(--bg);}
+
+  /* En pantallas bajas el diálogo con escena + fichas se pasa por unos 20px y
+     el botón de agregar quedaría detrás de un scroll. Se encoge la ESCENA
+     ENTERA —habitación y cuadro juntos— al 75%: la impresión sigue estando
+     bien proporcionada respecto a los muebles, que es lo que quiere decir "a
+     escala real". Encoger solo el marco sí la rompería.
+     El ancho se compensa (133.34% x 0.75 = 100%) para que no queden franjas a
+     los lados, y el margen negativo recupera el alto que el transform no
+     devuelve por sí solo. */
+  @media (max-height:700px){
+    .modal-preview .pp-scene{width:133.34%; margin-left:-16.67%; transform:scale(0.75);
+      transform-origin:top center; margin-bottom:-65px;}
+  }
   .modal-shell{position:relative; width:min(460px,90vw);}
   .modal-shell .modal-box{width:100%;}
   #modal-close{position:absolute; top:6px; right:6px; width:44px; height:44px;
@@ -1054,14 +1077,31 @@ document.getElementById('checkout-btn').addEventListener('click', openCheckout);
 // Se pregunta al elegir tamaño de una impresión, antes de agregarla al
 // carrito — cada impresión puede tener un destino distinto (una para vos,
 // otra de regalo), así que va por ítem, no una vez por todo el pedido.
+// `preview` puede traer `sizes`: la lista de tamaños que esta foto aguanta.
+// Con ella, el diálogo deja de ser una confirmación y pasa a ser donde se
+// decide — se comparan tamaños viendo el render, sin salir y volver a entrar.
+// Solo se dibuja en táctil: en escritorio el hover sobre la lista ya deja
+// comparar ocho tamaños moviendo el ratón, y unas fichas que hay que ir
+// tocando una por una serían un paso atrás, no una función nueva.
 function openGiftModal(onConfirm, preview){
+  // El tamaño VIVE ACÁ, y es de donde salen el precio, el sizeId y la etiqueta
+  // al agregar al carrito. Nunca del que se capturó al abrir: si se cambia
+  // dentro y el carrito se queda con el de antes, se cobra mal.
+  var elegido = preview && preview.size;
+  var conSelector = preview && preview.sizes && preview.sizes.length > 1 && !HAS_HOVER;
   document.getElementById('modal-box').innerHTML =
     // La vista previa vive ACÁ y no en un paso nuevo: este diálogo ya era
     // obligatorio para comprar una impresión, así que ver el tamaño real no
     // cuesta ni un toque más. En el teléfono era la única forma —la tarjeta
     // flotante depende del hover, que no existe— y además, puesta en la
     // esquina, habría tapado justo la lista de tamaños que se está mirando.
-    (preview ? '<div class="modal-preview">'+sceneHtml()+'</div>' : '') +
+    (preview ? '<div class="modal-preview">'+sceneHtml() +
+      (conSelector
+        ? '<div class="size-chips">' + preview.sizes.map(function(sz){
+            return '<button type="button" class="size-chip'+(sz.id===elegido.id ? ' active' : '')+'" data-size="'+sz.id+'">'+sz.label.split(' · ')[0]+'</button>';
+          }).join('') + '</div>'
+        : '') +
+      '</div>' : '') +
     '<h3>'+t('giftModalTitle')+'</h3>' +
     '<div class="gift-toggle">' +
       '<button type="button" class="gift-opt active" data-gift="0">'+t('giftForMe')+'</button>' +
@@ -1072,11 +1112,34 @@ function openGiftModal(onConfirm, preview){
       '<div class="field"><label>'+t('giftFrom')+'</label><input type="text" id="gift-from" maxlength="60"></div>' +
       '<div class="field"><label>'+t('giftNote')+'</label><textarea id="gift-note" maxlength="220" rows="3"></textarea></div>' +
     '</div>' +
-    '<button id="gift-confirm-btn" class="modal-btn">'+t('addToCartBtn')+'</button>' +
+    '<button id="gift-confirm-btn" class="modal-btn">'+t('addToCartBtn')+(elegido ? ' · '+fmt(elegido.price) : '')+'</button>' +
     '<button type="button" id="gift-cancel-btn" class="modal-btn-ghost">'+t('giftCancel')+'</button>';
 
   if(preview){
-    renderScene(document.querySelector('.modal-preview'), preview.imgUrl, preview.size, preview.material);
+    var box = document.querySelector('.modal-preview');
+    renderScene(box, preview.imgUrl, elegido, preview.material);
+    if(conSelector){
+      var chips = Array.prototype.slice.call(box.querySelectorAll('.size-chip'));
+      var confirmBtn = document.getElementById('gift-confirm-btn');
+      chips.forEach(function(chip){
+        chip.addEventListener('click', function(){
+          var sz = preview.sizes.find(function(x){ return x.id === chip.dataset.size; });
+          if(!sz) return;
+          elegido = sz;
+          chips.forEach(function(c){ c.classList.remove('active'); });
+          chip.classList.add('active');
+          // Se repinta la escena con el tamaño nuevo y se actualiza el precio
+          // del botón: si el número que se lee no fuera el que se cobra, sería
+          // peor que no tener selector.
+          renderScene(box, preview.imgUrl, elegido, preview.material);
+          confirmBtn.textContent = t('addToCartBtn') + ' · ' + fmt(elegido.price);
+          // Centrar la ficha tocada es un adorno, no parte de la compra: si el
+          // navegador no lo soporta, no puede llevarse por delante el cambio
+          // de precio que acaba de hacerse arriba.
+          try { chip.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); } catch(e){}
+        });
+      });
+    }
   }
 
   var isGift = false;
@@ -1102,7 +1165,7 @@ function openGiftModal(onConfirm, preview){
       if(to || from || note) gift = {to:to, from:from, note:note};
     }
     closeCheckout();
-    onConfirm(gift);
+    onConfirm(gift, elegido);
   });
 
   // Este era el ÚNICO modal que se abría sin el scrim. Sin él, tocar afuera no
@@ -1314,9 +1377,12 @@ function buildBuyRow(title, group, imgUrl, photoId, photoW, photoH){
       sBtn.addEventListener('click', function(){
         pop.classList.remove('show');
         hidePreview();
-        openGiftModal(function(gift){
-          addToCart({title:title, group:group, variant:t('print')+' '+size.id+' · '+matLabel(currentMaterial), price:price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:size.id, gift:gift});
-        }, {imgUrl:imgUrl, size:size, material:currentMaterial});
+        openGiftModal(function(gift, elegido){
+          // SIEMPRE desde el tamaño que devuelve el diálogo. Si acá se usara el
+          // `size` capturado al abrir, cambiarlo adentro cobraría el anterior.
+          var s = elegido || size;
+          addToCart({title:title, group:group, variant:t('print')+' '+s.id+' · '+matLabel(currentMaterial), price:s.price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:s.id, gift:gift});
+        }, {imgUrl:imgUrl, size:size, material:currentMaterial, sizes:fitSizes});
       });
       sizeList.appendChild(sBtn);
     });
