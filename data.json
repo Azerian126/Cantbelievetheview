@@ -248,6 +248,32 @@
           ]
         }
       ]
+    },
+    {
+      "key": "colombia",
+      "name": "Colombia",
+      "lat": 4.71,
+      "lng": -74.07,
+      "w": 14,
+      "h": 16,
+      "desc": "Páramos, ríos y una tierra que no deja de latir.",
+      "descEn": "Páramos, rivers and a land that never stops beating.",
+      "photos": [
+        {
+          "id": "colombia-1788263463546",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/colombia-1788263463546?_a=BAMCr6cg0",
+          "caption": "Tower on the rock / Lago turquesa entre colinas verdes bajo nubes.",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Tower on the rock / Turquoise lake nestled among green hills under clouds",
+          "lat": 6.2193495,
+          "lng": -75.1794404,
+          "categoryKeys": [
+            "paisajes"
+          ],
+          "categoryKey": "paisajes"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -360,16 +386,6 @@
       "w": 48,
       "h": 32,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-china"
-    },
-    {
-      "key": "colombia",
-      "name": "Colombia",
-      "nameEn": "Colombia",
-      "lat": 4.71,
-      "lng": -74.07,
-      "w": 14,
-      "h": 16,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-colombia"
     },
     {
       "key": "corea-del-sur",
