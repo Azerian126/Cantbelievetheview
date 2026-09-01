@@ -344,7 +344,24 @@
   .gift-opt.active{border-color:var(--amber); color:var(--amber-bright);}
   #pay-btn, .modal-btn{width:100%; margin-top:10px; padding:15px; background:var(--amber); color:var(--bg); border:none; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:.08em; border-radius:3px;}
   #pay-btn:hover, .modal-btn:hover{background:var(--amber-bright);}
-  #modal-close{position:absolute; top:20px; right:5vw; background:none; border:none; color:var(--paper); font-size:22px; z-index:130;}
+  /* La X vivía suelta en el rincón de la PANTALLA (top:20px; right:5vw), que
+     es justo donde está el botón del carrito — se leía como parte de la
+     cabecera y costaba encontrarla. Ahora cuelga del cuadro del diálogo, que
+     es de lo que cierra. Y era el glifo pelado, sin relleno: el área tocable
+     medía lo que el carácter, ~22px, contra los 44 que necesita un dedo. */
+  .modal-shell{position:relative; width:min(460px,90vw);}
+  .modal-shell .modal-box{width:100%;}
+  #modal-close{position:absolute; top:6px; right:6px; width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg); border:1px solid var(--line); border-radius:50%;
+    color:var(--paper); font-size:26px; line-height:1; cursor:pointer; z-index:130;
+    transition:background .2s ease, border-color .2s ease;}
+  #modal-close:hover, #modal-close:focus-visible{background:var(--amber); color:var(--bg); border-color:var(--amber);}
+  /* Salida secundaria, con palabras: hay gente que no lee una X como un botón. */
+  .modal-btn-ghost{width:100%; margin-top:8px; padding:13px; background:none;
+    color:var(--paper-dim); border:1px solid var(--line); border-radius:3px; cursor:pointer;
+    font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:.08em;}
+  .modal-btn-ghost:hover{color:var(--paper); border-color:var(--paper-dim);}
   .success-view{text-align:center; padding:20px 0;}
   .success-view .check{font-size:38px; color:var(--amber-bright); margin-bottom:16px;}
 
@@ -570,8 +587,10 @@
 </div>
 
 <div id="checkout-modal">
-  <button id="modal-close">&times;</button>
-  <div class="modal-box" id="modal-box"></div>
+  <div class="modal-shell">
+    <button id="modal-close" type="button" aria-label="Cerrar">&times;</button>
+    <div class="modal-box" id="modal-box"></div>
+  </div>
 </div>
 
 <div id="print-preview">
@@ -760,7 +779,7 @@ var T = {
     studio:function(n,i){return n+' · Estudio '+i;}, fromPrice:'desde ',
     modalTitle:'Finalizar compra', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' pieza(s). <br>Vas a pagar en la página segura de Stripe (tarjeta o PayPal). Si hay impresiones, ahí mismo te pide la dirección de envío.'; },
     fEmail:'Email (para la confirmación)', payBtn:'Pagar ', payBtnLoading:'Redirigiendo a pago seguro…', payError:'Hubo un problema iniciando el pago. Probá de nuevo.',
-    giftModalTitle:'¿Para quién es esta impresión?', giftForMe:'Es para mí', giftIsGift:'Es un regalo',
+    giftModalTitle:'¿Para quién es esta impresión?', giftForMe:'Es para mí', giftIsGift:'Es un regalo', giftCancel:'Cancelar',
     giftTo:'Para', giftFrom:'De', giftNote:'Nota (opcional)', addToCartBtn:'Agregar al carrito', cartGiftTag:'🎁 Regalo para ',
     successTitle:'Gracias por tu compra', successNotePrint:'Cada impresión es numerada, con una tarjeta firmada por mí con las coordenadas de dónde se tomó. Vas a recibir la confirmación por email.', successNoteDigital:'Vas a recibir la confirmación por email.', successNoteMixed:'Las impresiones son numeradas, con una tarjeta firmada por mí con las coordenadas de dónde se tomó. Vas a recibir la confirmación por email.', backToSite:'Volver al sitio',
     checkingOrder:'Confirmando tu pedido…', orderCancelled:'Pago cancelado — tu carrito sigue como estaba.',
@@ -807,7 +826,7 @@ var T = {
     studio:function(n,i){return n+' · Study '+i;}, fromPrice:'from ',
     modalTitle:'Checkout', modalNote:function(total,n){ return 'Total: <b>'+total+'</b> · '+n+' item(s). <br>You\'ll pay on Stripe\'s secure page (card or PayPal). If your order includes prints, it\'ll ask for a shipping address there.'; },
     fEmail:'Email (for the confirmation)', payBtn:'Pay ', payBtnLoading:'Redirecting to secure payment…', payError:'There was a problem starting the payment. Please try again.',
-    giftModalTitle:'Who is this print for?', giftForMe:'It\'s for me', giftIsGift:'It\'s a gift',
+    giftModalTitle:'Who is this print for?', giftForMe:'It\'s for me', giftIsGift:'It\'s a gift', giftCancel:'Cancel',
     giftTo:'To', giftFrom:'From', giftNote:'Note (optional)', addToCartBtn:'Add to cart', cartGiftTag:'🎁 Gift for ',
     successTitle:'Thanks for your order', successNotePrint:"Each print is numbered, with a card signed by me showing the coordinates of where it was taken. You'll get a confirmation by email.", successNoteDigital:"You'll get a confirmation by email.", successNoteMixed:"Prints are numbered, with a card signed by me showing the coordinates of where they were taken. You'll get a confirmation by email.", backToSite:'Back to site',
     checkingOrder:'Confirming your order…', orderCancelled:'Payment cancelled — your cart is untouched.',
@@ -1001,7 +1020,13 @@ function startStripeCheckout(){
       payBtn.textContent = t('payBtn') + fmt(cartTotal());
     });
 }
-function closeCheckout(){ modal.classList.remove('open'); }
+// Cerrar el modal no apagaba el scrim: la página quedaba oscurecida hasta que
+// tocabas de nuevo. Se apaga acá, salvo que el carrito siga abierto — ese
+// también lo usa.
+function closeCheckout(){
+  modal.classList.remove('open');
+  if(!drawer.classList.contains('open')) scrim.classList.remove('show');
+}
 document.getElementById('checkout-btn').addEventListener('click', openCheckout);
 
 /* ============ Regalo (solo para impresiones) ============ */
@@ -1020,7 +1045,8 @@ function openGiftModal(onConfirm){
       '<div class="field"><label>'+t('giftFrom')+'</label><input type="text" id="gift-from" maxlength="60"></div>' +
       '<div class="field"><label>'+t('giftNote')+'</label><textarea id="gift-note" maxlength="220" rows="3"></textarea></div>' +
     '</div>' +
-    '<button id="gift-confirm-btn" class="modal-btn">'+t('addToCartBtn')+'</button>';
+    '<button id="gift-confirm-btn" class="modal-btn">'+t('addToCartBtn')+'</button>' +
+    '<button type="button" id="gift-cancel-btn" class="modal-btn-ghost">'+t('giftCancel')+'</button>';
 
   var isGift = false;
   var opts = Array.prototype.slice.call(document.querySelectorAll('.gift-opt'));
@@ -1034,6 +1060,8 @@ function openGiftModal(onConfirm){
     });
   });
 
+  document.getElementById('gift-cancel-btn').addEventListener('click', closeCheckout);
+
   document.getElementById('gift-confirm-btn').addEventListener('click', function(){
     var gift = null;
     if(isGift){
@@ -1042,11 +1070,15 @@ function openGiftModal(onConfirm){
       var note = (document.getElementById('gift-note').value||'').trim();
       if(to || from || note) gift = {to:to, from:from, note:note};
     }
-    modal.classList.remove('open');
+    closeCheckout();
     onConfirm(gift);
   });
 
-  modal.classList.add('open');
+  // Este era el ÚNICO modal que se abría sin el scrim. Sin él, tocar afuera no
+  // cerraba —el listener del scrim existe, pero el scrim no estaba visible
+  // para recibir el toque— y el diálogo quedaba sin fondo que lo separase de
+  // la página. Con esto vuelve a comportarse como el resto.
+  modal.classList.add('open'); scrim.classList.add('show');
 }
 
 /* ============ Vuelta desde Stripe (éxito o cancelación) ============ */
@@ -1099,6 +1131,13 @@ function renderOrderSuccess(order){
   if(status) window.history.replaceState({}, '', window.location.pathname);
 })();
 document.getElementById('modal-close').addEventListener('click', closeCheckout);
+// No había ninguna tecla de escape en toda la página. En un diálogo previo al
+// pago, quedarse sin saber cómo salir es una compra abandonada.
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  if(modal.classList.contains('open')) closeCheckout();
+  else if(drawer.classList.contains('open')) closeCart();
+});
 
 /* ============ PRINT PREVIEW — proportioned room mockup ============ */
 var ppEl = document.getElementById('print-preview');
