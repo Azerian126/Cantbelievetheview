@@ -125,7 +125,11 @@
           "captionEn": "Spiral / Towers from the Rain",
           "lat": 8.985604,
           "lng": -79.523636,
-          "categoryKey": "edificios"
+          "categoryKey": "edificios",
+          "categoryKeys": [
+            "edificios",
+            "bn"
+          ]
         }
       ]
     }
