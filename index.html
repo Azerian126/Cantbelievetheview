@@ -390,6 +390,13 @@
     border-radius:100px; color:var(--paper-dim); font-family:'JetBrains Mono', monospace;
     font-size:10px; white-space:nowrap; cursor:pointer; letter-spacing:.02em;}
   .size-chip.active{background:var(--amber); border-color:var(--amber); color:var(--bg);}
+  /* El acabado va encima de los tamaños porque manda sobre ellos: cambiarlo
+     rehace la lista de abajo. */
+  .mat-chips{display:flex; gap:6px; padding:0 14px 8px; background:var(--bg);}
+  .mat-chip{flex:1; padding:8px 6px; background:none; border:1px solid var(--line);
+    border-radius:3px; color:var(--paper-dim); font-family:'JetBrains Mono', monospace;
+    font-size:10px; text-transform:uppercase; letter-spacing:.04em; cursor:pointer;}
+  .mat-chip.active{background:var(--amber); border-color:var(--amber); color:var(--bg);}
 
   /* En pantallas bajas el diálogo con escena + fichas se pasa por unos 20px y
      el botón de agregar quedaría detrás de un scroll. Se encoge la ESCENA
@@ -418,6 +425,31 @@
   .modal-btn-ghost:hover{color:var(--paper); border-color:var(--paper-dim);}
   .success-view{text-align:center; padding:20px 0;}
   .success-view .check{font-size:38px; color:var(--amber-bright); margin-bottom:16px;}
+
+  /* El visor de la foto completa. object-fit:contain es lo contrario de la
+     portada: acá no se recorta nada, la foto entra entera aunque sobre fondo.
+     La imagen que se muestra es SIEMPRE displayUrl, la que lleva marca de
+     agua — la URL limpia solo se resuelve después de pagar, en order-status,
+     y esa frontera no se cruza desde el navegador. */
+  #lightbox{position:fixed; inset:0; z-index:210; background:rgba(6,7,7,0.94);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; padding:64px 4vw 24px; overscroll-behavior:contain;}
+  #lightbox[hidden]{display:none;}
+  .lb-figure{margin:0; display:flex; flex-direction:column; align-items:center; gap:10px; min-height:0;}
+  #lightbox-img{max-width:92vw; max-height:70vh; width:auto; height:auto;
+    object-fit:contain; border-radius:3px; box-shadow:0 24px 60px rgba(0,0,0,0.6);}
+  .lb-caption{display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center;}
+  #lightbox-title{font-family:'Fraunces', serif; font-size:16px; color:var(--paper);}
+  #lightbox-place{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); letter-spacing:.05em;}
+  .lb-buy{width:min(360px, 92vw);}
+  /* Misma medida de dedo que la X del diálogo de compra: 44px con fondo y
+     borde. La de anoche era el glifo pelado y Mario no la encontraba. */
+  #lightbox-close{position:absolute; top:14px; right:14px; width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg); border:1px solid var(--line); border-radius:50%;
+    color:var(--paper); font-size:26px; line-height:1; cursor:pointer; z-index:2;
+    transition:background .2s ease, border-color .2s ease;}
+  #lightbox-close:hover, #lightbox-close:focus-visible{background:var(--amber); color:var(--bg); border-color:var(--amber);}
 
   #toast{position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--paper); color:var(--bg); padding:12px 22px; border-radius:100px; font-family:'JetBrains Mono', monospace; font-size:12px; z-index:150; opacity:0; transition:all .3s ease; pointer-events:none; text-align:center; max-width:80vw;}
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
@@ -661,6 +693,19 @@
   <div class="pp-label" id="pp-label"></div>
 </div>
 
+<!-- Visor de la foto completa. Las portadas de la galería recortan a 4/5 con
+     object-fit:cover, así que una foto vertical o muy panorámica se ve a
+     medias. Acá se muestra entera (contain) y con los botones de compra
+     debajo, para que mirarla no aleje de comprarla. -->
+<div id="lightbox" hidden>
+  <button id="lightbox-close" type="button" aria-label="Cerrar">&times;</button>
+  <figure class="lb-figure">
+    <img id="lightbox-img" src="" alt="">
+    <figcaption class="lb-caption"><span id="lightbox-title"></span><span id="lightbox-place"></span></figcaption>
+  </figure>
+  <div class="lb-buy" id="lightbox-buy"></div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -841,6 +886,7 @@ var T = {
     checkingOrder:'Confirmando tu pedido…', orderCancelled:'Pago cancelado — tu carrito sigue como estaba.',
     digitalReadyTitle:'Tus fotos digitales', digitalDownload:'Descargar',
     toastAdded:function(t){return 'Añadido al carrito · '+t;}, toastUpcoming:function(n,d){return n+' — próximo destino · '+d;},
+    sizeSwapped:function(s){return 'Ese tamaño no existe en este material — cambiado a '+s+'.';},
     toastCurrent:function(n){return 'Actualmente en '+n+'.';},
     toastGeneric:function(n){return n+' — todavía no forma parte del archivo.';},
     realScale:' · a escala real', scale:'A ESCALA REAL', dropTitle:'Próximos destinos',
@@ -890,6 +936,7 @@ var T = {
     checkingOrder:'Confirming your order…', orderCancelled:'Payment cancelled — your cart is untouched.',
     digitalReadyTitle:'Your digital photos', digitalDownload:'Download',
     toastAdded:function(t){return 'Added to cart · '+t;}, toastUpcoming:function(n,d){return n+' — upcoming trip · '+d;},
+    sizeSwapped:function(s){return "That size isn't available in this material — switched to "+s+'.';},
     toastCurrent:function(n){return 'Currently in '+n+'.';},
     toastGeneric:function(n){return n+" — not part of the archive yet.";},
     realScale:' · true to scale', scale:'TRUE TO SCALE', dropTitle:'Upcoming trips',
@@ -1091,6 +1138,35 @@ function closeCheckout(){
 }
 document.getElementById('checkout-btn').addEventListener('click', openCheckout);
 
+/* ============ Visor de la foto completa ============ */
+// La portada de la galería recorta a 4/5. Acá la foto se ve entera.
+// Tocar la foto no hacía NADA hasta ahora —los botones de compra están
+// debajo, no en la imagen—, así que esto no le quita el sitio a ningún gesto
+// que ya existiera ni agrega toques al camino de comprar: los mismos botones
+// van dentro del visor, así que se puede comprar sin cerrarlo.
+var lightbox = document.getElementById('lightbox');
+var lightboxImg = document.getElementById('lightbox-img');
+
+function openLightbox(opts){
+  // SIEMPRE la de marca de agua. La limpia se resuelve tras el pago en
+  // order-status y no tiene por qué existir en el navegador de nadie.
+  lightboxImg.src = opts.imgUrl;
+  lightboxImg.alt = opts.title;
+  document.getElementById('lightbox-title').textContent = opts.title;
+  document.getElementById('lightbox-place').textContent = opts.place || '';
+  var buy = document.getElementById('lightbox-buy');
+  buy.innerHTML = '';
+  buy.appendChild(buildBuyRow(opts.title, opts.group, opts.imgUrl, opts.photoId, opts.photoW, opts.photoH));
+  lightbox.hidden = false;
+}
+function closeLightbox(){
+  lightbox.hidden = true;
+  lightboxImg.src = '';   // que no siga descargando si estaba a medias
+}
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+// Tocar el fondo cierra; tocar la foto o los botones, no.
+lightbox.addEventListener('click', function(e){ if(e.target === lightbox) closeLightbox(); });
+
 /* ============ Regalo (solo para impresiones) ============ */
 // Se pregunta al elegir tamaño de una impresión, antes de agregarla al
 // carrito — cada impresión puede tener un destino distinto (una para vos,
@@ -1106,7 +1182,17 @@ function openGiftModal(onConfirm, preview){
   // al agregar al carrito. Nunca del que se capturó al abrir: si se cambia
   // dentro y el carrito se queda con el de antes, se cobra mal.
   var elegido = preview && preview.size;
-  var conSelector = preview && preview.sizes && preview.sizes.length > 1 && !HAS_HOVER;
+  // El MATERIAL también vive acá, por el mismo motivo que el tamaño: si se
+  // cambia dentro y el carrito se queda con el de entrada, se cobra el
+  // acabado equivocado. Los dos salen de este estado y de ningún otro.
+  var material = preview && preview.material;
+  var tamanos = (preview && preview.sizes) || [];
+  var conSelector = preview && tamanos.length > 1 && !HAS_HOVER;
+  // Solo tiene sentido ofrecer el cambio de acabado si esta foto aguanta algún
+  // tamaño en más de un material.
+  var materiales = conSelector && preview.photoW
+    ? MATERIALS.filter(function(m){ return m.sizes.some(function(sz){ return sizeFitsPhoto(sz, preview.photoW, preview.photoH); }); })
+    : [];
   document.getElementById('modal-box').innerHTML =
     // La vista previa vive ACÁ y no en un paso nuevo: este diálogo ya era
     // obligatorio para comprar una impresión, así que ver el tamaño real no
@@ -1115,9 +1201,12 @@ function openGiftModal(onConfirm, preview){
     // esquina, habría tapado justo la lista de tamaños que se está mirando.
     (preview ? '<div class="modal-preview">'+sceneHtml() +
       (conSelector
-        ? '<div class="size-chips">' + preview.sizes.map(function(sz){
-            return '<button type="button" class="size-chip'+(sz.id===elegido.id ? ' active' : '')+'" data-size="'+sz.id+'">'+sz.label.split(' · ')[0]+'</button>';
-          }).join('') + '</div>'
+        ? (materiales.length > 1
+            ? '<div class="mat-chips">' + materiales.map(function(m){
+                return '<button type="button" class="mat-chip'+(m.id===material.id ? ' active' : '')+'" data-mat="'+m.id+'">'+matLabel(m).split(' · ')[0]+'</button>';
+              }).join('') + '</div>'
+            : '') +
+          '<div class="size-chips"></div>'
         : '') +
       '</div>' : '') +
     '<h3>'+t('giftModalTitle')+'</h3>' +
@@ -1135,22 +1224,31 @@ function openGiftModal(onConfirm, preview){
 
   if(preview){
     var box = document.querySelector('.modal-preview');
-    renderScene(box, preview.imgUrl, elegido, preview.material);
-    if(conSelector){
-      var chips = Array.prototype.slice.call(box.querySelectorAll('.size-chip'));
-      var confirmBtn = document.getElementById('gift-confirm-btn');
-      chips.forEach(function(chip){
+    var confirmBtn = document.getElementById('gift-confirm-btn');
+
+    // Un ÚNICO sitio que repinta todo lo que depende de la elección: la
+    // escena, la ficha marcada y el precio del botón. Cambiar el tamaño y
+    // cambiar el material terminan los dos acá, así que no hay forma de que
+    // uno actualice la vista y el otro se olvide del precio.
+    function repintar(){
+      renderScene(box, preview.imgUrl, elegido, material);
+      confirmBtn.textContent = t('addToCartBtn') + ' · ' + fmt(elegido.price);
+    }
+
+    function pintarFichas(){
+      var cont = box.querySelector('.size-chips');
+      if(!cont) return;
+      cont.innerHTML = tamanos.map(function(sz){
+        return '<button type="button" class="size-chip'+(sz.id===elegido.id ? ' active' : '')+'" data-size="'+sz.id+'">'+sz.label.split(' · ')[0]+'</button>';
+      }).join('');
+      Array.prototype.slice.call(cont.querySelectorAll('.size-chip')).forEach(function(chip){
         chip.addEventListener('click', function(){
-          var sz = preview.sizes.find(function(x){ return x.id === chip.dataset.size; });
+          var sz = tamanos.find(function(x){ return x.id === chip.dataset.size; });
           if(!sz) return;
           elegido = sz;
-          chips.forEach(function(c){ c.classList.remove('active'); });
+          cont.querySelectorAll('.size-chip').forEach(function(c){ c.classList.remove('active'); });
           chip.classList.add('active');
-          // Se repinta la escena con el tamaño nuevo y se actualiza el precio
-          // del botón: si el número que se lee no fuera el que se cobra, sería
-          // peor que no tener selector.
-          renderScene(box, preview.imgUrl, elegido, preview.material);
-          confirmBtn.textContent = t('addToCartBtn') + ' · ' + fmt(elegido.price);
+          repintar();
           // Centrar la ficha tocada es un adorno, no parte de la compra: si el
           // navegador no lo soporta, no puede llevarse por delante el cambio
           // de precio que acaba de hacerse arriba.
@@ -1158,6 +1256,39 @@ function openGiftModal(onConfirm, preview){
         });
       });
     }
+
+    if(conSelector){
+      pintarFichas();
+      Array.prototype.slice.call(box.querySelectorAll('.mat-chip')).forEach(function(mchip){
+        mchip.addEventListener('click', function(){
+          var m = materiales.find(function(x){ return x.id === mchip.dataset.mat; });
+          if(!m || m.id === material.id) return;
+          material = m;
+          // Cada material tiene su propia lista de tamaños —29 en algodón, 26
+          // en aluminio— así que hay que rehacerla y reconciliar el elegido.
+          tamanos = m.sizes.filter(function(sz){ return sizeFitsPhoto(sz, preview.photoW, preview.photoH); });
+          var mismo = tamanos.find(function(sz){ return sz.id === elegido.id; });
+          if(mismo){
+            elegido = mismo;   // el mismo tamaño existe: se conserva
+          } else if(tamanos.length){
+            // No existe en este acabado. Se va al más parecido por lado largo,
+            // que es lo que se percibe como "el mismo cuadro" — y se avisa,
+            // porque cambiar el tamaño sin decirlo sería peor que no ofrecer
+            // el cambio de material.
+            var antes = Math.max(elegido.w, elegido.h);
+            elegido = tamanos.reduce(function(mejor, sz){
+              return Math.abs(Math.max(sz.w, sz.h) - antes) < Math.abs(Math.max(mejor.w, mejor.h) - antes) ? sz : mejor;
+            });
+            showToast(t('sizeSwapped')(elegido.label.split(' · ')[0]));
+          }
+          box.querySelectorAll('.mat-chip').forEach(function(c){ c.classList.remove('active'); });
+          mchip.classList.add('active');
+          pintarFichas();
+          repintar();
+        });
+      });
+    }
+    repintar();
   }
 
   var isGift = false;
@@ -1183,7 +1314,7 @@ function openGiftModal(onConfirm, preview){
       if(to || from || note) gift = {to:to, from:from, note:note};
     }
     closeCheckout();
-    onConfirm(gift, elegido);
+    onConfirm(gift, elegido, material);
   });
 
   // Este era el ÚNICO modal que se abría sin el scrim. Sin él, tocar afuera no
@@ -1247,7 +1378,9 @@ document.getElementById('modal-close').addEventListener('click', closeCheckout);
 // pago, quedarse sin saber cómo salir es una compra abandonada.
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
+  // De arriba abajo: primero lo que está más al frente.
   if(modal.classList.contains('open')) closeCheckout();
+  else if(!lightbox.hidden) closeLightbox();
   else if(drawer.classList.contains('open')) closeCart();
 });
 
@@ -1395,12 +1528,14 @@ function buildBuyRow(title, group, imgUrl, photoId, photoW, photoH){
       sBtn.addEventListener('click', function(){
         pop.classList.remove('show');
         hidePreview();
-        openGiftModal(function(gift, elegido){
-          // SIEMPRE desde el tamaño que devuelve el diálogo. Si acá se usara el
-          // `size` capturado al abrir, cambiarlo adentro cobraría el anterior.
+        openGiftModal(function(gift, elegido, mat){
+          // SIEMPRE desde lo que devuelve el diálogo, tamaño Y material. Si acá
+          // se usara lo capturado al abrir, cambiarlo adentro cobraría el
+          // anterior — el precio, el acabado, o los dos.
           var s = elegido || size;
-          addToCart({title:title, group:group, variant:t('print')+' '+s.id+' · '+matLabel(currentMaterial), price:s.price, img:imgUrl, photoId:photoId, type:'print', materialId:currentMaterial.id, sizeId:s.id, gift:gift});
-        }, {imgUrl:imgUrl, size:size, material:currentMaterial, sizes:fitSizes});
+          var m = mat || currentMaterial;
+          addToCart({title:title, group:group, variant:t('print')+' '+s.id+' · '+matLabel(m), price:s.price, img:imgUrl, photoId:photoId, type:'print', materialId:m.id, sizeId:s.id, gift:gift});
+        }, {imgUrl:imgUrl, size:size, material:currentMaterial, sizes:fitSizes, photoW:photoW, photoH:photoH});
       });
       sizeList.appendChild(sBtn);
     });
@@ -1545,6 +1680,19 @@ function openGalleryPanel(cfg){
         '<span class="ci-price mono" style="font-size:11px; white-space:nowrap;">'+t('fromPrice')+fmt(DIGITAL_PRICE)+'</span>' +
         '</div>';
       footer.appendChild(buildBuyRow(title, cfg.title, imgUrl, photoId, photoEntry.w, photoEntry.h));
+
+      // La foto abre el visor. El cursor y el rol lo anuncian: hasta ahora la
+      // imagen no respondía a nada y no había forma de saber que ahora sí.
+      frame.style.cursor = 'zoom-in';
+      frame.setAttribute('role', 'button');
+      frame.setAttribute('tabindex', '0');
+      frame.setAttribute('aria-label', title);
+      var abrir = function(){
+        openLightbox({imgUrl:imgUrl, title:title, place:photoCoordsText, group:cfg.title,
+          photoId:photoId, photoW:photoEntry.w, photoH:photoEntry.h});
+      };
+      frame.addEventListener('click', abrir);
+      frame.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrir(); } });
 
       card.appendChild(frame); card.appendChild(text); card.appendChild(footer);
       grid.appendChild(card);
