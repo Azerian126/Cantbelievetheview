@@ -441,7 +441,15 @@
   .lb-caption{display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center;}
   #lightbox-title{font-family:'Fraunces', serif; font-size:16px; color:var(--paper);}
   #lightbox-place{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); letter-spacing:.05em;}
-  .lb-buy{width:min(360px, 92vw);}
+  .lb-buy{width:min(360px, 92vw); position:relative;}
+  /* La lista de tamaños mide 240px fijos y cuelga del borde izquierdo de su
+     botón. Dentro del visor ese botón ocupa media fila —unos 176px— así que la
+     lista se salía por la derecha y quedaba cortada contra el borde de la
+     pantalla: solo se podía mover en horizontal. Acá se centra sobre la fila
+     entera y se le pone alto máximo, porque en algodón son 29 tamaños y sin
+     tope la lista se sale por arriba. */
+  .lb-buy .size-pop{left:50%; right:auto; transform:translateX(-50%);
+    width:min(300px, 88vw); max-height:min(52vh, 420px); overflow-y:auto; overflow-x:hidden;}
   /* Misma medida de dedo que la X del diálogo de compra: 44px con fondo y
      borde. La de anoche era el glifo pelado y Mario no la encontraba. */
   #lightbox-close{position:absolute; top:14px; right:14px; width:44px; height:44px;
@@ -1178,6 +1186,11 @@ lightbox.addEventListener('click', function(e){ if(e.target === lightbox) closeL
 // comparar ocho tamaños moviendo el ratón, y unas fichas que hay que ir
 // tocando una por una serían un paso atrás, no una función nueva.
 function openGiftModal(onConfirm, preview){
+  // El visor está a z-index 210 y este diálogo a 120, así que abrirlo desde
+  // dentro del visor lo dejaba tapado y había que cerrar el visor a mano para
+  // verlo. Se cierra solo: elegir un tamaño ya es haber pasado de mirar la
+  // foto a comprarla, y el propio diálogo la muestra en la pared.
+  if(lightbox && !lightbox.hidden) closeLightbox();
   // El tamaño VIVE ACÁ, y es de donde salen el precio, el sizeId y la etiqueta
   // al agregar al carrito. Nunca del que se capturó al abrir: si se cambia
   // dentro y el carrito se queda con el de antes, se cobra mal.
@@ -1687,10 +1700,16 @@ function openGalleryPanel(cfg){
       frame.setAttribute('role', 'button');
       frame.setAttribute('tabindex', '0');
       frame.setAttribute('aria-label', title);
-      var abrir = function(){
-        openLightbox({imgUrl:imgUrl, title:title, place:photoCoordsText, group:cfg.title,
+      // El bucle de arriba es un for con `var`, así que imgUrl, title y
+      // compañía son UNA sola variable por función, no una por vuelta: un
+      // closure que las lea al hacer clic ve siempre los valores de la ÚLTIMA
+      // foto. Por eso todas abrían la misma. Se congelan los valores pasándolos
+      // como argumentos a esta función, que es lo mismo que hace buildBuyRow —
+      // por eso los botones de comprar sí abrían la foto correcta.
+      var abrir = (function(datos){
+        return function(){ openLightbox(datos); };
+      })({imgUrl:imgUrl, title:title, place:photoCoordsText, group:cfg.title,
           photoId:photoId, photoW:photoEntry.w, photoH:photoEntry.h});
-      };
       frame.addEventListener('click', abrir);
       frame.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrir(); } });
 
