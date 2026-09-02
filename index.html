@@ -433,14 +433,20 @@
      y esa frontera no se cruza desde el navegador. */
   #lightbox{position:fixed; inset:0; z-index:210; background:rgba(6,7,7,0.94);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:14px; padding:64px 4vw 24px; overscroll-behavior:contain;}
+    gap:20px; padding:64px 4vw 24px; overscroll-behavior:contain;}
   #lightbox[hidden]{display:none;}
   .lb-figure{margin:0; display:flex; flex-direction:column; align-items:center; gap:10px; min-height:0;}
   #lightbox-img{max-width:92vw; max-height:70vh; width:auto; height:auto;
     object-fit:contain; border-radius:3px; box-shadow:0 24px 60px rgba(0,0,0,0.6);}
-  .lb-caption{display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center;}
-  #lightbox-title{font-family:'Fraunces', serif; font-size:16px; color:var(--paper);}
-  #lightbox-place{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); letter-spacing:.05em;}
+  /* El título se dejaba correr de borde a borde y partía mal —"…bajo / el
+     sol."— y las coordenadas quedaban a 3px, pegadas debajo. Se le pone un
+     ancho de lectura y aire de verdad entre el nombre y el dato: son dos cosas
+     distintas y tienen que leerse como dos. */
+  .lb-caption{display:flex; flex-direction:column; align-items:center; gap:9px;
+    text-align:center; max-width:min(92vw, 420px);}
+  #lightbox-title{font-family:'Fraunces', serif; font-size:16px; line-height:1.4;
+    color:var(--paper); text-wrap:balance;}
+  #lightbox-place{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); letter-spacing:.08em;}
   .lb-buy{width:min(360px, 92vw); position:relative;}
   /* La lista de tamaños mide 240px fijos y cuelga del borde izquierdo de su
      botón. Dentro del visor ese botón ocupa media fila —unos 176px— así que la
