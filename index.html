@@ -444,10 +444,17 @@
   .lb-buy{width:min(360px, 92vw); position:relative;}
   /* La lista de tamaños mide 240px fijos y cuelga del borde izquierdo de su
      botón. Dentro del visor ese botón ocupa media fila —unos 176px— así que la
-     lista se salía por la derecha y quedaba cortada contra el borde de la
-     pantalla: solo se podía mover en horizontal. Acá se centra sobre la fila
-     entera y se le pone alto máximo, porque en algodón son 29 tamaños y sin
-     tope la lista se sale por arriba. */
+     lista se salía por la derecha y los precios quedaban cortados contra el
+     borde de la pantalla.
+     Centrarla no bastaba: .print-wrap es position:relative, así que ese 50% se
+     medía contra el BOTÓN y no contra la fila, y la lista seguía naciendo en
+     la mitad derecha. Poniendo el botón en static, el ancestro posicionado
+     pasa a ser .lb-buy y el centrado es sobre la fila entera — o sea sobre la
+     pantalla. En un móvil de 390px: antes de 137 a 437px (47px fuera), ahora
+     de 45 a 345px.
+     El alto máximo es porque en algodón son 29 tamaños: sin tope la lista se
+     sale por arriba. */
+  .lb-buy .print-wrap{position:static;}
   .lb-buy .size-pop{left:50%; right:auto; transform:translateX(-50%);
     width:min(300px, 88vw); max-height:min(52vh, 420px); overflow-y:auto; overflow-x:hidden;}
   /* Misma medida de dedo que la X del diálogo de compra: 44px con fondo y
