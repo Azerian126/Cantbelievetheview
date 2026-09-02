@@ -302,33 +302,6 @@
           "categoryKey": "bn"
         }
       ]
-    },
-    {
-      "key": "paises-bajos",
-      "name": "Países Bajos",
-      "lat": 52.37,
-      "lng": 4.9,
-      "w": 6,
-      "h": 8,
-      "desc": "Bicicletas, casas inclinadas y reflejos dorados.",
-      "descEn": "Bicycles, leaning houses and golden reflections.",
-      "photos": [
-        {
-          "id": "paises-bajos-1788307283670",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/paises-bajos-1788307283670?_a=BAMCr6cg0",
-          "caption": "29 / Cuerpo en contraluz contra horizonte de la ciudad.",
-          "w": 1699,
-          "h": 1090,
-          "captionEn": "/ Body in backlight against the city horizon.",
-          "lat": 51.915445,
-          "lng": 4.485065,
-          "categoryKeys": [
-            "retratos",
-            "modelos"
-          ],
-          "categoryKey": "retratos"
-        }
-      ]
     }
   ],
   "visitedEmpty": [
@@ -661,6 +634,14 @@
       "w": 16,
       "h": 26,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-noruega"
+    },
+    {
+      "key": "paises-bajos",
+      "name": "Países Bajos",
+      "lat": 52.37,
+      "lng": 4.9,
+      "w": 6,
+      "h": 8
     },
     {
       "key": "polonia",
