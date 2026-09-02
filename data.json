@@ -329,6 +329,34 @@
           "categoryKey": "paisajes"
         }
       ]
+    },
+    {
+      "key": "portugal",
+      "name": "Portugal",
+      "lat": 38.72,
+      "lng": -9.14,
+      "w": 8,
+      "h": 14,
+      "desc": "Azulejos, fado y el Atlántico al atardecer.",
+      "descEn": "Azulejos, fado and the Atlantic at sunset.",
+      "photos": [
+        {
+          "id": "portugal-1788314286725",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/portugal-1788314286725?_a=BAMCr6cg0",
+          "caption": "Tejo / Cubos de neón apilados bajo el cielo negro.",
+          "w": 3023,
+          "h": 3279,
+          "captionEn": "Tejo / Neon cubes stacked under the black sky.",
+          "lat": 38.7015996,
+          "lng": -9.1680646,
+          "categoryKeys": [
+            "edificios",
+            "bn",
+            "paisajes"
+          ],
+          "categoryKey": "edificios"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -669,16 +697,6 @@
       "w": 16,
       "h": 8,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-polonia"
-    },
-    {
-      "key": "portugal",
-      "name": "Portugal",
-      "nameEn": "Portugal",
-      "lat": 38.72,
-      "lng": -9.14,
-      "w": 8,
-      "h": 14,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-portugal"
     },
     {
       "key": "reino-unido",
