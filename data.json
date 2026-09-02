@@ -304,33 +304,6 @@
       ]
     },
     {
-      "key": "italia",
-      "name": "Italia",
-      "lat": 41.9,
-      "lng": 12.5,
-      "w": 12,
-      "h": 24,
-      "desc": "Ruinas romanas, niebla veneciana y oro toscano.",
-      "descEn": "Roman ruins, Venetian mist and Tuscan gold.",
-      "photos": [
-        {
-          "id": "italia-1788307570478",
-          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/italia-1788307570478?_a=BAMCr6cg0",
-          "caption": "Cavallo / Gigante equino junto a templo clásico bajo cielo.",
-          "w": 1018,
-          "h": 962,
-          "captionEn": "Cavallo / Equine giant beside a classical temple under the sky.",
-          "lat": 40.4215522,
-          "lng": 15.0053214,
-          "categoryKeys": [
-            "paisajes",
-            "edificios"
-          ],
-          "categoryKey": "paisajes"
-        }
-      ]
-    },
-    {
       "key": "portugal",
       "name": "Portugal",
       "lat": 38.72,
@@ -639,6 +612,14 @@
       "w": 22,
       "h": 16,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-islandia"
+    },
+    {
+      "key": "italia",
+      "name": "Italia",
+      "lat": 41.9,
+      "lng": 12.5,
+      "w": 12,
+      "h": 24
     },
     {
       "key": "luxemburgo",
