@@ -49,16 +49,18 @@
   /* El logotipo iba solo, sin la marca. La marca es lo que se reconoce de
      lejos y lo que ya está en la pestaña del navegador; el nombre escrito la
      acompaña, no la sustituye.
-     Van dos piezas distintas y no es un descuido: en el nav, a 26px, la nube
-     del logo entero se empasta y queda un borrón, así que ahí va el OJO —el
-     mismo recorte que el favicon, con lo cual la pestaña y la cabecera dicen
-     lo mismo—. En el pie hay sitio para 46px y va el logo COMPLETO, con su
-     cámara y su nube.
+     Va el logo COMPLETO en los dos sitios —cámara, nube y ojo—, decisión de
+     Mario el 4 de septiembre de 2026. Se probó antes con el ojo suelto en el
+     nav, que a 26px se lee mucho más limpio, y lo descartó: quiere su logo.
+     Por eso el nav no lleva 26px sino 38: por debajo de eso la nube se empasta
+     y queda un borrón. Si algún día hay que apretar la cabecera, el recambio
+     no es encoger este símbolo sino cambiarlo por #cbtv-eye, que es el mismo
+     dibujo recortado y aguanta hasta 16px. El favicon ya usa ese.
      currentColor hace el resto: en el nav hereda el #edeae2 fijo que ya se le
      impone al resto —el nav va en mix-blend-mode:difference— y en el pie sigue
-     al tema. La medida en em para que acompañe al texto si se toca el cuerpo. */
-  .brand{display:flex; align-items:center; gap:9px; color:inherit;}
-  .brand-mark{width:1.75em; height:1.75em; flex:0 0 auto; display:block; color:inherit;}
+     al tema. */
+  .brand{display:flex; align-items:center; gap:10px; color:inherit;}
+  .brand-mark{width:38px; height:38px; flex:0 0 auto; display:block; color:inherit;}
   .brand-mark-lg{width:46px; height:46px; margin-bottom:12px;}
   .nav-right{display:flex; align-items:center; gap:28px;}
   .nav-link{font-size:12px; letter-spacing:0.08em; text-transform:uppercase; font-family:'JetBrains Mono', monospace; font-weight:300; opacity:0.85; background:none; border:none; color:inherit; padding-bottom:2px; border-bottom:1px solid transparent; transition:border-color .25s ease, opacity .25s ease;}
@@ -479,6 +481,18 @@
     display:flex; flex-direction:column; align-items:center; justify-content:safe center;
     gap:20px; padding:64px 4vw 24px; overscroll-behavior:contain; overflow-y:auto;}
   #lightbox[hidden]{display:none;}
+  /* El visor tiene fondo oscuro SIEMPRE —rgba(6,7,7,.94)— pero sus textos
+     salían de las variables del tema. En tema claro, --paper pasa a ser tinta
+     oscura y el título quedaba negro sobre negro: contraste 1.16, o sea
+     invisible. Las coordenadas, en 3.67, tampoco llegaban al mínimo legible.
+     No se corrige color por color: se le fija al visor la paleta oscura, y así
+     el título, las coordenadas, los botones y la nota la heredan de una vez.
+     Con esto el título pasa a 16.49 y las coordenadas a 7.25. */
+  #lightbox{
+    --paper:#edeae2; --paper-dim:#a29c8e; --bg:#0b0d0c;
+    --amber:#c9834a; --amber-bright:#e4a468;
+    --line:rgba(237,234,226,0.14); --line-soft:rgba(237,234,226,0.06);
+  }
   /* El pie caía ENCIMA de los botones —el título y las coordenadas escritos
      sobre "DIGITAL" e "IMPRESIÓN"— y no era un problema de z-index.
      La figura es un hijo flex y podía encogerse por debajo de su contenido;
@@ -582,7 +596,7 @@
 
 <nav>
   <a class="brand" href="#top" aria-label="Cantbelievetheview — inicio">
-    <svg class="brand-mark" aria-hidden="true"><use href="#cbtv-eye"/></svg>
+    <svg class="brand-mark" aria-hidden="true"><use href="#cbtv-mark"/></svg>
     <span class="logo">cantbelieve<span>theview</span></span>
   </a>
   <div class="nav-right">
