@@ -145,7 +145,7 @@
   .hero-hint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--overlay-ink); text-align:center; pointer-events:none; background:rgba(0,0,0,0.62); padding:14px 26px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
   .hero-hint .dot{width:6px; height:6px; border-radius:50%; background:var(--amber); margin:8px auto 0; animation:pulse 2s infinite ease-in-out;}
   .hero-hint.paused .dot{animation:none; opacity:.6;}
-  #rotate-toggle{pointer-events:auto; margin-top:12px; width:28px; height:28px; border-radius:50%; border:1px solid var(--overlay-ink-dim); background:none; color:var(--overlay-ink-dim); font-size:9px; display:flex; align-items:center; justify-content:center; letter-spacing:0; transition:border-color .2s ease, color .2s ease;}
+  #rotate-toggle{pointer-events:auto; margin:12px auto 0; width:28px; height:28px; border-radius:50%; border:1px solid var(--overlay-ink-dim); background:none; color:var(--overlay-ink-dim); font-size:9px; display:flex; align-items:center; justify-content:center; letter-spacing:0; transition:border-color .2s ease, color .2s ease;}
   #rotate-toggle:hover{border-color:var(--overlay-ink); color:var(--overlay-ink);}
   @keyframes pulse{0%,100%{opacity:.3; transform:scale(1);}50%{opacity:1; transform:scale(1.4);}}
 
@@ -575,12 +575,47 @@
     .gallery-grid{grid-template-columns:repeat(3,1fr); gap:14px; padding:40px 5vw 100px;}
     .hub-grid{grid-template-columns:repeat(2,1fr); padding:16px 5vw 100px;}
     .countries-grid{grid-template-columns:repeat(2,1fr);}
+    /* .hero-hint y .hero-bottom estaban los dos anclados a bottom:34px. En
+       escritorio no se estorban porque el pie es una fila y el aviso cabe en el
+       hueco del medio; en el móvil el pie se vuelve columna, crece hacia arriba
+       y le pasa por encima al aviso — se veía "ARRASTRÁ EL GLOBO" cortado por
+       la mitad detrás de las estadísticas.
+       En el móvil el aviso se queda solo con su botón de pausa, que es lo único
+       que no se puede decir en otro sitio; su texto se muda a la frase de
+       arriba, que ya está en versión táctil. Y el pie sube lo justo para
+       dejarle sitio. */
     .hero-bottom{flex-direction:column; align-items:flex-start; gap:14px;}
     .hero-stats{text-align:left;}
     #upcoming-dropdown{right:auto; left:0;}
     .hide-mobile{display:none;}
     .mobile-menu-btn{display:flex;}
     #print-preview{right:3vw; bottom:90px; width:190px;}
+  }
+
+  /* En pantalla estrecha el pie del hero se vuelve columna y crece hacia
+     arriba, así que le pasaba por encima al aviso del globo: se veía
+     "ARRASTRÁ EL GLOBO" cortado por la mitad detrás de las estadísticas.
+     Se separa por TIPO DE PUNTERO y no solo por ancho, porque el problema no
+     es el mismo en los dos casos. */
+
+  /* Teléfono o tableta: el aviso se queda solo con su botón de pausa, que es
+     lo único que no se puede decir en otro sitio. Su texto se muda a la frase
+     de arriba, que además está en versión táctil y no habla de un ratón que
+     ahí no existe. */
+  @media (max-width:860px) and (hover: none){
+    .hero-bottom{bottom:92px;}
+    .hero-hint{padding:0; background:none; box-shadow:none; backdrop-filter:none;}
+    .hero-hint > span[data-i18n]{display:none;}
+    .hero-hint .dot{display:none;}
+    #rotate-toggle{margin:0 auto; width:34px; height:34px;}
+  }
+
+  /* Ventana de escritorio hecha pequeña: aquí sí hay ratón, la frase de arriba
+     habla de él y no menciona el arrastre, así que el aviso tiene que seguir
+     entero o esa instrucción se pierde. En vez de esconderlo, se le hace sitio
+     subiendo el pie. */
+  @media (max-width:860px) and (hover: hover){
+    .hero-bottom{bottom:160px;}
   }
   @media(max-width:560px){
     .gallery-grid{grid-template-columns:repeat(2,1fr);}
@@ -986,6 +1021,11 @@ var T = {
     heroTitle:'No tomo una fotografía.<br>La pido prestada, <em>en silencio.</em>',
     heroHint:'arrastrá el globo · pasá el mouse sobre un país',
     heroQuote:'Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.',
+    // En un teléfono no hay ratón. Y como ahí el aviso de abajo se queda sin
+    // texto para no chocar con las estadísticas, esta frase carga también el
+    // "arrastrá el globo" que aquel decía.
+    heroQuoteTactil:'Arrastrá el globo y tocá un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.',
+    heroHintTactil:'arrastrá el globo · tocá un país',
     statVisited:'PAÍSES VISITADOS', statOf:'DE', statGallery:'CON GALERÍA', statEmpty:'SIN FOTOS AÚN', statUpcoming:'PRÓXIMOS DESTINOS',
     aboutLabel:'Sobre el trabajo', aboutH2:function(n){ return n+' países, un mismo asombro.'; },
     aboutP1:'Cada fotografía en este archivo nace del mismo impulso: quedarme quieto un segundo más de lo razonable frente a algo que no me pertenece. El globo interactivo es mi cuaderno de bitácora — pero si preferís explorar por tema en vez de por lugar, la sección Galería reúne todo por categoría.',
@@ -1036,6 +1076,8 @@ var T = {
     heroTitle:"I don't take a photograph.<br>I borrow it, <em>quietly.</em>",
     heroHint:'drag the globe · hover over a country',
     heroQuote:"Hover over a country: if the border lights up, it has a gallery. If it stays dim, not yet.",
+    heroQuoteTactil:"Drag the globe and tap a country: if the border lights up, it has a gallery. If it stays dim, not yet.",
+    heroHintTactil:'drag the globe · tap a country',
     statVisited:'COUNTRIES VISITED', statOf:'OF', statGallery:'WITH GALLERY', statEmpty:'NO PHOTOS YET', statUpcoming:'UPCOMING TRIPS',
     aboutLabel:'About the work', aboutH2:function(n){ return n+' countries, the same sense of wonder.'; },
     aboutP1:"Every photograph in this archive comes from the same impulse: staying still one second longer than reasonable in front of something that isn't mine. The interactive globe is my logbook — but if you'd rather browse by theme than by place, the Gallery section groups everything by category.",
@@ -1087,8 +1129,14 @@ function cdesc(c){ return lang==='en' ? (c.descEn || c.desc) : c.desc; }
 function pcaption(p){ return lang==='en' ? (p.captionEn || p.caption) : p.caption; }
 function matLabel(m){ return lang==='en' ? (m.labelEn || m.label) : m.label; }
 function applyStaticI18n(){
+  // Si el aparato no tiene ratón, cualquier cadena con una variante "...Tactil"
+  // usa esa. Es lo que evita que un teléfono diga "pasá el mouse". Se consulta
+  // aquí y no en la constante HAS_HOVER porque esta función corre antes de que
+  // aquella tenga valor, y un undefined haría pasar por táctil a un escritorio.
+  var sinRaton = !(window.matchMedia && window.matchMedia('(hover: hover)').matches);
   document.querySelectorAll('[data-i18n]').forEach(function(el){
-    var v = t(el.getAttribute('data-i18n'));
+    var clave = el.getAttribute('data-i18n');
+    var v = sinRaton && t(clave + 'Tactil') !== undefined ? t(clave + 'Tactil') : t(clave);
     if(v !== undefined) el.textContent = v;
   });
   document.querySelectorAll('[data-i18n-html]').forEach(function(el){
@@ -2150,6 +2198,19 @@ function setLang(newLang){
   }
 }
 langBtns.forEach(function(b){ b.addEventListener('click', function(){ setLang(lang==='es' ? 'en' : 'es'); }); });
+
+// El texto estático solo se reescribe dentro de setLang(), o sea al tocar el
+// botón de idioma: en la primera carga vale el que viene escrito en el HTML.
+// Por eso la variante táctil hay que aplicarla aquí a mano. Sin esto, un
+// teléfono leía "pasá el mouse sobre un país" hasta que a alguien se le
+// ocurriera cambiar de idioma y volver.
+(function textoParaDedos(){
+  if(window.matchMedia && window.matchMedia('(hover: hover)').matches) return;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var v = t(el.getAttribute('data-i18n') + 'Tactil');
+    if(v !== undefined) el.textContent = v;
+  });
+})();
 
 /* ============ THREE.JS — CLEAN EARTH, HOVER-ONLY COUNTRY BORDERS ============ */
 var canvas = document.getElementById('globe-canvas');
