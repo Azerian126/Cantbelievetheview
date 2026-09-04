@@ -8,7 +8,7 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..600;1,400..600&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <style>
@@ -33,7 +33,7 @@
   .lang-btn{height:34px; padding:0 11px; border-radius:100px; border:1px solid var(--paper); background:none; color:var(--paper); display:flex; align-items:center; justify-content:center; font-size:11px; font-family:'JetBrains Mono', monospace; letter-spacing:.04em;}
   ::selection{background:var(--amber);color:var(--bg);}
   .mono{font-family:'JetBrains Mono', monospace; letter-spacing:0.02em;}
-  .serif{font-family:'Fraunces', serif;}
+  .serif{font-family:'EB Garamond', serif;}
   a{color:inherit; text-decoration:none;}
   button{font-family:inherit; cursor:pointer;}
 
@@ -44,7 +44,12 @@
      algún momento queda sobre una sección clara al hacer scroll. */
   nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:26px 5vw; mix-blend-mode:difference; background:transparent; color:#edeae2;}
   nav .theme-btn, nav .lang-btn, nav .pill-btn, nav .nav-link{color:#edeae2; border-color:#edeae2;}
-  .logo{font-family:'Fraunces', serif; font-weight:400; font-size:15px; letter-spacing:0.04em; text-transform:lowercase;}
+  /* Los tamaños suben con el cambio de letra, y no es capricho: medido en
+     canvas, EB Garamond a 15px tiene la equis un 13,8% más baja que Fraunces y
+     el logotipo sale un 20% más estrecho. Hacen falta 17,4px para devolverle
+     la presencia que tenía. Se suben los títulos y el logotipo; el texto
+     pequeño en cursiva se deja, que ahí lo fino sienta bien. */
+  .logo{font-family:'EB Garamond', serif; font-weight:500; font-size:17px; letter-spacing:0.04em; text-transform:lowercase;}
   .logo span{color:var(--amber-bright);}
   /* El logotipo iba solo, sin la marca. La marca es lo que se reconoce de
      lejos y lo que ya está en la pestaña del navegador; el nombre escrito la
@@ -111,21 +116,20 @@
   .hero-status .dot{width:6px; height:6px; border-radius:50%; background:var(--paper-dim); flex:none; transition:background .3s ease;}
   .hero-status.live{color:var(--overlay-ink);}
   .hero-status.live .dot{background:var(--amber); animation:pulse 2s infinite ease-in-out;}
-  /* font-variation-settings fija el eje "opsz" (optical size) de Fraunces en
-     un valor alto — sin esto, el navegador puede quedarse en un opsz bajo,
-     que en Fraunces da letras con un trazo bien ondulado/"wonky" a propósito
-     del diseño de la fuente, poco legible a este tamaño. */
-  /* opsz es el tamaño óptico de Fraunces, y estaba fijado a 90 — el extremo de
-     display. Ahí la fuente afila los trazos finos hasta el pelo y cierra el
-     gancho de la "f", que era justo lo que chirriaba: "fotografía" salía con la
-     f estrangulada contra la í. A 40 el gancho se abre, la línea respira y
-     sigue siendo una serif de titular, no una de texto corrido.
-     No es el navegador el que elegía 90: estaba escrito. Y font-optical-sizing
-     sobra teniendo el eje fijado a mano, así que se va. */
-  .hero-title{font-family:'Fraunces', serif; font-weight:300; font-variation-settings:'opsz' 40; font-size:clamp(32px, 5.2vw, 70px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
+  /* La serif del sitio era Fraunces y pasa a ser EB Garamond, elegida por
+     Mario el 4 de septiembre de 2026 después de ver siete candidatas con este
+     mismo titular delante. El motivo fue la "f": Fraunces le cierra el gancho
+     hasta estrangularla contra la í de "fotografía", y ese rasgo es de la
+     letra, no un ajuste — bajarle el eje opsz lo abría pero no lo quitaba.
+     Con el cambio se va también el font-variation-settings: opsz es un eje de
+     Fraunces y EB Garamond no lo tiene, así que ahí sobraba.
+     Y el peso baja de 300 a 400 porque EB Garamond no llega a 300: su peso más
+     fino es 400, y pedirle 300 solo servía para que el navegador lo redondeara
+     en silencio. */
+  .hero-title{font-family:'EB Garamond', serif; font-weight:400; font-size:clamp(34px, 5.4vw, 74px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
   .hero-title em{font-style:italic; color:var(--amber-bright); font-weight:400;}
   .hero-bottom{position:absolute; bottom:34px; left:5vw; right:5vw; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; pointer-events:none;}
-  .hero-quote{max-width:320px; font-size:14px; line-height:1.65; color:var(--overlay-ink); font-style:italic; font-family:'Fraunces', serif; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  .hero-quote{max-width:320px; font-size:14px; line-height:1.65; color:var(--overlay-ink); font-style:italic; font-family:'EB Garamond', serif; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
   .hero-stats{text-align:right; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--overlay-ink); line-height:2.1; position:relative; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
   .hero-stats b{color:var(--amber-bright); font-weight:500;}
   .stats-line.clickable{cursor:pointer; pointer-events:auto; transition:color .2s ease;}
@@ -135,7 +139,7 @@
   #upcoming-dropdown{position:absolute; bottom:calc(100% + 12px); right:0; width:270px; background:var(--bg-alt); border:1px solid var(--line); border-radius:6px; padding:10px 0; display:none; pointer-events:auto; box-shadow:0 20px 50px rgba(0,0,0,0.5); text-align:left;}
   #upcoming-dropdown.show{display:block;}
   #upcoming-dropdown .ud-item{display:flex; justify-content:space-between; align-items:center; padding:9px 16px;}
-  #upcoming-dropdown .ud-item span:first-child{color:var(--paper); font-family:'Fraunces',serif; font-style:italic; font-size:13px;}
+  #upcoming-dropdown .ud-item span:first-child{color:var(--paper); font-family:'EB Garamond', serif; font-style:italic; font-size:13px;}
   #upcoming-dropdown .ud-item span:last-child{color:var(--amber-bright); font-size:10px; font-family:'JetBrains Mono',monospace; text-transform:uppercase;}
 
   .hero-hint{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--overlay-ink); text-align:center; pointer-events:none; background:rgba(0,0,0,0.62); padding:14px 26px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
@@ -147,7 +151,7 @@
 
   #tooltip{position:fixed; z-index:60; pointer-events:none; background:var(--chip-bg); color:var(--chip-ink); padding:10px 16px 10px 14px; border-radius:6px; opacity:0; transition:opacity .12s ease; white-space:nowrap; box-shadow:0 14px 34px rgba(0,0,0,0.5); border-left:4px solid #8b8578;}
   #tooltip.st-gallery{border-left-color:#ffc266;}
-  #tooltip #tt-name{display:block; font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:16px; color:var(--chip-ink); line-height:1.2;}
+  #tooltip #tt-name{display:block; font-family:'EB Garamond', serif; font-style:italic; font-weight:500; font-size:16px; color:var(--chip-ink); line-height:1.2;}
   #tooltip .t-sub{display:block; opacity:1; font-size:10.5px; margin-top:3px; font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--chip-ink-dim);}
 
   #microstate-menu{
@@ -159,7 +163,7 @@
   #microstate-menu button{
     display:flex; flex-direction:column; align-items:flex-start; width:100%; padding:11px 14px;
     background:none; border:none; border-bottom:1px solid rgba(20,20,15,0.08);
-    font-family:'Fraunces', serif; font-style:italic; font-size:14px; text-align:left;
+    font-family:'EB Garamond', serif; font-style:italic; font-size:14px; text-align:left;
   }
   #microstate-menu button:last-child{border-bottom:none;}
   #microstate-menu button:hover{background:rgba(20,20,15,0.06);}
@@ -170,18 +174,18 @@
   .about{padding:130px 0 100px; border-top:1px solid var(--line);}
   .about-grid{display:grid; grid-template-columns: 1fr 1.3fr; gap:80px; align-items:start;}
   .section-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber-bright); margin-bottom:22px;}
-  .about h2{font-family:'Fraunces', serif; font-weight:300; font-size:clamp(26px,3vw,40px); line-height:1.3;}
+  .about h2{font-family:'EB Garamond', serif; font-weight:400; font-size:clamp(28px,3.2vw,44px); line-height:1.3;}
   .about p{font-size:15px; line-height:1.85; color:var(--paper-dim); margin-top:20px; max-width:480px;}
   .about-list{list-style:none; margin-top:36px; display:flex; flex-direction:column; gap:14px;}
   .about-list li{display:flex; justify-content:space-between; border-bottom:1px solid var(--line-soft); padding-bottom:14px; font-size:13px;}
   .about-list .k{color:var(--paper-dim); font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em;}
-  .about-list .v{font-family:'Fraunces', serif; font-style:italic;}
+  .about-list .v{font-family:'EB Garamond', serif; font-style:italic;}
 
   .how{padding:100px 0; border-top:1px solid var(--line);}
   .how-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line);}
   .how-card{background:var(--bg); padding:44px 34px;}
   .how-card .n{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--amber-bright); margin-bottom:18px;}
-  .how-card h3{font-family:'Fraunces', serif; font-weight:400; font-size:21px; margin-bottom:12px;}
+  .how-card h3{font-family:'EB Garamond', serif; font-weight:400; font-size:23px; margin-bottom:12px;}
   .how-card p{font-size:13.5px; line-height:1.7; color:var(--paper-dim);}
 
   footer{border-top:1px solid var(--line); padding:60px 0 40px;}
@@ -198,8 +202,8 @@
   .ov-back:hover{opacity:1;}
   .overlay-title-block{padding:10px 5vw 30px; border-bottom:1px solid var(--line);}
   .ov-coords{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--amber-bright); margin-bottom:14px; letter-spacing:.05em;}
-  .overlay-title-block h2{font-family:'Fraunces', serif; font-weight:300; font-size:clamp(34px,5.6vw,78px); line-height:1;}
-  .overlay-title-block p{margin-top:16px; font-style:italic; color:var(--paper-dim); font-family:'Fraunces', serif; font-size:16px; max-width:640px;}
+  .overlay-title-block h2{font-family:'EB Garamond', serif; font-weight:400; font-size:clamp(36px,5.9vw,84px); line-height:1;}
+  .overlay-title-block p{margin-top:16px; font-style:italic; color:var(--paper-dim); font-family:'EB Garamond', serif; font-size:16px; max-width:640px;}
 
   .gallery-grid{padding:40px 5vw 100px; display:grid; grid-template-columns:repeat(5, 1fr); gap:18px;}
   .photo-card{display:flex; flex-direction:column;}
@@ -226,13 +230,13 @@
   .photo-idx{position:absolute; top:12px; left:12px; z-index:4; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--overlay-ink); background:rgba(0,0,0,0.35); padding:3px 7px; border-radius:2px; backdrop-filter:blur(2px);}
   /* El nombre propio (ej. "Mavi Kemeri") y la descripción corta (ej.
      "Acueducto subterráneo romano...") van en líneas separadas — el nombre
-     con el mismo tratamiento que el título grande de un país (Fraunces
+     con el mismo tratamiento que el título grande de un país (EB Garamond
      derecho, tinta plena), la descripción abajo en itálica tenue, igual que
      la frase de intro de cada país. Pegados con "/" en una sola línea el
      nombre perdía protagonismo. */
   .photo-text{display:flex; flex-direction:column; gap:2px; margin-top:12px;}
-  .photo-title{font-family:'Fraunces', serif; font-size:13.5px; color:var(--paper); line-height:1.3;}
-  .photo-desc{font-family:'Fraunces', serif; font-style:italic; font-size:12px; color:var(--paper-dim); line-height:1.35;}
+  .photo-title{font-family:'EB Garamond', serif; font-size:13.5px; color:var(--paper); line-height:1.3;}
+  .photo-desc{font-family:'EB Garamond', serif; font-style:italic; font-size:12px; color:var(--paper-dim); line-height:1.35;}
   /* Footer con margin-top:auto — clava coordenadas + precio + botones al
      fondo de la tarjeta pase lo que pase arriba. El grid ya estira todas
      las tarjetas de una fila a la misma altura (comportamiento default de
@@ -355,7 +359,7 @@
      Y aunque algún día llegue un nombre más largo del que quepa, se parte con
      guión antes que salirse — nunca con puntos suspensivos: el nombre de la
      categoría tiene que poder leerse entero. */
-  .hub-tile h3{font-family:'Fraunces', serif; font-weight:400; font-size:26px;
+  .hub-tile h3{font-family:'EB Garamond', serif; font-weight:400; font-size:28px;
     font-size:clamp(15px, calc(4cqw + 12px), 26px);
     overflow-wrap:break-word; -webkit-hyphens:auto; hyphens:auto;}
   .hub-tile p{font-size:12px; color:var(--paper-dim); margin-top:6px;}
@@ -371,7 +375,7 @@
   .group-empty .group-dot{background:#8b8578;}
   .group-upcoming .group-dot{background:transparent; border:1.5px dashed #8b8578; box-sizing:border-box;}
   .group-label .n{font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--amber-bright); text-transform:uppercase; letter-spacing:.12em;}
-  .group-label .t{font-family:'Fraunces', serif; font-style:italic; font-size:18px; color:var(--paper);}
+  .group-label .t{font-family:'EB Garamond', serif; font-style:italic; font-size:18px; color:var(--paper);}
   .group-count{font-size:10px; color:var(--paper-dim); opacity:0.7;}
   .countries-grid{padding:14px 5vw 20px; display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
   .country-card{cursor:pointer;}
@@ -381,18 +385,18 @@
   .country-card:not(.disabled):hover .country-thumb img{transform:scale(1.08);}
   .country-thumb .badge{position:absolute; top:8px; right:8px; font-family:'JetBrains Mono', monospace; font-size:8.5px; text-transform:uppercase; background:rgba(0,0,0,0.55); color:var(--overlay-ink); padding:3px 6px; border-radius:2px; backdrop-filter:blur(2px);}
   .country-thumb .badge-confirmed{background:var(--amber-bright); color:#1a1108;}
-  .country-card h4{font-family:'Fraunces', serif; font-style:italic; font-size:14px; margin-top:10px;}
+  .country-card h4{font-family:'EB Garamond', serif; font-style:italic; font-size:14px; margin-top:10px;}
   .country-card span{display:block; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--paper-dim); margin-top:2px;}
 
   .empty-state{padding:90px 5vw 140px; text-align:center;}
   .empty-state .ring{width:70px; height:70px; border-radius:50%; border:1px solid var(--line); margin:0 auto 26px;}
-  .empty-state p{font-family:'Fraunces', serif; font-style:italic; font-size:19px; color:var(--paper-dim); max-width:420px; margin:0 auto; line-height:1.6;}
+  .empty-state p{font-family:'EB Garamond', serif; font-style:italic; font-size:19px; color:var(--paper-dim); max-width:420px; margin:0 auto; line-height:1.6;}
   .empty-state .sub{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--paper-dim); opacity:0.6; margin-top:18px; font-style:normal;}
 
   #cart-drawer{position:fixed; top:0; right:0; bottom:0; width:min(420px, 92vw); z-index:110; background:var(--bg-alt); border-left:1px solid var(--line); transform:translateX(100%); transition:transform .45s cubic-bezier(.77,0,.18,1); display:flex; flex-direction:column;}
   #cart-drawer.open{transform:translateX(0);}
   .cart-head{padding:26px 26px 20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
-  .cart-head h3{font-family:'Fraunces', serif; font-weight:400; font-size:20px;}
+  .cart-head h3{font-family:'EB Garamond', serif; font-weight:400; font-size:20px;}
   #cart-close{background:none; border:none; color:var(--paper); font-size:20px; opacity:.7;}
   #cart-close:hover{opacity:1;}
   .cart-items{flex:1; overflow-y:auto; padding:10px 26px;}
@@ -400,7 +404,7 @@
   .cart-item{display:flex; gap:14px; padding:18px 0; border-bottom:1px solid var(--line-soft);}
   .cart-item img{width:64px; height:78px; object-fit:cover; border-radius:2px;}
   .cart-item-info{flex:1;}
-  .cart-item-info .ci-title{font-family:'Fraunces', serif; font-style:italic; font-size:14px;}
+  .cart-item-info .ci-title{font-family:'EB Garamond', serif; font-style:italic; font-size:14px;}
   .cart-item-info .ci-sub{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); margin-top:4px; text-transform:uppercase;}
   .cart-item-info .ci-gift{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--amber-bright); margin-top:3px;}
   .cart-item-bottom{display:flex; justify-content:space-between; align-items:center; margin-top:10px;}
@@ -419,7 +423,7 @@
   #checkout-modal{position:fixed; inset:0; z-index:120; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s ease;}
   #checkout-modal.open{opacity:1; pointer-events:auto;}
   .modal-box{background:var(--bg-alt); border:1px solid var(--line); width:min(460px,90vw); padding:38px; border-radius:6px; max-height:86vh; overflow-y:auto;}
-  .modal-box h3{font-family:'Fraunces', serif; font-weight:400; font-size:24px; margin-bottom:6px;}
+  .modal-box h3{font-family:'EB Garamond', serif; font-weight:400; font-size:24px; margin-bottom:6px;}
   .modal-note{font-size:12px; color:var(--paper-dim); margin-bottom:24px; line-height:1.6; font-family:'JetBrains Mono', monospace;}
   .modal-note b{color:var(--amber-bright);}
   .field{margin-bottom:14px;}
@@ -531,7 +535,7 @@
      distintas y tienen que leerse como dos. */
   .lb-caption{display:flex; flex-direction:column; align-items:center; gap:9px;
     text-align:center; max-width:min(92vw, 420px);}
-  #lightbox-title{font-family:'Fraunces', serif; font-size:16px; line-height:1.4;
+  #lightbox-title{font-family:'EB Garamond', serif; font-size:18px; line-height:1.4;
     color:var(--paper); text-wrap:balance;}
   #lightbox-place{font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--paper-dim); letter-spacing:.08em;}
   .lb-buy{width:min(360px, 92vw); position:relative;}
