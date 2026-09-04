@@ -61,6 +61,16 @@
      al tema. */
   .brand{display:flex; align-items:center; gap:10px; color:inherit;}
   .brand-mark{width:38px; height:38px; flex:0 0 auto; display:block; color:inherit;}
+  /* Centrado óptico, no geométrico. Por caja ya estaban centrados —los dos
+     tenían el centro exacto en y=45, medido— y aun así la marca se veía
+     descolgada. El motivo es que su masa no está repartida: la cámara pesa y
+     vive en la mitad de abajo, la nube ocupa arriba y casi no pinta. Centrando
+     la CAJA, lo que queda a la altura del texto es el borde de la cámara, y el
+     logotipo parece flotar por encima.
+     Se sube 5px para que sea la cámara —lo que el ojo lee como el logo— la que
+     quede a la altura del texto. Va en transform y no en margen a propósito:
+     así no cambia la altura del nav, solo lo que se ve. */
+  .brand .brand-mark{transform:translateY(-5px);}
   .brand-mark-lg{width:46px; height:46px; margin-bottom:12px;}
   .nav-right{display:flex; align-items:center; gap:28px;}
   .nav-link{font-size:12px; letter-spacing:0.08em; text-transform:uppercase; font-family:'JetBrains Mono', monospace; font-weight:300; opacity:0.85; background:none; border:none; color:inherit; padding-bottom:2px; border-bottom:1px solid transparent; transition:border-color .25s ease, opacity .25s ease;}
@@ -105,7 +115,14 @@
      un valor alto — sin esto, el navegador puede quedarse en un opsz bajo,
      que en Fraunces da letras con un trazo bien ondulado/"wonky" a propósito
      del diseño de la fuente, poco legible a este tamaño. */
-  .hero-title{font-family:'Fraunces', serif; font-weight:300; font-optical-sizing:auto; font-variation-settings:'opsz' 90; font-size:clamp(32px, 5.2vw, 70px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
+  /* opsz es el tamaño óptico de Fraunces, y estaba fijado a 90 — el extremo de
+     display. Ahí la fuente afila los trazos finos hasta el pelo y cierra el
+     gancho de la "f", que era justo lo que chirriaba: "fotografía" salía con la
+     f estrangulada contra la í. A 40 el gancho se abre, la línea respira y
+     sigue siendo una serif de titular, no una de texto corrido.
+     No es el navegador el que elegía 90: estaba escrito. Y font-optical-sizing
+     sobra teniendo el eje fijado a mano, así que se va. */
+  .hero-title{font-family:'Fraunces', serif; font-weight:300; font-variation-settings:'opsz' 40; font-size:clamp(32px, 5.2vw, 70px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
   .hero-title em{font-style:italic; color:var(--amber-bright); font-weight:400;}
   .hero-bottom{position:absolute; bottom:34px; left:5vw; right:5vw; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; pointer-events:none;}
   .hero-quote{max-width:320px; font-size:14px; line-height:1.65; color:var(--overlay-ink); font-style:italic; font-family:'Fraunces', serif; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
