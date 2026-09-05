@@ -358,6 +358,33 @@
           "categoryKey": "bn"
         }
       ]
+    },
+    {
+      "key": "croacia",
+      "name": "Croacia",
+      "lat": 45.82,
+      "lng": 15.98,
+      "w": 10,
+      "h": 8,
+      "desc": "Adriático, islas de caliza y pueblos de piedra al atardecer.",
+      "descEn": "Adriatic, limestone islands and stone towns at sunset.",
+      "photos": [
+        {
+          "id": "croacia-1788622868601",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/croacia-1788622868601?_a=BAMCr6cg0",
+          "caption": "Landing / Puerto adriático encuadrado en piedra antigua.",
+          "w": 4262,
+          "h": 4853,
+          "captionEn": "Landing / Adriatic harbour framed in ancient stone.",
+          "lat": 42.6256262,
+          "lng": 18.1228629,
+          "categoryKeys": [
+            "paisajes",
+            "edificios"
+          ],
+          "categoryKey": "paisajes"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -490,16 +517,6 @@
       "w": 6,
       "h": 4,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-costa-rica"
-    },
-    {
-      "key": "croacia",
-      "name": "Croacia",
-      "nameEn": "Croatia",
-      "lat": 45.82,
-      "lng": 15.98,
-      "w": 10,
-      "h": 8,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-croacia"
     },
     {
       "key": "dinamarca",
