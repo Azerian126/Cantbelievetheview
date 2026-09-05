@@ -128,8 +128,11 @@
      en silencio. */
   .hero-title{font-family:'EB Garamond', serif; font-weight:400; font-size:clamp(34px, 5.4vw, 74px); line-height:1.05; letter-spacing:-0.01em; color:var(--overlay-ink);}
   .hero-title em{font-style:italic; color:var(--amber-bright); font-weight:400;}
-  .hero-bottom{position:absolute; bottom:34px; left:5vw; right:5vw; z-index:2; display:flex; justify-content:space-between; align-items:flex-end; pointer-events:none;}
-  .hero-quote{max-width:320px; font-size:14px; line-height:1.65; color:var(--overlay-ink); font-style:italic; font-family:'EB Garamond', serif; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
+  /* Ya solo lleva las estadísticas: la frase del globo se quitó el 4 de septiembre
+   de 2026 porque el aviso de abajo dice lo mismo, y decirlo dos veces en la
+   misma pantalla no ayudaba a nadie. flex-end y no space-between porque con un
+   solo hijo el reparto lo mandaba a la izquierda. */
+  .hero-bottom{position:absolute; bottom:34px; left:5vw; right:5vw; z-index:2; display:flex; justify-content:flex-end; align-items:flex-end; pointer-events:none;}
   .hero-stats{text-align:right; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--overlay-ink); line-height:2.1; position:relative; background:rgba(0,0,0,0.62); padding:16px 20px; border-radius:8px; backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.25);}
   .hero-stats b{color:var(--amber-bright); font-weight:500;}
   .stats-line.clickable{cursor:pointer; pointer-events:auto; transition:color .2s ease;}
@@ -592,30 +595,21 @@
     #print-preview{right:3vw; bottom:90px; width:190px;}
   }
 
-  /* En pantalla estrecha el pie del hero se vuelve columna y crece hacia
-     arriba, así que le pasaba por encima al aviso del globo: se veía
-     "ARRASTRÁ EL GLOBO" cortado por la mitad detrás de las estadísticas.
-     Se separa por TIPO DE PUNTERO y no solo por ancho, porque el problema no
-     es el mismo en los dos casos. */
-
-  /* Teléfono o tableta: el aviso se queda solo con su botón de pausa, que es
-     lo único que no se puede decir en otro sitio. Su texto se muda a la frase
-     de arriba, que además está en versión táctil y no habla de un ratón que
-     ahí no existe. */
-  @media (max-width:860px) and (hover: none){
-    .hero-bottom{bottom:92px;}
-    .hero-hint{padding:0; background:none; box-shadow:none; backdrop-filter:none;}
-    .hero-hint > span[data-i18n]{display:none;}
-    .hero-hint .dot{display:none;}
-    #rotate-toggle{margin:0 auto; width:34px; height:34px;}
-  }
-
-  /* Ventana de escritorio hecha pequeña: aquí sí hay ratón, la frase de arriba
-     habla de él y no menciona el arrastre, así que el aviso tiene que seguir
-     entero o esa instrucción se pierde. En vez de esconderlo, se le hace sitio
-     subiendo el pie. */
-  @media (max-width:860px) and (hover: hover){
-    .hero-bottom{bottom:160px;}
+  /* En pantalla estrecha el aviso y las estadísticas se pisaban: los dos
+     colgaban de bottom:34px y en columna el segundo crece hacia arriba. Ahora
+     que el aviso es la ÚNICA instrucción que queda —la frase de al lado se
+     quitó— tiene que verse entero en cualquier aparato, así que en vez de
+     esconderlo se le hace sitio subiendo las estadísticas. 170px cubre el peor
+     caso: su texto partido en dos líneas en un teléfono estrecho. */
+  @media (max-width:860px){
+    .hero-bottom{bottom:170px;}
+    /* El aviso parte en tres líneas y un max-width no lo arregla: al estar en
+       left:50% sin right, el ancho disponible para ajustarse al contenido es
+       solo la mitad de la pantalla. Hace falta ancho EXPLÍCITO; el
+       translateX(-50%) que ya tenía lo sigue centrando.
+       Con esto entra en dos líneas, y el espacio duro de la cadena mantiene el
+       "·" pegado a "globo" en vez de dejarlo abriendo el renglón de abajo. */
+    .hero-hint{width:min(88vw, 340px);}
   }
   @media(max-width:560px){
     .gallery-grid{grid-template-columns:repeat(2,1fr);}
@@ -682,11 +676,10 @@
     <div class="hero-status" id="hero-status"></div>
     <h1 class="hero-title" data-i18n-html="heroTitle">No tomo una fotografía.<br>La pido prestada, <em>en silencio.</em></h1>
   </div>
-  <div class="hero-hint"><span data-i18n="heroHint">arrastrá el globo · pasá el mouse sobre un país</span><div class="dot"></div>
+  <div class="hero-hint"><span data-i18n="heroHint">arrastrá el globo · pasá el mouse sobre un país</span><div class="dot"></div>
     <button id="rotate-toggle" title="Pausar rotación" aria-label="Pausar rotación">❚❚</button>
   </div>
   <div class="hero-bottom">
-    <p class="hero-quote" data-i18n="heroQuote">Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.</p>
     <div class="hero-stats">
       <!-- 195 = 193 estados miembros de la ONU + 2 observadores (Vaticano y
            Palestina) — el conteo más citado como "países del mundo".
@@ -1019,13 +1012,8 @@ var T = {
     navGallery:'Galería', navAbout:'Sobre mí', navHow:'Cómo comprar', cart:'carrito',
     heroEyebrow:'Mario Mazzone — fotografía de paisaje',
     heroTitle:'No tomo una fotografía.<br>La pido prestada, <em>en silencio.</em>',
-    heroHint:'arrastrá el globo · pasá el mouse sobre un país',
-    heroQuote:'Pasá el mouse sobre un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.',
-    // En un teléfono no hay ratón. Y como ahí el aviso de abajo se queda sin
-    // texto para no chocar con las estadísticas, esta frase carga también el
-    // "arrastrá el globo" que aquel decía.
-    heroQuoteTactil:'Arrastrá el globo y tocá un país: si el borde se enciende, tiene galería. Si queda apagado, todavía no.',
-    heroHintTactil:'arrastrá el globo · tocá un país',
+    heroHint:'arrastrá el globo · pasá el mouse sobre un país',
+    heroHintTactil:'arrastrá el globo · tocá un país',
     statVisited:'PAÍSES VISITADOS', statOf:'DE', statGallery:'CON GALERÍA', statEmpty:'SIN FOTOS AÚN', statUpcoming:'PRÓXIMOS DESTINOS',
     aboutLabel:'Sobre el trabajo', aboutH2:function(n){ return n+' países, un mismo asombro.'; },
     aboutP1:'Cada fotografía en este archivo nace del mismo impulso: quedarme quieto un segundo más de lo razonable frente a algo que no me pertenece. El globo interactivo es mi cuaderno de bitácora — pero si preferís explorar por tema en vez de por lugar, la sección Galería reúne todo por categoría.',
@@ -1074,10 +1062,8 @@ var T = {
     navGallery:'Gallery', navAbout:'About', navHow:'How to buy', cart:'cart',
     heroEyebrow:'Mario Mazzone — landscape photography',
     heroTitle:"I don't take a photograph.<br>I borrow it, <em>quietly.</em>",
-    heroHint:'drag the globe · hover over a country',
-    heroQuote:"Hover over a country: if the border lights up, it has a gallery. If it stays dim, not yet.",
-    heroQuoteTactil:"Drag the globe and tap a country: if the border lights up, it has a gallery. If it stays dim, not yet.",
-    heroHintTactil:'drag the globe · tap a country',
+    heroHint:'drag the globe · hover over a country',
+    heroHintTactil:'drag the globe · tap a country',
     statVisited:'COUNTRIES VISITED', statOf:'OF', statGallery:'WITH GALLERY', statEmpty:'NO PHOTOS YET', statUpcoming:'UPCOMING TRIPS',
     aboutLabel:'About the work', aboutH2:function(n){ return n+' countries, the same sense of wonder.'; },
     aboutP1:"Every photograph in this archive comes from the same impulse: staying still one second longer than reasonable in front of something that isn't mine. The interactive globe is my logbook — but if you'd rather browse by theme than by place, the Gallery section groups everything by category.",
