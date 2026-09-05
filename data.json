@@ -374,6 +374,21 @@
             "paisajes"
           ],
           "categoryKey": "edificios"
+        },
+        {
+          "id": "venezuela-1788646096722",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/venezuela-1788646096722?_a=BAMCr6cg0",
+          "caption": "ZZA / Neón magenta pizza sobre ladrillos en la noche.",
+          "w": 2883,
+          "h": 2164,
+          "captionEn": "ZZA / Magenta neon pizza on brickwork at night.",
+          "lat": 10.4979697,
+          "lng": -66.8540669,
+          "categoryKeys": [
+            "retratos",
+            "edificios"
+          ],
+          "categoryKey": "retratos"
         }
       ]
     },
