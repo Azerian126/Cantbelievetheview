@@ -234,6 +234,21 @@
             "paisajes"
           ],
           "categoryKey": "modelos"
+        },
+        {
+          "id": "japon-1788640109862",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788640109862?_a=BAMCr6cg0",
+          "caption": "Shaka / Buda reclinado verde ante bosque otoñal dorado.",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Shaka / Green reclining Buddha before a golden autumn forest.",
+          "lat": 35.7707943,
+          "lng": 139.7016462,
+          "categoryKeys": [
+            "edificios",
+            "paisajes"
+          ],
+          "categoryKey": "edificios"
         }
       ]
     },
