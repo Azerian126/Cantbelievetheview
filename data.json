@@ -582,6 +582,21 @@
             "paisajes"
           ],
           "categoryKey": "edificios"
+        },
+        {
+          "id": "estados-unidos-1788648660785",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/estados-unidos-1788648660785?_a=BAMCr6cg0",
+          "caption": "Carousel Light / Faroles cálidos envuelven el carrusel antiguo.",
+          "w": 2751,
+          "h": 2537,
+          "captionEn": "Carousel Light / Warm lanterns envelop the antique carousel.",
+          "lat": 28.3824072,
+          "lng": -81.5617078,
+          "categoryKeys": [
+            "edificios",
+            "paisajes"
+          ],
+          "categoryKey": "edificios"
         }
       ]
     },
