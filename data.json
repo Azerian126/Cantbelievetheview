@@ -219,6 +219,21 @@
             "edificios"
           ],
           "categoryKey": "edificios"
+        },
+        {
+          "id": "japon-1788626048691",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/japon-1788626048691?_a=BAMCr6cg0",
+          "caption": "Tomodachi / Sendero boscoso iluminado por el sol filtrado.",
+          "w": 4284,
+          "h": 5712,
+          "captionEn": "Tomodachi / Sun-dappled woodland path",
+          "lat": 35.6750442,
+          "lng": 139.7137469,
+          "categoryKeys": [
+            "modelos",
+            "paisajes"
+          ],
+          "categoryKey": "modelos"
         }
       ]
     },
