@@ -444,6 +444,32 @@
           "categoryKey": "modelos"
         }
       ]
+    },
+    {
+      "key": "mexico",
+      "name": "México",
+      "lat": 19.43,
+      "lng": -99.13,
+      "w": 28,
+      "h": 22,
+      "desc": "Volcanes, agave y ruinas que despiertan al amanecer.",
+      "descEn": "Volcanoes, agave and ruins that awaken at dawn.",
+      "photos": [
+        {
+          "id": "mexico-1788644059623",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/mexico-1788644059623?_a=BAMCr6cg0",
+          "caption": "Wada / Ofrendas de velas y flores ante imagen sagrada.",
+          "w": 3024,
+          "h": 4032,
+          "captionEn": "Wada / Offerings of candles and flowers before a sacred image.",
+          "lat": 19.2010018,
+          "lng": -99.5619998,
+          "categoryKeys": [
+            "retratos"
+          ],
+          "categoryKey": "retratos"
+        }
+      ]
     }
   ],
   "visitedEmpty": [
@@ -734,16 +760,6 @@
       "w": 14,
       "h": 12,
       "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-marruecos"
-    },
-    {
-      "key": "mexico",
-      "name": "México",
-      "nameEn": "Mexico",
-      "lat": 19.43,
-      "lng": -99.13,
-      "w": 28,
-      "h": 22,
-      "coverUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_fill,g_auto,w_800,h_800,q_auto,f_auto/cantbelievetheview/covers/cover-mexico"
     },
     {
       "key": "noruega",
