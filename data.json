@@ -314,6 +314,20 @@
             "modelos"
           ],
           "categoryKey": "bn"
+        },
+        {
+          "id": "venezuela-1788622744125",
+          "displayUrl": "https://res.cloudinary.com/kqq7evsb/image/upload/c_limit,f_auto,q_auto:eco,w_1400/a_-30,co_white,g_center,l_text:Arial_60_bold:cantbelievetheview.com,o_30/v1/cantbelievetheview/venezuela-1788622744125?_a=BAMCr6cg0",
+          "caption": "Paseo / Cúpula geométrica bañando de luz un oasis rojo.",
+          "w": 2774,
+          "h": 3821,
+          "captionEn": "Walk / Geometric dome bathing a red oasis in light.",
+          "lat": 10.4777491,
+          "lng": -66.8584964,
+          "categoryKeys": [
+            "edificios"
+          ],
+          "categoryKey": "edificios"
         }
       ]
     },
