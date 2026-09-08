@@ -1079,8 +1079,8 @@
       "key": "retratos",
       "name": "Retratos",
       "nameEn": "Portraits",
-      "desc": "Rostros encontrados en el camino, siempre con permiso.",
-      "descEn": "Faces found along the way, always with permission."
+      "desc": "Rostros e imágenes encontrados en el camino, siempre con permiso.",
+      "descEn": "Faces and figures found along the way, always with permission."
     },
     {
       "key": "paisajes",
@@ -1101,8 +1101,8 @@
       "key": "modelos",
       "name": "Modelos",
       "nameEn": "Models",
-      "desc": "Dirección de arte, vestuario y color en movimiento.",
-      "descEn": "Art direction, wardrobe, and color in motion."
+      "desc": "Arte, vestuario y color en movimiento.",
+      "descEn": "Art, wardrobe, and color in motion."
     }
   ],
   "materials": [
