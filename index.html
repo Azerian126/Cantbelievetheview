@@ -1155,6 +1155,11 @@ function applyStaticI18n(){
 // tenga fotos reales cargadas — "con galería" se cuenta por fotos de
 // verdad, no por estar en esta lista (ver también buildCountriesGrids).
 function countriesWithPhotos(){ return visited.filter(function(c){ return c.photos && c.photos.length > 0; }); }
+// Un próximo destino puede anunciarse SIN fecha — es regla de Mario: el
+// itinerario empieza de cero y sin fechas, porque uno no ve el futuro. Sin
+// esto el sitio imprimía "undefined" (o un "·" colgando) donde debía ir la
+// fecha. 'toComeSoon' ya estaba traducido a los dos idiomas para este caso.
+function whenLabel(d){ return d ? d : t('toComeSoon'); }
 function countriesVisitedNoPhotos(){ return visited.filter(function(c){ return !(c.photos && c.photos.length > 0); }); }
 
 function updateStatsText(){
@@ -2119,7 +2124,7 @@ function buildCountriesGrids(){
     var badgeTxt = meta.confirmed ? t('badgeConfirmed') : t('badgeUpcoming');
     card.innerHTML =
       '<div class="country-thumb"><span class="'+badgeCls+'">'+badgeTxt+'</span></div>' +
-      '<h4>'+cname(c)+'</h4><span>'+meta.date+'</span>';
+      '<h4>'+cname(c)+'</h4><span>'+whenLabel(meta.date)+'</span>';
     gUpcoming.appendChild(card);
   });
 }
@@ -2131,8 +2136,9 @@ var udCaret = document.getElementById('upcoming-caret');
 function buildUpcomingDropdown(){
   // El check marca los viajes ya confirmados (vuelos/tour comprados) — el
   // resto son planes en curso, todavía pueden cambiar de fecha o caerse.
+  udCaret.style.display = upcoming.length ? '' : 'none';
   udDrop.innerHTML = upcoming.map(function(c){
-    return '<div class="ud-item"><span>'+cname(c)+(c.confirmed?' ✓':'')+'</span><span>'+c.date+'</span></div>';
+    return '<div class="ud-item"><span>'+cname(c)+(c.confirmed?' ✓':'')+'</span><span>'+whenLabel(c.date)+'</span></div>';
   }).join('');
 }
 /* ============ ESTADO ACTUAL — SIEMPRE visible, viaje o no (privacidad) ======== */
@@ -2145,6 +2151,9 @@ function buildHeroStatus(){
 
 udToggle.addEventListener('click', function(e){
   e.stopPropagation();
+  // Con cero próximos destinos no hay nada que desplegar: antes se abría una
+  // caja vacía que tapaba la línea de arriba ("con galería · sin fotos").
+  if(!upcoming.length) return;
   udDrop.classList.toggle('show');
   udCaret.classList.toggle('rot');
 });
@@ -2457,11 +2466,11 @@ function setHover(entry, clientPos){
   if(hovered){
     hovered.lines.forEach(function(l){ l.visible=true; });
     document.getElementById('tt-name').textContent = cname(hovered.data);
-    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+hovered.meta.date : (hovered.type==='current' ? t('tttCurrent') : t('tttGeneric'))));
+    var sub = hovered.type==='gallery' ? t('tttGallery') : (hovered.type==='empty' ? t('tttEmpty') : (hovered.type==='upcoming' ? t('tttUpcoming')+whenLabel(hovered.meta.date) : (hovered.type==='current' ? t('tttCurrent') : t('tttGeneric'))));
     // El borde/click son de la galería (type) — pero si ADEMÁS es el
     // destino actual o el próximo, esa info se suma acá, nunca lo tapa.
     if(hovered.type==='gallery' && hovered.badge==='current') sub += ' · ' + t('tttCurrent');
-    else if(hovered.type==='gallery' && hovered.badge==='upcoming') sub += ' · ' + t('tttUpcoming') + hovered.meta.date;
+    else if(hovered.type==='gallery' && hovered.badge==='upcoming') sub += ' · ' + t('tttUpcoming') + whenLabel(hovered.meta.date);
     document.getElementById('tt-sub').textContent = sub;
     tooltip.classList.toggle('st-gallery', hovered.type==='gallery');
     if(clientPos){ tooltip.style.left=(clientPos.cx+16)+'px'; tooltip.style.top=(clientPos.cy+8)+'px'; }
@@ -2591,7 +2600,7 @@ document.addEventListener('click', function(e){
 function runCountryAction(entry){
   if(entry.type==='gallery'){ openCountryPanel(entry.data, 'hero'); }
   else if(entry.type==='empty'){ openEmptyPanel(entry.data, 'hero'); }
-  else if(entry.type==='upcoming'){ showToast(t('toastUpcoming')(cname(entry.data), entry.meta.date)); }
+  else if(entry.type==='upcoming'){ showToast(t('toastUpcoming')(cname(entry.data), whenLabel(entry.meta.date))); }
   else if(entry.type==='current'){ showToast(t('toastCurrent')(cname(entry.data))); }
   else { showToast(t('toastGeneric')(cname(entry.data))); }
 }
